@@ -10,10 +10,6 @@
 #include <sys/epoll.h>
 #include <netinet/tcp.h>    // include TCP_NODELAY
 
-void set_non_blocking(int fd) {
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
-}
-
 int main(int argc, char* argv[])
 {
     if(argc != 3) {
@@ -23,7 +19,7 @@ int main(int argc, char* argv[])
     }
 
     // create listen_fd
-    int listen_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    int listen_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, IPPROTO_TCP);
     if(listen_fd < 0) {
         std::cerr << "socket() failed\n";
         return -1;
@@ -35,7 +31,6 @@ int main(int argc, char* argv[])
     setsockopt(listen_fd, SOL_SOCKET, TCP_NODELAY,  &opt, static_cast<socklen_t>(sizeof(opt)));
     setsockopt(listen_fd, SOL_SOCKET, SO_REUSEPORT, &opt, static_cast<socklen_t>(sizeof(opt)));
     setsockopt(listen_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, static_cast<socklen_t>(sizeof(opt)));
-    set_non_blocking(listen_fd); // set non-blocking IO
 
     sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
@@ -88,8 +83,7 @@ int main(int argc, char* argv[])
                 sockaddr_in clnt_addr;
                 socklen_t clnt_addr_len = sizeof(clnt_addr);
 
-                int clnt_fd = accept(listen_fd, (sockaddr*)&clnt_addr, &clnt_addr_len);
-                set_non_blocking(clnt_fd);
+                int clnt_fd = accept4(listen_fd, (sockaddr*)&clnt_addr, &clnt_addr_len, SOCK_NONBLOCK);
 
                 printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
                             clnt_fd, inet_ntoa(clnt_addr.sin_addr), ntohs(clnt_addr.sin_port));
