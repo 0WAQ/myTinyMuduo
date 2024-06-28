@@ -12,6 +12,7 @@
 
 #include "../include/InetAddress.hpp"
 #include "../include/Socket.hpp"
+#include "../include/Epoll.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -21,75 +22,53 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // create listen_sock
-    Socket listen_sock(create_non_blocking_fd());
+    // create serv_sock
+    Socket serv_sock(create_non_blocking_fd());
 
-    // set listen_sock's opt
-    listen_sock.set_keep_alive(true);
-    listen_sock.set_reuse_addr(true);
-    listen_sock.set_reuse_port(true);
-    listen_sock.set_tcp_nodelay(true);
+    // set serv_sock's opt
+    serv_sock.set_keep_alive(true);
+    serv_sock.set_reuse_addr(true);
+    serv_sock.set_reuse_port(true);
+    serv_sock.set_tcp_nodelay(true);
 
     InetAddress serv_addr(argv[1], atoi(argv[2]));
 
-    listen_sock.bind(serv_addr);
-    listen_sock.listen();
+    serv_sock.bind(serv_addr);
+    serv_sock.listen();
 
     // create epoll_fd
-    int epoll_fd = epoll_create(1);
+    Epoll ep;
 
-    // create a struct monitored listen_sock's read events
-    epoll_event ev;
-    ev.data.fd = listen_sock.get_fd();
-    ev.events = EPOLLIN;
-
-    // add listen_sock to epoll_fd binds ev
-    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_sock.get_fd(), &ev);
-    epoll_event evs[10];
+    // add serv_sock to epoll_fd binds ev
+    ep.add_fd(serv_sock.get_fd(), EPOLLIN);
+    std::vector<epoll_event> evs;
 
     while(true)
     {
-        int num_fds = epoll_wait(epoll_fd, evs, 10, -1);
-        
-        // error
-        if(num_fds < 0) 
-        { 
-            std::cerr << "epoll_wait() failed\n";
-            break;
-        }
-        // timeout
-        else if(num_fds == 0) 
-        { 
-            std::cout << "epoll_wait() timeout.\n";
-            continue;
-        }
-        
-        for(int i = 0; i < num_fds; i++) 
+        evs = ep.wait();
+
+        for(auto& ev : evs) 
         {
             // close events
-            if(evs[i].events & EPOLLRDHUP) { 
-                printf("client(clnt_fd = %d) disconnected\n", evs[i].data.fd);
-                close(evs[i].data.fd);
+            if(ev.events & EPOLLRDHUP) { 
+                printf("client(clnt_fd = %d) disconnected\n", ev.data.fd);
+                close(ev.data.fd);
             }
             // read events
-            else if(evs[i].events & (EPOLLIN | EPOLLPRI)) 
+            else if(ev.events & (EPOLLIN | EPOLLPRI)) 
             {
-                // listen_sock
-                if(evs[i].data.fd == listen_sock.get_fd())
+                // serv_sock
+                if(ev.data.fd == serv_sock.get_fd())
                 {
-                    ///////////////////////////////////////////
                     InetAddress clnt_addr;
-                    Socket* clnt_sock = new Socket(listen_sock.accept(clnt_addr));
+                    Socket* clnt_sock = new Socket(serv_sock.accept(clnt_addr));
 
                     printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
                                 clnt_sock->get_fd(), clnt_addr.ip(), clnt_addr.port());
 
                     
                     // add clnt_fd to epoll_fd binds ev
-                    ev.data.fd = clnt_sock->get_fd();
-                    ev.events = EPOLLIN | EPOLLET; // Edge Triggle
-                    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, clnt_sock->get_fd(), &ev);
-                    ///////////////////////////////////////////
+                    ep.add_fd(clnt_sock->get_fd(), EPOLLIN | EPOLLET);
                 }
                 // other fd
                 else
@@ -100,13 +79,13 @@ int main(int argc, char* argv[])
                         // init all buf as 0
                         bzero(&buf, sizeof(buf));
 
-                        ssize_t nlen = read(evs[i].data.fd, buf, sizeof(buf));
+                        ssize_t nlen = read(ev.data.fd, buf, sizeof(buf));
 
                         // read datas successfully
                         if(nlen > 0) 
                         {
-                            printf("recv(clnt_fd = %d): %s\n", evs[i].data.fd, buf);
-                            send(evs[i].data.fd, buf, strlen(buf), 0);
+                            printf("recv(clnt_fd = %d): %s\n", ev.data.fd, buf);
+                            send(ev.data.fd, buf, strlen(buf), 0);
                         }
                         // read failed because interrupted by system call
                         else if(nlen == -1 && errno == EINTR) 
@@ -121,23 +100,23 @@ int main(int argc, char* argv[])
                         // clnt has been disconnected
                         else if(nlen == 0) 
                         {
-                            printf("client(clnt_fd = %d) disconnected.\n", evs[i].data.fd);
-                            close(evs[i].data.fd);
+                            printf("client(clnt_fd = %d) disconnected.\n", ev.data.fd);
+                            close(ev.data.fd);
                             break;
                         }
                     }
                 }
             }
             // write events
-            else if(evs[i].events & EPOLLOUT) 
-            { 
+            else if(ev.events & EPOLLOUT) 
+            {
                 
             }
             // error events
             else 
             {
-                printf("client(clnt_fd = %d) error.\n", evs[i].data.fd);
-                close(evs[i].data.fd);
+                printf("client(clnt_fd = %d) error.\n", ev.data.fd);
+                close(ev.data.fd);
             }
         }
     }
