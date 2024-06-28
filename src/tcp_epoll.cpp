@@ -10,8 +10,8 @@
 #include <sys/epoll.h>
 #include <netinet/tcp.h>    // include TCP_NODELAY
 
-#include "InetAddress.hpp"
-#include "Socket.hpp"
+#include "../include/InetAddress.hpp"
+#include "../include/Socket.hpp"
 
 int main(int argc, char* argv[])
 {
