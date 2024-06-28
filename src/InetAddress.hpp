@@ -13,6 +13,8 @@ class InetAddress
 {
 public:
 
+    InetAddress();
+    
     /**
      * 
      * @pragma: _ip: target ip
@@ -48,6 +50,13 @@ public:
      * 
      */
     const sockaddr* addr() const;
+
+    /***
+     * 
+     * 
+     * 
+     */
+    void set_addr(sockaddr_in clnt_addr);
 
     ~InetAddress();
 

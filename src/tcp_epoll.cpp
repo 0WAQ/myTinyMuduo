@@ -11,6 +11,7 @@
 #include <netinet/tcp.h>    // include TCP_NODELAY
 
 #include "InetAddress.hpp"
+#include "Socket.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -20,44 +21,30 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // create listen_fd
-    int listen_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, IPPROTO_TCP);
-    if(listen_fd < 0) {
-        std::cerr << "socket() failed\n";
-        return -1;
-    }
+    // create listen_sock
+    Socket listen_sock(create_non_blocking_fd());
 
-    // set listen_fd's opt
-    int opt = 1;
-    setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, static_cast<socklen_t>(sizeof(opt)));
-    setsockopt(listen_fd, SOL_SOCKET, TCP_NODELAY,  &opt, static_cast<socklen_t>(sizeof(opt)));
-    setsockopt(listen_fd, SOL_SOCKET, SO_REUSEPORT, &opt, static_cast<socklen_t>(sizeof(opt)));
-    setsockopt(listen_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, static_cast<socklen_t>(sizeof(opt)));
+    // set listen_sock's opt
+    listen_sock.set_keep_alive(true);
+    listen_sock.set_reuse_addr(true);
+    listen_sock.set_reuse_port(true);
+    listen_sock.set_tcp_nodelay(true);
 
     InetAddress serv_addr(argv[1], atoi(argv[2]));
 
-    if(bind(listen_fd, serv_addr.addr(), sizeof(sockaddr)) < 0) {
-        std::cerr << "bind() failed\n";
-        close(listen_fd);
-        return -1;
-    }
-
-    if(listen(listen_fd, 128) != 0) {
-        std::cerr << "listen() failed\n";
-        close(listen_fd);
-        return -1;
-    }
+    listen_sock.bind(serv_addr);
+    listen_sock.listen();
 
     // create epoll_fd
     int epoll_fd = epoll_create(1);
 
-    // create a struct monitored listen_fd's read events
+    // create a struct monitored listen_sock's read events
     epoll_event ev;
-    ev.data.fd = listen_fd;
+    ev.data.fd = listen_sock.get_fd();
     ev.events = EPOLLIN;
 
-    // add listen_fd to epoll_fd binds ev
-    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_fd, &ev);
+    // add listen_sock to epoll_fd binds ev
+    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_sock.get_fd(), &ev);
     epoll_event evs[10];
 
     while(true)
@@ -87,24 +74,21 @@ int main(int argc, char* argv[])
             // read events
             else if(evs[i].events & (EPOLLIN | EPOLLPRI)) 
             {
-                // listen_fd
-                if(evs[i].data.fd == listen_fd)
+                // listen_sock
+                if(evs[i].data.fd == listen_sock.get_fd())
                 {
                     ///////////////////////////////////////////
-                    sockaddr_in clnt_addr1;
-                    socklen_t clnt_addr1_len = sizeof(clnt_addr1);
+                    InetAddress clnt_addr;
+                    Socket* clnt_sock = new Socket(listen_sock.accept(clnt_addr));
 
-                    int clnt_fd = accept4(listen_fd, (sockaddr*)&clnt_addr1, &clnt_addr1_len, SOCK_NONBLOCK);
-
-                    InetAddress clnt_addr(clnt_addr1);
                     printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
-                                clnt_fd, clnt_addr.ip(), clnt_addr.port());
+                                clnt_sock->get_fd(), clnt_addr.ip(), clnt_addr.port());
 
                     
                     // add clnt_fd to epoll_fd binds ev
-                    ev.data.fd = clnt_fd;
+                    ev.data.fd = clnt_sock->get_fd();
                     ev.events = EPOLLIN | EPOLLET; // Edge Triggle
-                    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, clnt_fd, &ev);
+                    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, clnt_sock->get_fd(), &ev);
                     ///////////////////////////////////////////
                 }
                 // other fd
