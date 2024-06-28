@@ -10,6 +10,8 @@
 #include <sys/epoll.h>
 #include <netinet/tcp.h>    // include TCP_NODELAY
 
+#include "InetAddress.hpp"
+
 int main(int argc, char* argv[])
 {
     if(argc != 3) {
@@ -32,12 +34,9 @@ int main(int argc, char* argv[])
     setsockopt(listen_fd, SOL_SOCKET, SO_REUSEPORT, &opt, static_cast<socklen_t>(sizeof(opt)));
     setsockopt(listen_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, static_cast<socklen_t>(sizeof(opt)));
 
-    sockaddr_in serv_addr;
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr(argv[1]);
-    serv_addr.sin_port = htons(atoi(argv[2]));
+    InetAddress serv_addr(argv[1], atoi(argv[2]));
 
-    if(bind(listen_fd, (sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+    if(bind(listen_fd, serv_addr.addr(), sizeof(sockaddr)) < 0) {
         std::cerr << "bind() failed\n";
         close(listen_fd);
         return -1;
@@ -82,7 +81,7 @@ int main(int argc, char* argv[])
         {
             // close events
             if(evs[i].events & EPOLLRDHUP) { 
-                printf("1.client(clnt_fd = %d) disconnected\n", evs[i].data.fd);
+                printf("client(clnt_fd = %d) disconnected\n", evs[i].data.fd);
                 close(evs[i].data.fd);
             }
             // read events
@@ -92,13 +91,14 @@ int main(int argc, char* argv[])
                 if(evs[i].data.fd == listen_fd)
                 {
                     ///////////////////////////////////////////
-                    sockaddr_in clnt_addr;
-                    socklen_t clnt_addr_len = sizeof(clnt_addr);
+                    sockaddr_in clnt_addr1;
+                    socklen_t clnt_addr1_len = sizeof(clnt_addr1);
 
-                    int clnt_fd = accept4(listen_fd, (sockaddr*)&clnt_addr, &clnt_addr_len, SOCK_NONBLOCK);
+                    int clnt_fd = accept4(listen_fd, (sockaddr*)&clnt_addr1, &clnt_addr1_len, SOCK_NONBLOCK);
 
+                    InetAddress clnt_addr(clnt_addr1);
                     printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
-                                clnt_fd, inet_ntoa(clnt_addr.sin_addr), ntohs(clnt_addr.sin_port));
+                                clnt_fd, clnt_addr.ip(), clnt_addr.port());
 
                     
                     // add clnt_fd to epoll_fd binds ev
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
                         // clnt has been disconnected
                         else if(nlen == 0) 
                         {
-                            printf("2.client(clnt_fd = %d) disconnected.\n", evs[i].data.fd);
+                            printf("client(clnt_fd = %d) disconnected.\n", evs[i].data.fd);
                             close(evs[i].data.fd);
                             break;
                         }
