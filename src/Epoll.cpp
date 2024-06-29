@@ -9,27 +9,40 @@ Epoll::Epoll()
     }
 }
 
-void Epoll::add_fd(int fd, uint32_t op)
+void Epoll::updata_channel(Channel* ch)
 {
     epoll_event ev;
-    ev.data.fd = fd;
-    ev.events = op;
-
-    if(::epoll_ctl(_M_epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
-        printf("epoll_ctl() failed(%d).\n", errno);
-        exit(-1);
+    ev.data.ptr = ch;
+    ev.events = ch->get_monitored_events();
+    
+    // 判断该fd是否已被监听
+    if(ch->get_in_epoll()) 
+    {
+        // 若被监听, 则修改events
+        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_MOD, ch->get_fd(), &ev) == -1) {
+            std::cerr << "epoll_ctl() failed.\n";
+            exit(-1);
+        }
+    }
+    else 
+    {
+        // 否则, 新增该fd至epfd
+        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_ADD, ch->get_fd(), &ev) == -1) {
+            std::cerr << "epoll_ctl() failed.\n";
+            exit(-1);
+        }
+        ch->set_in_epoll();
     }
 }
 
-std::vector<epoll_event> Epoll::wait(int time_out)
+std::vector<Channel*> Epoll::wait(int time_out)
 {
-    std::vector<epoll_event> evs;
+    std::vector<Channel*> channels;
 
     bzero(_M_events, sizeof(_M_events));
-
     int num_fds = epoll_wait(_M_epoll_fd, _M_events, _M_max_events, time_out);
 
-        // error
+    // error
     if(num_fds < 0) 
     { 
         std::cerr << "epoll_wait() failed\n";
@@ -39,14 +52,18 @@ std::vector<epoll_event> Epoll::wait(int time_out)
     else if(num_fds == 0) 
     { 
         std::cout << "epoll_wait() timeout.\n";
-        return evs;
+        return channels;
     }
 
-    for(int i = 0; i < num_fds; i++) {
-        evs.push_back(_M_events[i]);
+    Channel* ch;
+    for(int i = 0; i < num_fds; i++)
+    {
+        ch = (Channel*)_M_events[i].data.ptr;
+        ch->set_happened_events(_M_events[i].events);
+        channels.emplace_back(ch);
     }
 
-    return evs;
+    return channels;
 }
 
 

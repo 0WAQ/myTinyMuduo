@@ -39,26 +39,27 @@ int main(int argc, char* argv[])
     // create epoll_fd
     Epoll ep;
 
-    // add serv_sock to epoll_fd binds ev
-    ep.add_fd(serv_sock.get_fd(), EPOLLIN);
-    std::vector<epoll_event> evs;
-
+    // 使用serv_channel将serv_fd和ep绑定在一起
+    Channel* serv_channel = new Channel(&ep, serv_sock.get_fd());
+    // 添加读事件, 并且监听
+    serv_channel->set_read_events();
+    
     while(true)
     {
-        evs = ep.wait();
+        std::vector<Channel*> channels = ep.wait();
 
-        for(auto& ev : evs) 
+        for(auto& ch : channels) 
         {
-            // close events
-            if(ev.events & EPOLLRDHUP) { 
-                printf("client(clnt_fd = %d) disconnected\n", ev.data.fd);
-                close(ev.data.fd);
+            // 连接中断事件
+            if(ch->get_happened_events() & EPOLLRDHUP) { 
+                printf("client(clnt_fd = %d) disconnected\n", ch->get_fd());
+                close(ch->get_fd());
             }
-            // read events
-            else if(ev.events & (EPOLLIN | EPOLLPRI)) 
+            // 读事件
+            else if(ch->get_happened_events() & (EPOLLIN | EPOLLPRI)) 
             {
                 // serv_sock
-                if(ev.data.fd == serv_sock.get_fd())
+                if(ch == serv_channel)
                 {
                     InetAddress clnt_addr;
                     Socket* clnt_sock = new Socket(serv_sock.accept(clnt_addr));
@@ -67,10 +68,13 @@ int main(int argc, char* argv[])
                                 clnt_sock->get_fd(), clnt_addr.ip(), clnt_addr.port());
 
                     
-                    // add clnt_fd to epoll_fd binds ev
-                    ep.add_fd(clnt_sock->get_fd(), EPOLLIN | EPOLLET);
+                    Channel* clnt_channel = new Channel(&ep, clnt_sock->get_fd());
+                    // 设置为边缘触发
+                    clnt_channel->set_ET();
+                    // 设置为读事件, 并监听
+                    clnt_channel->set_read_events();
                 }
-                // other fd
+                // clnt_sock
                 else
                 {
                     char buf[1024];
@@ -79,13 +83,13 @@ int main(int argc, char* argv[])
                         // init all buf as 0
                         bzero(&buf, sizeof(buf));
 
-                        ssize_t nlen = read(ev.data.fd, buf, sizeof(buf));
+                        ssize_t nlen = read(ch->get_fd(), buf, sizeof(buf));
 
                         // read datas successfully
                         if(nlen > 0) 
                         {
-                            printf("recv(clnt_fd = %d): %s\n", ev.data.fd, buf);
-                            send(ev.data.fd, buf, strlen(buf), 0);
+                            printf("recv(clnt_fd = %d): %s\n", ch->get_fd(), buf);
+                            send(ch->get_fd(), buf, strlen(buf), 0);
                         }
                         // read failed because interrupted by system call
                         else if(nlen == -1 && errno == EINTR) 
@@ -100,23 +104,23 @@ int main(int argc, char* argv[])
                         // clnt has been disconnected
                         else if(nlen == 0) 
                         {
-                            printf("client(clnt_fd = %d) disconnected.\n", ev.data.fd);
-                            close(ev.data.fd);
+                            printf("client(clnt_fd = %d) disconnected.\n", ch->get_fd());
+                            close(ch->get_fd());
                             break;
                         }
                     }
                 }
             }
-            // write events
-            else if(ev.events & EPOLLOUT) 
+            // 写事件
+            else if(ch->get_happened_events() & EPOLLOUT) 
             {
                 
             }
-            // error events
+            // 错误
             else 
             {
-                printf("client(clnt_fd = %d) error.\n", ev.data.fd);
-                close(ev.data.fd);
+                printf("client(clnt_fd = %d) error.\n", ch->get_fd());
+                close(ch->get_fd());
             }
         }
     }

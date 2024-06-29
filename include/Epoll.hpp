@@ -9,6 +9,9 @@
 #include <vector>
 #include <unistd.h>
 
+#include "Channel.hpp"
+
+class Channel;
 
 /**
  *  package epoll
@@ -18,20 +21,31 @@ class Epoll
 public:
 
     /**
-     *  create epoll_fd
+     *  
+     * @describe: 调用epoll_create()初始化_M_epoll_fd
+     * @param:    void
+     * 
      */
     Epoll();
 
-    /**
-     *  bind fd's op to _M_epoll_fd
-     */
-    void add_fd(int fd, uint32_t op);
 
     /**
-     *  call epoll_wait()
-     *  @return: vector of all the epoll_events triggered
+     *  
+     * @describe: 监听Channel或者修改Channel的监视事件
+     * @prama:    Channel*
+     * @return:   void
+     * 
      */
-    std::vector<epoll_event> wait(int time_out = -1);
+    void updata_channel(Channel* ch);
+
+
+    /**
+     * 
+     * @describe: 调用epoll_wait(), 返回所有响应的fd对应的Channel* 
+     * @param:    int
+     * @return:   std::vector<Channel*>
+     */
+    std::vector<Channel*> wait(int time_out = -1);
 
     ~Epoll();
 private:
