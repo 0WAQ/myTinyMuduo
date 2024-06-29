@@ -1,7 +1,10 @@
 #pragma once
 #include <sys/epoll.h>
-#include "Epoll.hpp"
 
+#include "Epoll.hpp"
+#include "Socket.hpp"
+
+class Socket;
 class Epoll;
 
 class Channel
@@ -13,9 +16,10 @@ public:
      * @describe: 初始化该Channel对应的fd与epoll_fd
      * @prama:    epfd -> Epoll*
      *            fd   -> int
+     *            is_listen_fd -> bool
      * 
      */
-    Channel(Epoll* epfd, int fd);
+    Channel(Epoll* epfd, int fd, bool is_listen_fd = false);
 
 
     /**
@@ -97,12 +101,22 @@ public:
     uint32_t get_monitored_events();
 
 
+    /**
+     * 
+     * @describe: 封装epoll_wait()之后的处理逻辑
+     * @prama:    serv_sock : 服务端的监听sock
+     * @return:   void
+     */
+    void handle(Socket* serv_sock);
+
+
     ~Channel();
 
 private:
     int _M_fd = -1;
     Epoll* _M_ep = nullptr;
     bool _M_in_epoll = false;
+    bool _M_is_listen_fd = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;
 };

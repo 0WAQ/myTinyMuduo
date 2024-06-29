@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     Epoll ep;
 
     // 使用serv_channel将serv_fd和ep绑定在一起
-    Channel* serv_channel = new Channel(&ep, serv_sock.get_fd());
+    Channel* serv_channel = new Channel(&ep, serv_sock.get_fd(), true);
     // 添加读事件, 并且监听
     serv_channel->set_read_events();
     
@@ -48,80 +48,8 @@ int main(int argc, char* argv[])
     {
         std::vector<Channel*> channels = ep.wait();
 
-        for(auto& ch : channels) 
-        {
-            // 连接中断事件
-            if(ch->get_happened_events() & EPOLLRDHUP) { 
-                printf("client(clnt_fd = %d) disconnected\n", ch->get_fd());
-                close(ch->get_fd());
-            }
-            // 读事件
-            else if(ch->get_happened_events() & (EPOLLIN | EPOLLPRI)) 
-            {
-                // serv_sock
-                if(ch == serv_channel)
-                {
-                    InetAddress clnt_addr;
-                    Socket* clnt_sock = new Socket(serv_sock.accept(clnt_addr));
-
-                    printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
-                                clnt_sock->get_fd(), clnt_addr.ip(), clnt_addr.port());
-
-                    
-                    Channel* clnt_channel = new Channel(&ep, clnt_sock->get_fd());
-                    // 设置为边缘触发
-                    clnt_channel->set_ET();
-                    // 设置为读事件, 并监听
-                    clnt_channel->set_read_events();
-                }
-                // clnt_sock
-                else
-                {
-                    char buf[1024];
-                    while(true) // non-blocking IO
-                    {
-                        // init all buf as 0
-                        bzero(&buf, sizeof(buf));
-
-                        ssize_t nlen = read(ch->get_fd(), buf, sizeof(buf));
-
-                        // read datas successfully
-                        if(nlen > 0) 
-                        {
-                            printf("recv(clnt_fd = %d): %s\n", ch->get_fd(), buf);
-                            send(ch->get_fd(), buf, strlen(buf), 0);
-                        }
-                        // read failed because interrupted by system call
-                        else if(nlen == -1 && errno == EINTR) 
-                        {
-                            continue;
-                        }
-                        // read failed because datas've been read
-                        else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
-                        {
-                            break;
-                        }
-                        // clnt has been disconnected
-                        else if(nlen == 0) 
-                        {
-                            printf("client(clnt_fd = %d) disconnected.\n", ch->get_fd());
-                            close(ch->get_fd());
-                            break;
-                        }
-                    }
-                }
-            }
-            // 写事件
-            else if(ch->get_happened_events() & EPOLLOUT) 
-            {
-                
-            }
-            // 错误
-            else 
-            {
-                printf("client(clnt_fd = %d) error.\n", ch->get_fd());
-                close(ch->get_fd());
-            }
+        for(auto& ch : channels) {
+            ch->handle(&serv_sock);
         }
     }
 
