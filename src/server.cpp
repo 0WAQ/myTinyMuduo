@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     Epoll ep;
 
     // 使用serv_channel将serv_fd和ep绑定在一起
-    Channel* serv_channel = new Channel(&ep, serv_sock.get_fd(), true);
+    Channel* serv_channel = new Channel(&ep, serv_sock.get_fd());
     // 添加读事件, 并且监听
     serv_channel->set_read_events();
     // 设置serv_channel的执行函数为new_connection
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         std::vector<Channel*> channels = ep.wait();
 
         for(auto& ch : channels) {
-            ch->handle(&serv_sock);
+            ch->handle();
         }
     }
 

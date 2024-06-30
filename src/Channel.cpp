@@ -1,7 +1,6 @@
 #include "../include/Channel.hpp"
 
-Channel::Channel(Epoll* ep, int fd, bool is_listen_fd) 
-            : _M_ep(ep), _M_fd(fd), _M_is_listen_fd(is_listen_fd)
+Channel::Channel(Epoll* ep, int fd) : _M_ep(ep), _M_fd(fd)
 {
 
 }
@@ -40,7 +39,7 @@ uint32_t Channel::get_monitored_events() {
     return _M_monitored_events;
 }
 
-void Channel::handle(Socket* serv_sock)
+void Channel::handle()
 {
     // 连接中断事件
     if(_M_happened_events & EPOLLRDHUP) { 
@@ -81,7 +80,7 @@ void Channel::new_connection(Socket* serv_sock)
     // 设置为读事件, 并监听
     clnt_channel->set_read_events();
     // 设置clnt_channel的执行函数为new_message
-    clnt_channel->set_read_callback(std::bind(Channel::new_message, clnt_channel));
+    clnt_channel->set_read_callback(std::bind(&Channel::new_message, clnt_channel));
 }
 
 void Channel::new_message()

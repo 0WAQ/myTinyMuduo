@@ -17,10 +17,9 @@ public:
      * @describe: 初始化该Channel对应的fd与epoll_fd
      * @param:    epfd -> Epoll*
      *            fd   -> int
-     *            is_listen_fd -> bool
      * 
      */
-    Channel(Epoll* epfd, int fd, bool is_listen_fd = false);
+    Channel(Epoll* epfd, int fd);
 
 
     /**
@@ -104,15 +103,6 @@ public:
 
     /**
      * 
-     * @describe: 封装epoll_wait()之后的处理逻辑
-     * @param:    serv_sock : 服务端的监听sock
-     * @return:   void
-     */
-    void handle(Socket* serv_sock);
-
-
-    /**
-     * 
      * @describe: 封装处理新的连接请求的代码
      * @param:    服务端sock
      * @return:   void
@@ -141,13 +131,20 @@ public:
     void set_read_callback(std::function<void()> func);
 
 
+    /**
+     * 
+     * @describe: 封装epoll_wait()之后的处理逻辑
+     * @param:    void
+     * @return:   void
+     */
+    void handle();
+
     ~Channel();
 
 private:
     int _M_fd = -1;
     Epoll* _M_ep = nullptr;
     bool _M_in_epoll = false;
-    bool _M_is_listen_fd = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;
     std::function<void()> _M_read_callback; // 读事件的回调函数
