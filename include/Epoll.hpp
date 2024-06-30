@@ -32,7 +32,7 @@ public:
     /**
      *  
      * @describe: 监听Channel或者修改Channel的监视事件
-     * @prama:    Channel*
+     * @param:    Channel*
      * @return:   void
      * 
      */
@@ -48,6 +48,7 @@ public:
     std::vector<Channel*> wait(int time_out = -1);
 
     ~Epoll();
+    
 private:
     static const int _M_max_events = 100;
     int _M_epoll_fd = -1;

@@ -14,7 +14,7 @@ public:
     /**
      * 
      * @describe: 初始化该Channel对应的fd与epoll_fd
-     * @prama:    epfd -> Epoll*
+     * @param:    epfd -> Epoll*
      *            fd   -> int
      *            is_listen_fd -> bool
      * 
@@ -44,7 +44,7 @@ public:
     /**
      * 
      * @describe: 监听该fd的读事件
-     * @prama:    void
+     * @param:    void
      * @return:   void
      * 
      */
@@ -54,7 +54,7 @@ public:
     /**
      * 
      * @describe: 设置该Channel对应的fd已经被监听
-     * @prama:    void
+     * @param:    void
      * @return:   void
      * 
      */
@@ -64,7 +64,7 @@ public:
     /**
      * 
      * @describe: 判断该Channel对应的fd是否被监听
-     * @prama:    void
+     * @param:    void
      * @return:   bool
      * 
      */
@@ -74,7 +74,7 @@ public:
     /**
      * 
      * @describe: 设置该fd发生的事件, 在epoll_wait()之后
-     * @prama:    uint32_t
+     * @param:    uint32_t
      * @return:   void
      * 
      */
@@ -84,7 +84,7 @@ public:
     /**
      * 
      * @describe: 获取该fd发生的事件
-     * @prama:    void
+     * @param:    void
      * @return:   uint32_t
      * 
      */
@@ -94,7 +94,7 @@ public:
     /**
      * 
      * @describe: 获取fd被epoll监听的事件
-     * @prama:    void
+     * @param:    void
      * @return:   uint32_t
      * 
      */
@@ -104,10 +104,30 @@ public:
     /**
      * 
      * @describe: 封装epoll_wait()之后的处理逻辑
-     * @prama:    serv_sock : 服务端的监听sock
+     * @param:    serv_sock : 服务端的监听sock
      * @return:   void
      */
     void handle(Socket* serv_sock);
+
+
+    /**
+     * 
+     * @describe: 封装处理新的连接请求的代码
+     * @param:    服务端sock
+     * @return:   void
+     * 
+     */
+    void new_connection(Socket* serv_sock);
+
+
+    /**
+     * 
+     * @describe: 封装处理新消息的代码
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void new_message();
 
 
     ~Channel();

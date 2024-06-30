@@ -38,7 +38,7 @@ public:
 
     /**
      * 
-     *  @pragma: on: enable the options whether or not 
+     *  @param: on: enable the options whether or not 
      * 
      */
     void set_reuse_addr(bool on);

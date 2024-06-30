@@ -6,8 +6,8 @@
 
 
 /**
- *  package the process of filling the structre which 
- *  includes the ip, the port and the family 
+ *  地址协议类
+ *  封装构造sockaddr的过程
  */
 class InetAddress
 {
@@ -17,46 +17,57 @@ public:
     
     /**
      * 
-     * @pragma: _ip: target ip
-     *          _port: target port which needs network order
+     * @describe: 用ip和port初始化sockaddr_in的内部变量
+     * @param:    ip: string的cv类型
+     *            port: 传输主机序的port
      * 
      */
     InetAddress(const std::string& _ip, uint16_t _port);
 
     /**
      * 
-     * @pragma: _addr: init to _M_addr
+     * @describe: 拷贝构造函数, 目前没有用到
+     * @param:    const sockaddr_in
      * 
      */
     InetAddress(const sockaddr_in _addr);
 
     /**
      * 
-     * @return: ip type of const char* of the _M_addr
+     * @describe: 获取结构体的ip地址
+     * @param:    void
+     * @return:   const char*
      * 
      */
     const char* ip() const;
 
     /**
      * 
-     * @return: port(host order) type of uint16_t of the _M_addr
+     * @describe: 获取结构体的port
+     * @param:    void
+     * @return:   主机序的port: uint16_t
      * 
      */
     uint16_t port() const;
 
     /**
      * 
-     * @return: _M_addr's sockaddr
+     * @describe: 将内部的&sockaddr_in转换为sockaddr* 返回
+     * @param:    void
+     * @return:   const sockadr* 
      * 
      */
     const sockaddr* addr() const;
 
     /***
      * 
-     * 
+     * @describe: 服务端使用accept接收连接后, 将填充的sockaddr_in结构体设置给InetAddress类
+     * @param:    sockaddr_in
+     * @return:   void
      * 
      */
     void set_addr(sockaddr_in clnt_addr);
+
 
     ~InetAddress();
 
