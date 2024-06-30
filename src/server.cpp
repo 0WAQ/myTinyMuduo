@@ -9,6 +9,8 @@
 #include <sys/fcntl.h>
 #include <sys/epoll.h>
 #include <netinet/tcp.h>    // include TCP_NODELAY
+#include <functional>
+#include <binders.h>
 
 #include "../include/InetAddress.hpp"
 #include "../include/Socket.hpp"
@@ -43,6 +45,8 @@ int main(int argc, char* argv[])
     Channel* serv_channel = new Channel(&ep, serv_sock.get_fd(), true);
     // 添加读事件, 并且监听
     serv_channel->set_read_events();
+    // 设置serv_channel的执行函数为new_connection
+    serv_channel->set_read_callback(std::bind(&Channel::new_connection, serv_channel, &serv_sock));
     
     while(true)
     {

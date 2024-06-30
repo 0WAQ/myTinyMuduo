@@ -50,14 +50,8 @@ void Channel::handle(Socket* serv_sock)
     // 读事件
     else if(_M_happened_events & (EPOLLIN | EPOLLPRI)) 
     {
-        // serv_sock
-        if(_M_is_listen_fd) {
-            new_connection(serv_sock);
-        }
-        // clnt_sock
-        else {
-            new_message();
-        }
+        // 利用回调函数调用处理函数
+        _M_read_callback();
     }
     // 写事件
     else if(_M_happened_events & EPOLLOUT) 
@@ -86,6 +80,8 @@ void Channel::new_connection(Socket* serv_sock)
     clnt_channel->set_ET();
     // 设置为读事件, 并监听
     clnt_channel->set_read_events();
+    // 设置clnt_channel的执行函数为new_message
+    clnt_channel->set_read_callback(std::bind(Channel::new_message, clnt_channel));
 }
 
 void Channel::new_message()
@@ -124,6 +120,11 @@ void Channel::new_message()
             break;
         }
     }
+}
+
+void Channel::set_read_callback(std::function<void()> func)
+{
+    _M_read_callback = func;
 }
 
 Channel::~Channel()

@@ -1,5 +1,6 @@
 #pragma once
 #include <sys/epoll.h>
+#include <functional>
 
 #include "Epoll.hpp"
 #include "Socket.hpp"
@@ -130,6 +131,16 @@ public:
     void new_message();
 
 
+    /**
+     * 
+     * @describe: 设置回调函数
+     * @param:    待执行的回调函数
+     * @return:   void
+     * 
+     */
+    void set_read_callback(std::function<void()> func);
+
+
     ~Channel();
 
 private:
@@ -139,4 +150,5 @@ private:
     bool _M_is_listen_fd = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;
+    std::function<void()> _M_read_callback; // 读事件的回调函数
 };
