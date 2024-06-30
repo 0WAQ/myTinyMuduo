@@ -15,6 +15,7 @@
 #include "../include/InetAddress.hpp"
 #include "../include/Socket.hpp"
 #include "../include/Epoll.hpp"
+#include "../include/EventLoop.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -38,24 +39,17 @@ int main(int argc, char* argv[])
     serv_sock.bind(serv_addr);
     serv_sock.listen();
 
-    // create epoll_fd
-    Epoll ep;
+    // 创建EventLoop类
+    EventLoop loop;
 
     // 使用serv_channel将serv_fd和ep绑定在一起
-    Channel* serv_channel = new Channel(&ep, serv_sock.get_fd());
+    Channel* serv_channel = new Channel(&loop, serv_sock.get_fd());
     // 添加读事件, 并且监听
     serv_channel->set_read_events();
     // 设置serv_channel的执行函数为new_connection
     serv_channel->set_read_callback(std::bind(&Channel::new_connection, serv_channel, &serv_sock));
     
-    while(true)
-    {
-        std::vector<Channel*> channels = ep.wait();
-
-        for(auto& ch : channels) {
-            ch->handle();
-        }
-    }
+    loop.run();
 
     return 0;
 }

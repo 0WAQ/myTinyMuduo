@@ -2,12 +2,17 @@
 #include <sys/epoll.h>
 #include <functional>
 
-#include "Epoll.hpp"
+#include "EventLoop.hpp"
 #include "Socket.hpp"
 
 class Socket;
-class Epoll;
+class EventLoop;
 
+/**
+ * 
+ * 包含了一个EventLoop*的成员变量(封装了一个Epoll对象)
+ * 封装了让Epoll对象监视Socket对象所需的各种变量
+ */
 class Channel
 {
 public:
@@ -19,7 +24,7 @@ public:
      *            fd   -> int
      * 
      */
-    Channel(Epoll* epfd, int fd);
+    Channel(EventLoop* loop, int fd);
 
 
     /**
@@ -143,7 +148,7 @@ public:
 
 private:
     int _M_fd = -1;
-    Epoll* _M_ep = nullptr;
+    EventLoop* _M_loop = nullptr;
     bool _M_in_epoll = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;

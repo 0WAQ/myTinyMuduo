@@ -14,7 +14,7 @@
 class Channel;
 
 /**
- *  package epoll
+ *  封住了epoll的三种主要方法和其所需的变量
  */
 class Epoll
 {
@@ -31,7 +31,7 @@ public:
 
     /**
      *  
-     * @describe: 监听Channel或者修改Channel的监视事件
+     * @describe: 监听Channel或者修改Channel的监视事件, 封装了epoll_ctl方法
      * @param:    Channel*
      * @return:   void
      * 

@@ -1,6 +1,6 @@
 #include "../include/Channel.hpp"
 
-Channel::Channel(Epoll* ep, int fd) : _M_ep(ep), _M_fd(fd)
+Channel::Channel(EventLoop* loop, int fd) : _M_loop(loop), _M_fd(fd)
 {
 
 }
@@ -16,7 +16,7 @@ void Channel::set_ET() {
 // 除了设置为读事件, 还直接调用updata_channel去添加
 void Channel::set_read_events() {
     _M_monitored_events |= EPOLLIN;
-    _M_ep->updata_channel(this);
+    _M_loop->updata_channel(this);
 }
 
 void Channel::set_in_epoll() {
@@ -74,7 +74,7 @@ void Channel::new_connection(Socket* serv_sock)
                 clnt_sock->get_fd(), clnt_addr.ip(), clnt_addr.port());
 
     
-    Channel* clnt_channel = new Channel(_M_ep, clnt_sock->get_fd());
+    Channel* clnt_channel = new Channel(_M_loop, clnt_sock->get_fd());
     // 设置为边缘触发
     clnt_channel->set_ET();
     // 设置为读事件, 并监听
