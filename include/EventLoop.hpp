@@ -33,13 +33,6 @@ public:
      */
     void run();
 
-    /**
-     * @describe:  调用成员变量_M_ep的updata_channel
-     * @param:     Channel*
-     * @return:    void
-     */
-    void updata_channel(Channel* ch);
-
 
     ~EventLoop();
 

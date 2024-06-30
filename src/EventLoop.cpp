@@ -22,10 +22,6 @@ void EventLoop::run()
     }
 }
 
-void EventLoop::updata_channel(Channel* ch)
-{
-    _M_ep->updata_channel(ch);
-}
 
 EventLoop::~EventLoop() {
     delete _M_ep;

@@ -16,7 +16,7 @@ void Channel::set_ET() {
 // 除了设置为读事件, 还直接调用updata_channel去添加
 void Channel::set_read_events() {
     _M_monitored_events |= EPOLLIN;
-    _M_loop->updata_channel(this);
+    _M_loop->get_epoll()->updata_channel(this);
 }
 
 void Channel::set_in_epoll() {
