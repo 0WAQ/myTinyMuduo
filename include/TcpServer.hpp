@@ -3,11 +3,11 @@
 #include "Socket.hpp"
 #include "Channel.hpp"
 #include "EventLoop.hpp"
+#include "Acceptor.hpp"
 
 /**
  *  
- * 封装了服务器中创建Socket,绑定InetAddress的过程
- * 并且内含一个EventLoop成员变量, 封装了用Channel绑定servSocket和 EventLoop的过程
+ * 封装监听Socket的创建和事件循环
  * 
  */
 class TcpServer
@@ -26,7 +26,7 @@ public:
     /**
      * 
      * @describe: 转调用了成员变量_M_loop的run方法
-     * @param:    voaid
+     * @param:    void
      * @return:   void
      * 
      */
@@ -36,5 +36,6 @@ public:
     ~TcpServer();
 
 private:
-    EventLoop _M_loop;
+    EventLoop _M_loop;         // 事件循环变量, 用start方法开始
+    Acceptor* _M_acceptor_ptr; // 用于创建监听sock
 };
