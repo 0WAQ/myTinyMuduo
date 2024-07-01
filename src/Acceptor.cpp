@@ -19,12 +19,13 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port) 
     _M_serv_sock_ptr->listen();
 
 
-    // 使用serv_channel将serv_fd和ep绑定在一起
-    Channel* serv_channel = new Channel(_M_loop_ptr, _M_serv_sock_ptr->get_fd());
+    // 使用acceptor_channel_ptr将serv_fd和ep绑定在一起
+    _M_acceptor_channel_ptr = new Channel(_M_loop_ptr, _M_serv_sock_ptr->get_fd());
     // 添加读事件, 并且监听
-    serv_channel->set_read_events();
-    // 设置serv_channel的执行函数为new_connection
-    serv_channel->set_read_callback(std::bind(&Channel::new_connection, serv_channel, _M_serv_sock_ptr));
+    _M_acceptor_channel_ptr->set_read_events();
+    // 设置acceptor_channel_ptr的执行函数为new_connection
+    _M_acceptor_channel_ptr->set_read_callback(std::bind(&Channel::new_connection, 
+                                            _M_acceptor_channel_ptr, _M_serv_sock_ptr));
 
 }
 
