@@ -1,4 +1,5 @@
 #include "../include/Channel.hpp"
+#include "../include/Connection.hpp"
 
 Channel::Channel(EventLoop* loop_ptr, int fd) : _M_loop_ptr(loop_ptr), _M_fd(fd)
 {
@@ -73,14 +74,8 @@ void Channel::new_connection(Socket* serv_sock_ptr)
     printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
                 clnt_sock_ptr->get_fd(), clnt_addr.get_ip(), clnt_addr.get_port());
 
-    
-    Channel* clnt_channel = new Channel(_M_loop_ptr, clnt_sock_ptr->get_fd());
-    // 设置为边缘触发
-    clnt_channel->set_ET();
-    // 设置为读事件, 并监听
-    clnt_channel->set_read_events();
-    // 设置clnt_channel的执行函数为new_message
-    clnt_channel->set_read_callback(std::bind(&Channel::new_message, clnt_channel));
+    // 创建Connection对象
+    Connection* clnt_conn = new Connection(_M_loop_ptr, clnt_sock_ptr);
 }
 
 void Channel::new_message()

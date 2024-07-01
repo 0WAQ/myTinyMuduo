@@ -16,8 +16,8 @@ public:
 
     /**
      * 
-     * @describe: 
-     * @param:
+     * @describe: 初始化loop与服务端监听地址
+     * @param:    EventLoop*, const std::string&, const uint16_t
      * 
      */
     Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port);
