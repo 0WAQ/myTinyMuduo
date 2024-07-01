@@ -13,5 +13,5 @@ void TcpServer::start()
 
 TcpServer::~TcpServer()
 {
-
+    delete _M_acceptor_ptr;
 }
