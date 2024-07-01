@@ -39,7 +39,7 @@ public:
      * @return:   const char*
      * 
      */
-    const char* ip() const;
+    const char* get_ip() const;
 
     /**
      * 
@@ -48,7 +48,7 @@ public:
      * @return:   主机序的port: uint16_t
      * 
      */
-    uint16_t port() const;
+    uint16_t get_port() const;
 
     /**
      * 
@@ -57,7 +57,7 @@ public:
      * @return:   const sockadr* 
      * 
      */
-    const sockaddr* addr() const;
+    const sockaddr* get_addr() const;
 
     /***
      * 

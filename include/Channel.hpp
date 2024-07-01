@@ -24,7 +24,7 @@ public:
      *            fd   -> int
      * 
      */
-    Channel(EventLoop* loop, int fd);
+    Channel(EventLoop* loop_ptr, int fd);
 
 
     /**
@@ -113,7 +113,7 @@ public:
      * @return:   void
      * 
      */
-    void new_connection(Socket* serv_sock);
+    void new_connection(Socket* serv_sock_ptr);
 
 
     /**
@@ -148,7 +148,7 @@ public:
 
 private:
     int _M_fd = -1;
-    EventLoop* _M_loop = nullptr;
+    EventLoop* _M_loop_ptr = nullptr;
     bool _M_in_epoll = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;

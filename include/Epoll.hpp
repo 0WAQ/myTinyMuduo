@@ -36,7 +36,7 @@ public:
      * @return:   void
      * 
      */
-    void updata_channel(Channel* ch);
+    void updata_channel(Channel* ch_ptr);
 
 
     /**
@@ -52,5 +52,5 @@ public:
 private:
     static const int _M_max_events = 100;
     int _M_epoll_fd = -1;
-    epoll_event _M_events[_M_max_events];
+    epoll_event _M_events_arr[_M_max_events];
 };

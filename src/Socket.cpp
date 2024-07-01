@@ -21,7 +21,7 @@ int Socket::get_fd() {
 
 void Socket::bind(const InetAddress& serv_addr)
 {
-    if(::bind(_M_fd, serv_addr.addr(), sizeof(sockaddr)) < 0) {
+    if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
         std::cerr << "bind() failed\n";
         ::close(_M_fd);
         exit(-1);

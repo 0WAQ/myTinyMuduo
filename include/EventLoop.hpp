@@ -28,12 +28,12 @@ public:
      * @param:     Channel*
      * @return:    void
      */
-    void updata_channel(Channel* ch);
+    void updata_channel(Channel* ch_ptr);
 
 
     ~EventLoop();
 
 private:
 
-    Epoll* _M_ep;
+    Epoll* _M_ep_ptr;
 };

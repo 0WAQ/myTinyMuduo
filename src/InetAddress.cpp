@@ -15,15 +15,15 @@ InetAddress::InetAddress(const sockaddr_in _addr):_M_addr(_addr) {
 
 }
 
-const char* InetAddress::ip() const {
+const char* InetAddress::get_ip() const {
     return inet_ntoa(_M_addr.sin_addr);
 }
 
-uint16_t InetAddress::port() const {
+uint16_t InetAddress::get_port() const {
     return ntohs(_M_addr.sin_port);
 }
 
-const sockaddr* InetAddress::addr() const {
+const sockaddr* InetAddress::get_addr() const {
     return (sockaddr*)&_M_addr;
 }
 

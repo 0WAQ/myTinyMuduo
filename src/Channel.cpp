@@ -1,6 +1,6 @@
 #include "../include/Channel.hpp"
 
-Channel::Channel(EventLoop* loop, int fd) : _M_loop(loop), _M_fd(fd)
+Channel::Channel(EventLoop* loop_ptr, int fd) : _M_loop_ptr(loop_ptr), _M_fd(fd)
 {
 
 }
@@ -16,7 +16,7 @@ void Channel::set_ET() {
 // 除了设置为读事件, 还直接调用updata_channel去添加
 void Channel::set_read_events() {
     _M_monitored_events |= EPOLLIN;
-    _M_loop->updata_channel(this);
+    _M_loop_ptr->updata_channel(this);
 }
 
 void Channel::set_in_epoll() {
@@ -65,16 +65,16 @@ void Channel::handle()
     }
 }
 
-void Channel::new_connection(Socket* serv_sock)
+void Channel::new_connection(Socket* serv_sock_ptr)
 {
     InetAddress clnt_addr;
-    Socket* clnt_sock = new Socket(serv_sock->accept(clnt_addr));
+    Socket* clnt_sock_ptr = new Socket(serv_sock_ptr->accept(clnt_addr));
 
     printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
-                clnt_sock->get_fd(), clnt_addr.ip(), clnt_addr.port());
+                clnt_sock_ptr->get_fd(), clnt_addr.get_ip(), clnt_addr.get_port());
 
     
-    Channel* clnt_channel = new Channel(_M_loop, clnt_sock->get_fd());
+    Channel* clnt_channel = new Channel(_M_loop_ptr, clnt_sock_ptr->get_fd());
     // 设置为边缘触发
     clnt_channel->set_ET();
     // 设置为读事件, 并监听
