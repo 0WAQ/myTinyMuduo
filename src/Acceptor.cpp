@@ -28,6 +28,10 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port) 
 
 }
 
+void Acceptor::set_new_connection_callback(std::function<void(Socket*)> func) {
+    new_connection_callback = func;
+} 
+
 void Acceptor::new_connection()
 {
     InetAddress clnt_addr;
@@ -36,8 +40,8 @@ void Acceptor::new_connection()
     printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
                 clnt_sock_ptr->get_fd(), clnt_addr.get_ip(), clnt_addr.get_port());
 
-    // 创建Connection对象
-    Connection* clnt_conn = new Connection(_M_loop_ptr, clnt_sock_ptr);
+    // 通过回调函数将创建好的clnt_sock传递给TcpServer, 让TcpServer创建Connection对象
+    new_connection_callback(clnt_sock_ptr);
 }
 
 Acceptor::~Acceptor()

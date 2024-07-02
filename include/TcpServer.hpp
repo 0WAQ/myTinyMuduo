@@ -4,6 +4,7 @@
 #include "Channel.hpp"
 #include "EventLoop.hpp"
 #include "Acceptor.hpp"
+#include "Connection.hpp"
 
 /**
  *  
@@ -31,6 +32,16 @@ public:
      * 
      */
     void start();
+
+
+    /**
+     * 
+     * @describe: 封装处理新的连接请求的代码
+     * @param:    Socket*
+     * @return:   void
+     * 
+     */
+    void create_connection(Socket* clnt_sock);
 
 
     ~TcpServer();

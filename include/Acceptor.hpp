@@ -26,6 +26,16 @@ public:
 
     /**
      * 
+     * @describe:
+     * @param:
+     * @return:
+     * 
+     */
+    void set_new_connection_callback(std::function<void(Socket*)> func);
+
+
+    /**
+     * 
      * @describe: 封装处理新的连接请求的代码
      * @param:    void
      * @return:   void
@@ -40,4 +50,5 @@ private:
     Socket* _M_serv_sock_ptr;
     Channel* _M_acceptor_channel_ptr;
     EventLoop* _M_loop_ptr;
+    std::function<void(Socket*)> new_connection_callback;
 };
