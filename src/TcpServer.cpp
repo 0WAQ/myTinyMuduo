@@ -4,7 +4,7 @@
 TcpServer::TcpServer(const std::string& ip, const uint16_t port)
 {
     _M_acceptor_ptr = new Acceptor(&_M_loop, ip, port);
-    _M_acceptor_ptr->set_new_connection_callback(
+    _M_acceptor_ptr->set_create_connection_callback(
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
 }
 

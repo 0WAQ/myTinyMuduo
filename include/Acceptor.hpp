@@ -26,12 +26,12 @@ public:
 
     /**
      * 
-     * @describe:
-     * @param:
-     * @return:
+     * @describe: 设置创建连接回调函数的函数, 有TcpServer在创建Acceptor对象时调用
+     * @param:    std::function<void(Socket*)>
+     * @return:   void
      * 
      */
-    void set_new_connection_callback(std::function<void(Socket*)> func);
+    void set_create_connection_callback(std::function<void(Socket*)> func);
 
 
     /**
@@ -50,5 +50,7 @@ private:
     Socket* _M_serv_sock_ptr;
     Channel* _M_acceptor_channel_ptr;
     EventLoop* _M_loop_ptr;
-    std::function<void(Socket*)> new_connection_callback;
+
+    // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
+    std::function<void(Socket*)> create_connection_callback;
 };

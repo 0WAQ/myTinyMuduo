@@ -123,7 +123,9 @@ public:
      * @return:   void
      * 
      */
-    void set_read_callback(std::function<void()> func);
+    void set_read_callback(std::function<void()> func);  // 读事件
+    void set_close_callback(std::function<void()> func); // 关闭连接
+    void set_error_callback(std::function<void()> func); // 错误事件
 
 
     /**
@@ -142,5 +144,13 @@ private:
     bool _M_in_epoll = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;
-    std::function<void()> _M_read_callback; // 读事件的回调函数
+
+    // 读事件的回调函数, 将回调Acceptor::new_connection或者new_message
+    std::function<void()> _M_read_callback; 
+
+    // 连接关闭的回调函数, 将回调Connection::close_connection
+    std::function<void()> _M_close_callback; 
+
+    // 连接出错的回调函数, 将回调Connection::error_connection
+    std::function<void()> _M_error_callback; 
 };

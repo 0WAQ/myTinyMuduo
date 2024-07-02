@@ -43,9 +43,9 @@ uint32_t Channel::get_monitored_events() {
 void Channel::handle()
 {
     // 连接中断事件
-    if(_M_happened_events & EPOLLRDHUP) { 
-        printf("client(clnt_fd = %d) disconnected\n", _M_fd);
-        close(_M_fd);
+    if(_M_happened_events & EPOLLRDHUP) 
+    { 
+        _M_close_callback();
     }
     // 读事件
     else if(_M_happened_events & (EPOLLIN | EPOLLPRI)) 
@@ -61,8 +61,7 @@ void Channel::handle()
     // 错误
     else 
     {
-        printf("client(clnt_fd = %d) error.\n", _M_fd);
-        close(_M_fd);
+        _M_error_callback();
     }
 }
 
@@ -97,16 +96,22 @@ void Channel::new_message()
         // clnt has been disconnected
         else if(nlen == 0) 
         {
-            printf("client(clnt_fd = %d) disconnected.\n", _M_fd);
-            close(_M_fd);
+            _M_close_callback();
             break;
         }
     }
 }
 
-void Channel::set_read_callback(std::function<void()> func)
-{
+void Channel::set_read_callback(std::function<void()> func) {
     _M_read_callback = func;
+}
+
+void Channel::set_close_callback(std::function<void()> func) {
+    _M_close_callback = func;
+}
+
+void Channel::set_error_callback(std::function<void()> func) {
+    _M_error_callback = func;
 }
 
 Channel::~Channel()

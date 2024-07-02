@@ -48,6 +48,25 @@ public:
      */
     uint16_t get_port() const;
 
+
+    /**
+     * 
+     * @describe: Tcp连接断开后, Channel回调的函数
+     * @param:    void
+     * @return:   void
+     */
+    void close_connection();
+
+
+    /**
+     * 
+     * @describe: Tcp连接出错后, Channel回调的函数
+     * @param:    void
+     * @return:   void
+     */
+    void error_connection();
+
+
     ~Connection();
 
 private:
