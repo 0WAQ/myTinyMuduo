@@ -16,13 +16,21 @@ void TcpServer::start()
 void TcpServer::create_connection(Socket* clnt_sock)
 {
     // 创建Connection对象
-    Connection* clnt_conn = new Connection(&_M_loop, clnt_sock);
+    Connection* conn = new Connection(&_M_loop, clnt_sock);
 
     printf("new connection(fd = %d, ip = %s, port = %d) ok.\n", 
-            clnt_conn->get_fd(), clnt_conn->get_ip().c_str(), clnt_conn->get_port());
+            conn->get_fd(), conn->get_ip().c_str(), conn->get_port());
+
+    // 将连接用map来管理
+    _M_connections_map[conn->get_fd()] = conn;
 }
 
 TcpServer::~TcpServer()
 {
     delete _M_acceptor_ptr;
+
+    // 释放全部的连接
+    for(auto& [fd, conn] : _M_connections_map) {
+        delete conn;
+    }
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "Socket.hpp"
 #include "Channel.hpp"
 #include "EventLoop.hpp"
@@ -49,4 +50,5 @@ public:
 private:
     EventLoop _M_loop;         // 事件循环变量, 用start方法开始
     Acceptor* _M_acceptor_ptr; // 用于创建监听sock
+    std::map<int, Connection*> _M_connections_map;
 };
