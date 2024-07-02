@@ -19,6 +19,14 @@ int Socket::get_fd() {
     return _M_fd;
 }
 
+std::string Socket::get_ip() const {
+    return _M_ip;
+}
+
+uint16_t Socket::get_port() const {
+    return _M_port;
+}
+
 void Socket::bind(const InetAddress& serv_addr)
 {
     if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
@@ -26,6 +34,9 @@ void Socket::bind(const InetAddress& serv_addr)
         ::close(_M_fd);
         exit(-1);
     }
+
+    _M_ip = serv_addr.get_ip();
+    _M_port = serv_addr.get_port();
 }
 
 void Socket::listen(size_t max_connection)
@@ -45,6 +56,9 @@ int Socket::accept(InetAddress& clnt_addr)
     int clnt_fd = ::accept4(_M_fd, (sockaddr*)&clnt_addr1, &clnt_addr1_len, SOCK_NONBLOCK);
     clnt_addr.set_addr(clnt_addr1);
     
+    _M_ip = clnt_addr.get_ip();
+    _M_port = clnt_addr.get_port();
+
     return clnt_fd;
 }
 

@@ -17,6 +17,9 @@ void TcpServer::create_connection(Socket* clnt_sock)
 {
     // 创建Connection对象
     Connection* clnt_conn = new Connection(&_M_loop, clnt_sock);
+
+    printf("new connection(fd = %d, ip = %s, port = %d) ok.\n", 
+            clnt_conn->get_fd(), clnt_conn->get_ip().c_str(), clnt_conn->get_port());
 }
 
 TcpServer::~TcpServer()

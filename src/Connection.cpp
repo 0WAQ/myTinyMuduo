@@ -13,6 +13,18 @@ Connection::Connection(EventLoop* loop, Socket* clnt_sock)
     _M_clnt_channel_ptr->set_read_events();
 }
 
+int Connection::get_fd() {
+    return _M_clnt_sock_ptr->get_fd();
+}
+
+std::string Connection::get_ip() const {
+    return _M_clnt_sock_ptr->get_ip();
+}
+
+uint16_t Connection::get_port() const {
+    return _M_clnt_sock_ptr->get_port();
+}
+
 Connection::~Connection()
 {
     delete _M_clnt_sock_ptr;

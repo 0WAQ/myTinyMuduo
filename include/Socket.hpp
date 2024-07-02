@@ -29,12 +29,31 @@ public:
 
     /**
      * 
-     * @describe: 获取_M_fd成员变量的值
+     * @describe: 获取fd
      * @param:    void
      * @return:   int
      * 
      */
     int get_fd();
+
+
+    /**
+     * 
+     * @describe: 获取ip
+     * @param:    void
+     * @return:   uint16_t
+     */
+    std::string get_ip() const;
+
+
+    /**
+     * 
+     * @describe: 获取port
+     * @param:    void
+     * @return:   uint16_t
+     * 
+     */
+    uint16_t get_port() const;
 
 
     /**
@@ -83,4 +102,6 @@ public:
 
 private:
     const int _M_fd;
+    std::string _M_ip;
+    uint16_t _M_port;
 };

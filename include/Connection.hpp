@@ -20,6 +20,34 @@ public:
     Connection(EventLoop* loop, Socket* clnt_sock);
     
     
+    /**
+     * 
+     * @describe: 获取fd
+     * @param:    void
+     * @return:   int
+     * 
+     */
+    int get_fd();
+
+
+    /**
+     * 
+     * @describe: 获取ip
+     * @param:    void
+     * @return:   uint16_t
+     */
+    std::string get_ip() const;
+
+
+    /**
+     * 
+     * @describe: 获取port
+     * @param:    void
+     * @return:   uint16_t
+     * 
+     */
+    uint16_t get_port() const;
+
     ~Connection();
 
 private:
