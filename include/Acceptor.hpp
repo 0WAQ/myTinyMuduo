@@ -4,6 +4,7 @@
 #include "InetAddress.hpp"
 #include "Channel.hpp"
 #include "EventLoop.hpp"
+#include "Connection.hpp"
 
 /**
  * 
@@ -21,6 +22,16 @@ public:
      * 
      */
     Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port);
+
+
+    /**
+     * 
+     * @describe: 封装处理新的连接请求的代码
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void new_connection();
 
 
     ~Acceptor();

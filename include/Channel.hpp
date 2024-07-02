@@ -108,16 +108,6 @@ public:
 
     /**
      * 
-     * @describe: 封装处理新的连接请求的代码
-     * @param:    服务端sock
-     * @return:   void
-     * 
-     */
-    void new_connection(Socket* serv_sock_ptr);
-
-
-    /**
-     * 
      * @describe: 封装处理新消息的代码
      * @param:    void
      * @return:   void

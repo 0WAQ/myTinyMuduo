@@ -24,9 +24,20 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port) 
     // 添加读事件, 并且监听
     _M_acceptor_channel_ptr->set_read_events();
     // 设置acceptor_channel_ptr的执行函数为new_connection
-    _M_acceptor_channel_ptr->set_read_callback(std::bind(&Channel::new_connection, 
-                                            _M_acceptor_channel_ptr, _M_serv_sock_ptr));
+    _M_acceptor_channel_ptr->set_read_callback(std::bind(&Acceptor::new_connection, this));
 
+}
+
+void Acceptor::new_connection()
+{
+    InetAddress clnt_addr;
+    Socket* clnt_sock_ptr = new Socket(_M_serv_sock_ptr->accept(clnt_addr));
+
+    printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
+                clnt_sock_ptr->get_fd(), clnt_addr.get_ip(), clnt_addr.get_port());
+
+    // 创建Connection对象
+    Connection* clnt_conn = new Connection(_M_loop_ptr, clnt_sock_ptr);
 }
 
 Acceptor::~Acceptor()

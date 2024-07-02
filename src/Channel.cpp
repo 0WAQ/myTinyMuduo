@@ -66,18 +66,6 @@ void Channel::handle()
     }
 }
 
-void Channel::new_connection(Socket* serv_sock_ptr)
-{
-    InetAddress clnt_addr;
-    Socket* clnt_sock_ptr = new Socket(serv_sock_ptr->accept(clnt_addr));
-
-    printf("Accept client(fd = %d, ip = %s, port = %d) ok.\n", 
-                clnt_sock_ptr->get_fd(), clnt_addr.get_ip(), clnt_addr.get_port());
-
-    // 创建Connection对象
-    Connection* clnt_conn = new Connection(_M_loop_ptr, clnt_sock_ptr);
-}
-
 void Channel::new_message()
 {
     char buf[1024];
