@@ -55,7 +55,7 @@ public:
      * @param:    void
      * @return:   void
      */
-    void close_connection();
+    void close_callback();
 
 
     /**
@@ -64,7 +64,18 @@ public:
      * @param:    void
      * @return:   void
      */
-    void error_connection();
+    void error_callback();
+
+    
+    /**
+     * 
+     * @describe: 设置回调函数
+     * @param:    std::function<void(Connection*)>
+     * @return :  void
+     * 
+     */
+    void set_close_callback(std::function<void(Connection*)> func);
+    void set_error_callback(std::function<void(Connection*)> func);
 
 
     ~Connection();
@@ -73,4 +84,10 @@ private:
     EventLoop* _M_loop_ptr;
     Socket* _M_clnt_sock_ptr;
     Channel* _M_clnt_channel_ptr;
+
+    // 关闭连接的回调函数, 将回调TcpServer::close_connection()
+    std::function<void(Connection*)> _M_close_callback;
+
+    // 连接出错的回调函数, 将回调TcpServer::error_connection()
+    std::function<void(Connection*)> _M_error_callback;
 };

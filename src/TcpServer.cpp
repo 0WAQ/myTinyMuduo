@@ -17,12 +17,28 @@ void TcpServer::create_connection(Socket* clnt_sock)
 {
     // 创建Connection对象
     Connection* conn = new Connection(&_M_loop, clnt_sock);
+    conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
+    conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
 
     printf("new connection(fd = %d, ip = %s, port = %d) ok.\n", 
             conn->get_fd(), conn->get_ip().c_str(), conn->get_port());
 
     // 将连接用map来管理
     _M_connections_map[conn->get_fd()] = conn;
+}
+
+void TcpServer::close_connection(Connection* conn)
+{
+    printf("client(clnt_fd = %d) disconnected\n", conn->get_fd());
+    _M_connections_map.erase(conn->get_fd());
+    delete conn;
+}
+
+void TcpServer::error_connection(Connection* conn)
+{
+    printf("client(clnt_fd = %d) error.\n", conn->get_fd());
+    _M_connections_map.erase(conn->get_fd());
+    delete conn;
 }
 
 TcpServer::~TcpServer()

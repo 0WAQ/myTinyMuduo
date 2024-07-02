@@ -45,6 +45,24 @@ public:
     void create_connection(Socket* clnt_sock);
 
 
+    /**
+     * 
+     * @describe: Tcp连接断开后, Connection回调的函数
+     * @param:    void
+     * @return:   void
+     */
+    void close_connection(Connection* conn);
+
+
+    /**
+     * 
+     * @describe: Tcp连接出错后, Connection回调的函数
+     * @param:    void
+     * @return:   void
+     */
+    void error_connection(Connection* conn);
+
+
     ~TcpServer();
 
 private:

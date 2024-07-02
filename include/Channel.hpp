@@ -148,9 +148,9 @@ private:
     // 读事件的回调函数, 将回调Acceptor::new_connection或者new_message
     std::function<void()> _M_read_callback; 
 
-    // 连接关闭的回调函数, 将回调Connection::close_connection
+    // 连接关闭的回调函数, 将回调Connection::close_callback
     std::function<void()> _M_close_callback; 
 
-    // 连接出错的回调函数, 将回调Connection::error_connection
+    // 连接出错的回调函数, 将回调Connection::error_callback
     std::function<void()> _M_error_callback; 
 };
