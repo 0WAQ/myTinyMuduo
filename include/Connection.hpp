@@ -3,6 +3,7 @@
 #include "Socket.hpp"
 #include "EventLoop.hpp"
 #include "Channel.hpp"
+#include "Buffer.hpp"
 
 /**
  *  Channel之上的封装类, 专门用于创建客户端的Socket
@@ -84,6 +85,10 @@ private:
     EventLoop* _M_loop_ptr;
     Socket* _M_clnt_sock_ptr;
     Channel* _M_clnt_channel_ptr;
+
+    // 用户缓冲区
+    Buffer _M_input_buffer;
+    Buffer _M_output_buffer;
 
     // 关闭连接的回调函数, 将回调TcpServer::close_connection()
     std::function<void(Connection*)> _M_close_callback;
