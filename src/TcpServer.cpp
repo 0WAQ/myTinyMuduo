@@ -32,6 +32,7 @@ void TcpServer::create_connection(Socket* clnt_sock)
     Connection* conn = new Connection(&_M_loop, clnt_sock);
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
+    conn->set_send_complete_callback(std::bind(&TcpServer::send_complete, this, std::placeholders::_1));
     conn->set_deal_message_callback(std::bind(&TcpServer::deal_message, this, 
                                                     std::placeholders::_1, std::placeholders::_2));
 
@@ -54,6 +55,13 @@ void TcpServer::error_connection(Connection* conn)
     printf("client(clnt_fd = %d) error.\n", conn->get_fd());
     _M_connections_map.erase(conn->get_fd());
     delete conn;
+}
+
+void TcpServer::send_complete(Connection* conn)
+{
+    printf("send complete!\n");
+
+    // 可增加其它代码
 }
 
 TcpServer::~TcpServer()

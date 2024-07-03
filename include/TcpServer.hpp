@@ -73,6 +73,16 @@ public:
     void error_connection(Connection* conn);
 
 
+    /**
+     * 
+     * @describe: 数据发送完成后, 在Connection类中回调此函数
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void send_complete(Connection* conn);
+
+
     ~TcpServer();
 
 private:

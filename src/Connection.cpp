@@ -51,6 +51,10 @@ void Connection::set_error_callback(std::function<void(Connection*)> func)  {
     _M_error_callback = func;
 }
 
+void Connection::set_send_complete_callback(std::function<void(Connection*)> func) {
+    _M_send_complete_callback = func;
+}
+
 void Connection::set_deal_message_callback(std::function<void(Connection*, std::string&)> func) {
     _M_deal_message_callback = func;
 }
@@ -125,6 +129,7 @@ void Connection::write_events()
     // 若缓冲区中没有数据了, 表示数据已成功发送, 不再关注写事件
     if(_M_output_buffer.size() == 0) {
         _M_clnt_channel_ptr->unset_write_events();
+        _M_send_complete_callback(this);
     }
 }
 

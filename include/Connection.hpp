@@ -77,7 +77,8 @@ public:
      */
     void set_close_callback(std::function<void(Connection*)> func);
     void set_error_callback(std::function<void(Connection*)> func);
-    
+    void set_send_complete_callback(std::function<void(Connection*)> func);
+
     /**
      * @extra_param: std::string&
      */
@@ -132,4 +133,7 @@ private:
 
     // 处理客户端报文请求时, 将回调TcpServer::deal_message()
     std::function<void(Connection*, std::string&)> _M_deal_message_callback;
+
+    // 数据发送完成后, 将回调TcpServer::send_complete(Connection*)
+    std::function<void(Connection*)> _M_send_complete_callback;
 };
