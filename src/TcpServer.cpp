@@ -6,6 +6,8 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port)
     _M_acceptor_ptr = new Acceptor(&_M_loop, ip, port);
     _M_acceptor_ptr->set_create_connection_callback(
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
+
+    _M_loop.set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
 }
 
 void TcpServer::start()
@@ -60,6 +62,13 @@ void TcpServer::error_connection(Connection* conn)
 void TcpServer::send_complete(Connection* conn)
 {
     printf("send complete!\n");
+
+    // 可增加其它代码
+}
+
+void TcpServer::epoll_timeout(EventLoop* loop)
+{
+    printf("epoll_wait() timeout!\n");
 
     // 可增加其它代码
 }

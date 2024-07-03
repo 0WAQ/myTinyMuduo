@@ -83,9 +83,20 @@ public:
     void send_complete(Connection* conn);
 
 
+    /**
+     * 
+     * @describe: epoll_wait超时后, 在EventLoop中回调此函数
+     * @param:    EventLoop*
+     * @return:   void
+     * 
+     */
+    void epoll_timeout(EventLoop* loop);
+
+
     ~TcpServer();
 
 private:
+    // 一个TcpServer中可以有多个事件循环, 在多线程中体现
     EventLoop _M_loop;         // 事件循环变量, 用start方法开始
     Acceptor* _M_acceptor_ptr; // 用于创建监听sock
     std::map<int, Connection*> _M_connections_map;

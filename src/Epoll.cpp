@@ -49,9 +49,7 @@ std::vector<Channel*> Epoll::wait(int time_out)
         exit(-1);
     }
     // timeout
-    else if(num_fds == 0) 
-    { 
-        std::cout << "epoll_wait() timeout.\n";
+    else if(num_fds == 0) { 
         return channels;
     }
 

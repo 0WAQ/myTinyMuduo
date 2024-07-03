@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "Epoll.hpp"
 
 class Channel;
@@ -23,6 +24,7 @@ public:
      */
     void run();
 
+
     /**
      * @describe:  调用成员变量_M_ep的updata_channel
      * @param:     Channel*
@@ -31,9 +33,21 @@ public:
     void updata_channel(Channel* ch_ptr);
 
 
+    /**
+     * 
+     * @describe: 设置回调函数
+     * @param:    void
+     * @return:   void
+     */
+    void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
+
+
     ~EventLoop();
 
 private:
 
     Epoll* _M_ep_ptr;
+
+    // 当epoll_wait()超时时, 回调TcpServer::epoll_timeout()
+    std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
 };
