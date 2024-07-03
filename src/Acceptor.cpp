@@ -36,6 +36,7 @@ void Acceptor::new_connection()
 {
     InetAddress clnt_addr;
     Socket* clnt_sock_ptr = new Socket(_M_serv_sock_ptr->accept(clnt_addr));
+    clnt_sock_ptr->set_ip_port(clnt_addr.get_ip(), clnt_addr.get_port());
 
     // 通过回调函数将创建好的clnt_sock传递给TcpServer, 让TcpServer创建Connection对象
     create_connection_callback(clnt_sock_ptr);

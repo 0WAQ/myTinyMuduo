@@ -27,6 +27,12 @@ uint16_t Socket::get_port() const {
     return _M_port;
 }
 
+void Socket::set_ip_port(const std::string& ip, uint16_t port)
+{
+    _M_ip = ip;
+    _M_port = port;
+}
+
 void Socket::bind(const InetAddress& serv_addr)
 {
     if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
@@ -56,8 +62,7 @@ int Socket::accept(InetAddress& clnt_addr)
     int clnt_fd = ::accept4(_M_fd, (sockaddr*)&clnt_addr1, &clnt_addr1_len, SOCK_NONBLOCK);
     clnt_addr.set_addr(clnt_addr1);
     
-    _M_ip = clnt_addr.get_ip();
-    _M_port = clnt_addr.get_port();
+
 
     return clnt_fd;
 }

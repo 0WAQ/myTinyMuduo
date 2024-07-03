@@ -58,6 +58,16 @@ public:
 
     /**
      * 
+     * @describe: 用于监听Socket accept客户连接后, 设置客户的ip和port
+     * @param:    const std::string&, uint16_t
+     * @return:   void
+     * 
+     */
+    void set_ip_port(const std::string& ip, uint16_t port);
+
+
+    /**
+     * 
      * @describe: 将fd与给定InetAddress绑定
      * @param:    const InetAddress&
      * @return:   void

@@ -25,7 +25,7 @@ public:
      * @param:    void
      * @return:   size_t
      */
-    size_t get_buf_size();
+    size_t size();
 
 
     /**
@@ -35,7 +35,7 @@ public:
      * @return:   const char*
      * 
      */
-    const char* get_buf_data();
+    const char* data();
     
     
     /**

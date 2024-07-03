@@ -9,12 +9,12 @@ void Buffer::append(const char* data, size_t size)
     _M_buf.append(data, size);
 }
 
-std::size_t Buffer::get_buf_size()
+std::size_t Buffer::size()
 {
     return _M_buf.size();
 }
 
-const char* Buffer::get_buf_data()
+const char* Buffer::data()
 {
     return _M_buf.data();
 }

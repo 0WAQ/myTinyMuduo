@@ -62,17 +62,26 @@ void Connection::new_message()
         // 数据读取成功
         if(nlen > 0) 
         {
-            printf("recv(clnt_fd = %d): %s\n", get_fd(), buf);
-            send(get_fd(), buf, strlen(buf), 0);
+            _M_input_buffer.append(buf, nlen); // 将数据添加到用户缓冲区中
         }
         // 读取时被中断
         else if(nlen == -1 && errno == EINTR) 
         {
             continue;
         }
-        // 非阻塞读的行为
+        // 非阻塞读的行为, 全部的数据已读取完毕(即目前的Socket缓冲区中没有数据)
         else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
         {
+            printf("recv(clnt_fd = %d): %s\n", get_fd(), _M_input_buffer.data());
+            
+            /**
+             * 将数据经过计算后
+             */
+
+            _M_output_buffer = _M_input_buffer; // echo
+            _M_input_buffer.clear();
+            send(get_fd(), _M_output_buffer.data(), _M_output_buffer.size(), 0);
+
             break;
         }
         // 连接断开
