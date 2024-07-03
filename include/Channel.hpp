@@ -108,16 +108,6 @@ public:
 
     /**
      * 
-     * @describe: 封装处理新消息的代码
-     * @param:    void
-     * @return:   void
-     * 
-     */
-    void new_message();
-
-
-    /**
-     * 
      * @describe: 设置回调函数
      * @param:    待执行的回调函数
      * @return:   void

@@ -6,7 +6,7 @@ Connection::Connection(EventLoop* loop, Socket* clnt_sock)
     _M_clnt_channel_ptr = new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd());
     
     // 设置clnt_channel的执行函数为new_message
-    _M_clnt_channel_ptr->set_read_callback(std::bind(&Channel::new_message, _M_clnt_channel_ptr));
+    _M_clnt_channel_ptr->set_read_callback(std::bind(&Connection::new_message, this));
     // 设置Channel需要回调的函数
     _M_clnt_channel_ptr->set_close_callback(std::bind(&Connection::close_callback, this));
     _M_clnt_channel_ptr->set_error_callback(std::bind(&Connection::error_callback, this));
@@ -45,6 +45,43 @@ void Connection::set_close_callback(std::function<void(Connection*)> func)  {
 
 void Connection::set_error_callback(std::function<void(Connection*)> func)  {
     _M_error_callback = func;
+}
+
+void Connection::new_message()
+{
+    char buf[1024];
+
+    // 只用边缘触发, 需要确保将发送过来的数据读取完毕
+    while(true) // 非阻塞IO
+    {
+        // 初始化buf为0
+        bzero(&buf, sizeof(buf));
+
+        ssize_t nlen = read(get_fd(), buf, sizeof(buf));
+
+        // 数据读取成功
+        if(nlen > 0) 
+        {
+            printf("recv(clnt_fd = %d): %s\n", get_fd(), buf);
+            send(get_fd(), buf, strlen(buf), 0);
+        }
+        // 读取时被中断
+        else if(nlen == -1 && errno == EINTR) 
+        {
+            continue;
+        }
+        // 非阻塞读的行为
+        else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
+        {
+            break;
+        }
+        // 连接断开
+        else if(nlen == 0) 
+        {
+            close_callback();
+            break;
+        }
+    }
 }
 
 Connection::~Connection()

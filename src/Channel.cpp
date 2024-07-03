@@ -65,43 +65,6 @@ void Channel::handle()
     }
 }
 
-void Channel::new_message()
-{
-    char buf[1024];
-
-    // 只用边缘触发, 需要确保将发送过来的数据读取完毕
-    while(true) // non-blocking IO
-    {
-        // init all buf as 0
-        bzero(&buf, sizeof(buf));
-
-        ssize_t nlen = read(_M_fd, buf, sizeof(buf));
-
-        // read datas successfully
-        if(nlen > 0) 
-        {
-            printf("recv(clnt_fd = %d): %s\n", _M_fd, buf);
-            send(_M_fd, buf, strlen(buf), 0);
-        }
-        // read failed because interrupted by system call
-        else if(nlen == -1 && errno == EINTR) 
-        {
-            continue;
-        }
-        // read failed because datas've been read
-        else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
-        {
-            break;
-        }
-        // clnt has been disconnected
-        else if(nlen == 0) 
-        {
-            _M_close_callback();
-            break;
-        }
-    }
-}
-
 void Channel::set_read_callback(std::function<void()> func) {
     _M_read_callback = func;
 }

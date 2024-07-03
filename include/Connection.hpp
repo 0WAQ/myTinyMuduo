@@ -79,6 +79,15 @@ public:
     void set_error_callback(std::function<void(Connection*)> func);
 
 
+    /**
+     * 
+     * @describe: 封装处理新消息的代码
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void new_message();
+
     ~Connection();
 
 private:
