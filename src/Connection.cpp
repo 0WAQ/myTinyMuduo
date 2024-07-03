@@ -72,15 +72,33 @@ void Connection::new_message()
         // 非阻塞读的行为, 全部的数据已读取完毕(即目前的Socket缓冲区中没有数据)
         else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
         {
-            printf("recv(clnt_fd = %d): %s\n", get_fd(), _M_input_buffer.data());
-            
-            /**
-             * 将数据经过计算后
-             */
+            // 每次读完后, 将数据以报文为单位循环发送出去
+            while(true)
+            {
+                int len; // 获取报文头部
+                memcpy(&len, _M_input_buffer.data(), 4);
+                
+                // 若接收缓冲区中的数据量长度小于报文(有分包现象), 则不完整, 等待
+                if(_M_input_buffer.size() < len + 4)
+                    break;
 
-            _M_output_buffer = _M_input_buffer; // echo
-            _M_input_buffer.clear();
-            send(get_fd(), _M_output_buffer.data(), _M_output_buffer.size(), 0);
+                // 跳过报文头, 只取报文内容
+                std::string message(_M_input_buffer.data() + 4, len);
+                _M_input_buffer.erase(0, len + 4); // 将该报文从缓冲区中删除
+
+                // 打印该报文
+                printf("message(clnt_fd = %d): %s\n", get_fd(), message.c_str());
+
+                // 假设将数据经过计算后             
+                message = "reply: " + message;
+
+                len = message.size(); // 获取返回报文的长度
+                std::string tmpbuf((char*)&len, 4); // 填充报文头部
+                tmpbuf.append(message);             // 填充报文内容 
+
+                // 将报文发送出去
+                send(get_fd(), tmpbuf.data(), tmpbuf.size(), 0);
+            }
 
             break;
         }

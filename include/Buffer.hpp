@@ -20,6 +20,15 @@ public:
     
     
     /**
+     * @describe: 将数据从_M_buf中删除
+     * @param:    size_t, size_t
+     * @return:   void
+     * 
+     */
+    void erase(size_t pos, size_t len);
+
+
+    /**
      * 
      * @describe: 获取buf的长度
      * @param:    void
