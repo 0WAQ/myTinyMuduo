@@ -13,12 +13,27 @@ void TcpServer::start()
     _M_loop.run();
 }
 
+void TcpServer::deal_message(Connection* conn, std::string& message)
+{
+    // 假设将数据经过计算后             
+    message = "reply: " + message;
+
+    int len = message.size(); // 获取返回报文的长度
+    std::string tmpbuf((char*)&len, 4); // 填充报文头部
+    tmpbuf.append(message);             // 填充报文内容 
+
+    // 将报文发送出去
+    send(conn->get_fd(), tmpbuf.data(), tmpbuf.size(), 0);
+}
+
 void TcpServer::create_connection(Socket* clnt_sock)
 {
     // 创建Connection对象
     Connection* conn = new Connection(&_M_loop, clnt_sock);
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
+    conn->set_deal_message_callback(std::bind(&TcpServer::deal_message, this, 
+                                                    std::placeholders::_1, std::placeholders::_2));
 
     printf("new connection(fd = %d, ip = %s, port = %d) ok.\n", 
             conn->get_fd(), conn->get_ip().c_str(), conn->get_port());

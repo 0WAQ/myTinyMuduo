@@ -77,6 +77,11 @@ public:
      */
     void set_close_callback(std::function<void(Connection*)> func);
     void set_error_callback(std::function<void(Connection*)> func);
+    
+    /**
+     * @extra_param: std::string&
+     */
+    void set_deal_message_callback(std::function<void(Connection*, std::string&)> func);
 
 
     /**
@@ -104,4 +109,7 @@ private:
 
     // 连接出错的回调函数, 将回调TcpServer::error_connection()
     std::function<void(Connection*)> _M_error_callback;
+
+    // 处理客户端报文请求时, 将回调TcpServer::deal_message()
+    std::function<void(Connection*, std::string&)> _M_deal_message_callback;
 };

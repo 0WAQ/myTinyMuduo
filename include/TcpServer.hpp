@@ -37,6 +37,16 @@ public:
 
     /**
      * 
+     * @describe: 处理客户端报文请求时, Connection回调的函数
+     * @param:    Connection*, std::string&
+     * @return:   void
+     * 
+     */
+    void deal_message(Connection* conn, std::string& message);
+
+
+    /**
+     * 
      * @describe: 封装处理新的连接请求的代码
      * @param:    Socket*
      * @return:   void

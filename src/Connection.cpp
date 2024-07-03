@@ -47,6 +47,10 @@ void Connection::set_error_callback(std::function<void(Connection*)> func)  {
     _M_error_callback = func;
 }
 
+void Connection::set_deal_message_callback(std::function<void(Connection*, std::string&)> func) {
+    _M_deal_message_callback = func;
+}
+
 void Connection::new_message()
 {
     char buf[1024];
@@ -89,15 +93,7 @@ void Connection::new_message()
                 // 打印该报文
                 printf("message(clnt_fd = %d): %s\n", get_fd(), message.c_str());
 
-                // 假设将数据经过计算后             
-                message = "reply: " + message;
-
-                len = message.size(); // 获取返回报文的长度
-                std::string tmpbuf((char*)&len, 4); // 填充报文头部
-                tmpbuf.append(message);             // 填充报文内容 
-
-                // 将报文发送出去
-                send(get_fd(), tmpbuf.data(), tmpbuf.size(), 0);
+                _M_deal_message_callback(this, message);
             }
 
             break;
