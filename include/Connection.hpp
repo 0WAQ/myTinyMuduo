@@ -86,13 +86,23 @@ public:
 
     /**
      * 
-     * @describe: 封装处理新消息的代码
+     * @describe: 封装处理新消息的代码, 有新消息时, 被Channel的读事件回调
      * @param:    void
      * @return:   void
      * 
      */
     void new_message();
 
+
+    /**
+     * 
+     * @describe: 写事件发生时, Channel回调的函数
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void write_events();
+    
 
     /**
      * 

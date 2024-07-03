@@ -74,7 +74,7 @@ void Channel::handle()
     // 写事件
     else if(_M_happened_events & EPOLLOUT) 
     {
-        
+        _M_write_callback();
     }
     // 错误
     else 
@@ -85,6 +85,10 @@ void Channel::handle()
 
 void Channel::set_read_callback(std::function<void()> func) {
     _M_read_callback = func;
+}
+
+void Channel::set_write_callback(std::function<void()> func) {
+    _M_write_callback = func;
 }
 
 void Channel::set_close_callback(std::function<void()> func) {

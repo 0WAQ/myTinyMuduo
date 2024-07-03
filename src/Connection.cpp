@@ -7,6 +7,8 @@ Connection::Connection(EventLoop* loop, Socket* clnt_sock)
     
     // 设置clnt_channel的执行函数为new_message
     _M_clnt_channel_ptr->set_read_callback(std::bind(&Connection::new_message, this));
+    // 设置clnt_channel的执行函数为write_events
+    _M_clnt_channel_ptr->set_write_callback(std::bind(&Connection::write_events, this));
     // 设置Channel需要回调的函数
     _M_clnt_channel_ptr->set_close_callback(std::bind(&Connection::close_callback, this));
     _M_clnt_channel_ptr->set_error_callback(std::bind(&Connection::error_callback, this));
@@ -31,11 +33,13 @@ uint16_t Connection::get_port() const {
 
 void Connection::close_callback()
 {
+    // 调用回调函数, 转交给TcpServer处理
     _M_close_callback(this);
 }
 
 void Connection::error_callback()
 {
+    // 调用回调函数, 转交给TcpServer处理
     _M_error_callback(this);
 }
 
@@ -107,10 +111,31 @@ void Connection::new_message()
     }
 }
 
+void Connection::write_events()
+{
+    // 当可写后, 尝试把用户缓冲区的数据全部发送出去
+    int len = ::send(get_fd(), _M_output_buffer.data(), _M_output_buffer.size(), 0);
+    // 因为操作系统的原因(tcp滑动窗口), 数据不一定能全部接收, 剩下的数据等待下一次写事件触发
+
+    // 将成功发送的数据从用户缓冲区中删除掉
+    if(len > 0) {
+        _M_output_buffer.erase(0, len);
+    }
+    
+    // 若缓冲区中没有数据了, 表示数据已成功发送, 不再关注写事件
+    if(_M_output_buffer.size() == 0) {
+        _M_clnt_channel_ptr->unset_write_events();
+    }
+}
+
+// TcpServer::deal_message中调用
 void Connection::send(const char* data, size_t size)
-{   
-    _M_output_buffer.append(data, size); // 将数据追加到用户缓冲区中
-    _M_clnt_channel_ptr->set_write_events(); // 注册写事件
+{  
+    // 先将数据发送到用户缓冲区中
+    _M_output_buffer.append(data, size);
+
+    // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
+    _M_clnt_channel_ptr->set_write_events();
 
 }
 
