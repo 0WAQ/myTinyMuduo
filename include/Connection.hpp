@@ -93,6 +93,16 @@ public:
      */
     void new_message();
 
+
+    /**
+     * 
+     * @describe: 封装了输出到用户缓冲区的功能
+     * @param:    const char*, size_t
+     * @return:   void
+     */
+    void send(const char* data, size_t size);
+
+
     ~Connection();
 
 private:

@@ -20,6 +20,24 @@ void Channel::set_read_events() {
     _M_loop_ptr->updata_channel(this);
 }
 
+void Channel::set_write_events()
+{
+    _M_monitored_events |= EPOLLOUT;
+    _M_loop_ptr->updata_channel(this);
+}
+
+void Channel::unset_read_events()
+{
+    _M_monitored_events &= ~EPOLLIN;
+    _M_loop_ptr->updata_channel(this);    
+}
+
+void Channel::unset_write_events()
+{
+    _M_monitored_events &= ~EPOLLOUT;
+    _M_loop_ptr->updata_channel(this);
+} 
+
 void Channel::set_in_epoll() {
     _M_in_epoll = true;
 }

@@ -48,12 +48,39 @@ public:
 
     /**
      * 
-     * @describe: 监听该fd的读事件
+     * @describe: 注册读事件
      * @param:    void
      * @return:   void
      * 
      */
     void set_read_events();
+
+
+    /**
+     * 
+     * @describe: 注册写事件
+     * @param:    void
+     * @return:   void
+     */
+    void set_write_events();
+    
+    
+    /**
+     * 
+     * @describe: 取消读事件
+     * @param:    void
+     * @return:   void
+     */
+    void unset_read_events();
+
+
+    /**
+     * 
+     * @describe: 取消写事件
+     * @param:    void
+     * @return:   void
+     */
+    void unset_write_events();
 
 
     /**

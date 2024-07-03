@@ -23,7 +23,7 @@ void TcpServer::deal_message(Connection* conn, std::string& message)
     tmpbuf.append(message);             // 填充报文内容 
 
     // 将报文发送出去
-    send(conn->get_fd(), tmpbuf.data(), tmpbuf.size(), 0);
+    conn->send(tmpbuf.c_str(), tmpbuf.size());
 }
 
 void TcpServer::create_connection(Socket* clnt_sock)

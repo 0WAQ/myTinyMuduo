@@ -107,6 +107,13 @@ void Connection::new_message()
     }
 }
 
+void Connection::send(const char* data, size_t size)
+{   
+    _M_output_buffer.append(data, size); // 将数据追加到用户缓冲区中
+    _M_clnt_channel_ptr->set_write_events(); // 注册写事件
+
+}
+
 Connection::~Connection()
 {
     delete _M_clnt_sock_ptr;
