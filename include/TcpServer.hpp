@@ -94,7 +94,7 @@ public:
 
 
     // 以下为设置回调函数的函数
-    void set_deal_message_callback(std::function<void(Connection*,std::string &message)> func);
+    void set_deal_message_callback(std::function<void(Connection*,std::string&)> func);
     void set_create_connection_callback(std::function<void(Connection*)> func);
     void set_close_connection_callback(std::function<void(Connection*)> func);
     void set_error_connection_callback(std::function<void(Connection*)> func);
@@ -112,7 +112,7 @@ private:
 
 
      // 回调EchoServer::handle_deal_message
-    std::function<void(Connection*,std::string &message)> _M_deal_message_callback;
+    std::function<void(Connection*,std::string&)> _M_deal_message_callback;
 
     // 回调EchoServer::handle_create_connection
     std::function<void(Connection*)> _M_create_connection_callback;

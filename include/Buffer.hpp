@@ -18,7 +18,17 @@ public:
      */
     void append(const char* data, size_t size);
     
-    
+
+    /**
+     * 
+     * @describe: 将数据追加到_M_buf中, 但是会增加头部
+     * @param:    const char*. size_t
+     * @return: void
+     * 
+     */
+    void append_with_head(const char* data, size_t size);
+
+
     /**
      * @describe: 将数据从_M_buf中删除
      * @param:    size_t, size_t

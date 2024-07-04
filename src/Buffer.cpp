@@ -9,6 +9,14 @@ void Buffer::append(const char* data, size_t size)
     _M_buf.append(data, size);
 }
 
+void Buffer::append_with_head(const char* data, size_t size)
+{
+    // 先将数据的大小送入缓冲区
+    _M_buf.append((char*)&size, 4);
+    // 再将数据本身送入缓冲区
+    _M_buf.append(data, size);
+}
+
 void Buffer::erase(size_t pos, size_t len)
 {
     _M_buf.erase(pos, len);

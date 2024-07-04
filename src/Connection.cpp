@@ -137,7 +137,7 @@ void Connection::write_events()
 void Connection::send(const char* data, size_t size)
 {  
     // 先将数据发送到用户缓冲区中
-    _M_output_buffer.append(data, size);
+    _M_output_buffer.append_with_head(data, size);
 
     // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
     _M_clnt_channel_ptr->set_write_events();

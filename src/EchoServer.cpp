@@ -31,12 +31,8 @@ void EchoServer::handle_deal_message(Connection* conn, std::string& message)
     // 假设将数据经过计算后             
     message = "reply: " + message;
 
-    int len = message.size(); // 获取返回报文的长度
-    std::string tmpbuf((char*)&len, 4); // 填充报文头部
-    tmpbuf.append(message);             // 填充报文内容 
-
     // 将报文发送出去
-    conn->send(tmpbuf.c_str(), tmpbuf.size());
+    conn->send(message.data(), message.size());
 }
 
 void EchoServer::handle_create_connection(Connection* conn)
