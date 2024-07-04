@@ -17,15 +17,8 @@ void TcpServer::start()
 
 void TcpServer::deal_message(Connection* conn, std::string& message)
 {
-    // 假设将数据经过计算后             
-    message = "reply: " + message;
-
-    int len = message.size(); // 获取返回报文的长度
-    std::string tmpbuf((char*)&len, 4); // 填充报文头部
-    tmpbuf.append(message);             // 填充报文内容 
-
-    // 将报文发送出去
-    conn->send(tmpbuf.c_str(), tmpbuf.size());
+    if(_M_deal_message_callback)
+        _M_deal_message_callback(conn, message);
 }
 
 void TcpServer::create_connection(Socket* clnt_sock)
@@ -38,39 +31,41 @@ void TcpServer::create_connection(Socket* clnt_sock)
     conn->set_deal_message_callback(std::bind(&TcpServer::deal_message, this, 
                                                     std::placeholders::_1, std::placeholders::_2));
 
-    printf("new connection(fd = %d, ip = %s, port = %d) ok.\n", 
-            conn->get_fd(), conn->get_ip().c_str(), conn->get_port());
-
     // 将连接用map来管理
     _M_connections_map[conn->get_fd()] = conn;
+
+    if(_M_create_connection_callback)
+        _M_create_connection_callback(conn);
 }
 
 void TcpServer::close_connection(Connection* conn)
 {
-    printf("client(clnt_fd = %d) disconnected\n", conn->get_fd());
+    if(_M_close_connection_callback)
+        _M_close_connection_callback(conn);
+
     _M_connections_map.erase(conn->get_fd());
     delete conn;
 }
 
 void TcpServer::error_connection(Connection* conn)
 {
-    printf("client(clnt_fd = %d) error.\n", conn->get_fd());
+    if(_M_error_connection_callback)
+        _M_error_connection_callback(conn);
+
     _M_connections_map.erase(conn->get_fd());
     delete conn;
 }
 
 void TcpServer::send_complete(Connection* conn)
 {
-    printf("send complete!\n");
-
-    // 可增加其它代码
+    if(_M_send_complete_callback)
+        _M_send_complete_callback(conn);
 }
 
 void TcpServer::epoll_timeout(EventLoop* loop)
 {
-    printf("epoll_wait() timeout!\n");
-
-    // 可增加其它代码
+    if(_M_epoll_timeout_callback)
+        _M_epoll_timeout_callback(loop);
 }
 
 TcpServer::~TcpServer()
@@ -81,4 +76,28 @@ TcpServer::~TcpServer()
     for(auto& [fd, conn] : _M_connections_map) {
         delete conn;
     }
+}
+
+void TcpServer::set_deal_message_callback(std::function<void(Connection*,std::string &message)> func) {
+    _M_deal_message_callback = func;
+}
+
+void TcpServer::set_create_connection_callback(std::function<void(Connection*)> func) {
+    _M_create_connection_callback = func;
+}
+
+void TcpServer::set_close_connection_callback(std::function<void(Connection*)> func) {
+    _M_close_connection_callback = func;
+}
+
+void TcpServer::set_error_connection_callback(std::function<void(Connection*)> func) {
+    _M_error_connection_callback = func;
+}
+
+void TcpServer::set_send_complete_callback(std::function<void(Connection*)> func) {
+    _M_send_complete_callback = func;
+}
+
+void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
+    _M_epoll_timeout_callback = func;
 }

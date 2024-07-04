@@ -93,6 +93,15 @@ public:
     void epoll_timeout(EventLoop* loop);
 
 
+    // 以下为设置回调函数的函数
+    void set_deal_message_callback(std::function<void(Connection*,std::string &message)> func);
+    void set_create_connection_callback(std::function<void(Connection*)> func);
+    void set_close_connection_callback(std::function<void(Connection*)> func);
+    void set_error_connection_callback(std::function<void(Connection*)> func);
+    void set_send_complete_callback(std::function<void(Connection*)> func);
+    void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
+
+
     ~TcpServer();
 
 private:
@@ -100,4 +109,24 @@ private:
     EventLoop _M_loop;         // 事件循环变量, 用start方法开始
     Acceptor* _M_acceptor_ptr; // 用于创建监听sock
     std::map<int, Connection*> _M_connections_map;
+
+
+     // 回调EchoServer::handle_deal_message
+    std::function<void(Connection*,std::string &message)> _M_deal_message_callback;
+
+    // 回调EchoServer::handle_create_connection
+    std::function<void(Connection*)> _M_create_connection_callback;
+
+    // 回调EchoServer::HandleClose
+    std::function<void(Connection*)> _M_close_connection_callback;
+
+    // 回调EchoServer::HandleError
+    std::function<void(Connection*)> _M_error_connection_callback;
+
+    // 回调EchoServer::HandleSendComplete
+    std::function<void(Connection*)> _M_send_complete_callback;
+
+    // 回调EchoServer::HandleTimeOut
+    std::function<void(EventLoop*)>  _M_epoll_timeout_callback;
+    
 };
