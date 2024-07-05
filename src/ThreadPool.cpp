@@ -1,6 +1,7 @@
 #include "../include/ThreadPool.hpp"
 
-ThreadPool::ThreadPool(size_t thread_num) : _M_stop(false)
+ThreadPool::ThreadPool(const std::string& type, size_t thread_num) 
+                    : _M_thread_type(type), _M_stop(false)
 {
     // 启动thread_num个线程, 将每个线程阻塞在条件变量上
     for(size_t i = 0; i < thread_num; i++)
@@ -9,7 +10,7 @@ ThreadPool::ThreadPool(size_t thread_num) : _M_stop(false)
         _M_threads.emplace_back(
             [this]() {
                 // 打印进程ID
-                printf("thread(%d) created.\n", syscall(SYS_gettid));
+                printf("%s thread(%d) created.\n", this->_M_thread_type.c_str(), syscall(SYS_gettid));
 
                 while(_M_stop == false) {
                     std::function<void()> task;

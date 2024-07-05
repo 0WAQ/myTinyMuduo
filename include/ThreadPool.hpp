@@ -28,7 +28,7 @@ public:
      * @param:    size_t
      * 
      */
-    ThreadPool(size_t thread_num);
+    ThreadPool(const std::string& type, size_t thread_num);
 
 
     /**
@@ -55,4 +55,6 @@ private:
     std::condition_variable _M_condition;
     // 在析构函数中, 将其值设置为ture, 全部的线程将退出
     std::atomic_bool _M_stop;
+    // 线程种类
+    std::string _M_thread_type; // 取值为IO, WORK
 };

@@ -13,7 +13,7 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
 
     // // 线程池运行Connection
-    _M_pool_ptr = new ThreadPool(_M_thread_num);
+    _M_pool_ptr = new ThreadPool("IO", _M_thread_num);
 
     // 创建从事件循环
     for(int i = 0; i < _M_thread_num; i++) 
