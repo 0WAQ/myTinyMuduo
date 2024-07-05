@@ -98,6 +98,9 @@ TcpServer::~TcpServer()
     for(auto& i : _M_sub_loops) {
         delete i;
     }
+
+    // 释放线程池
+    delete _M_pool_ptr;
 }
 
 void TcpServer::set_deal_message_callback(std::function<void(Connection*,std::string &message)> func) {
