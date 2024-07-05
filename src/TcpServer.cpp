@@ -3,16 +3,16 @@
 
 TcpServer::TcpServer(const std::string& ip, const uint16_t port)
 {
-    _M_acceptor_ptr = new Acceptor(&_M_loop, ip, port);
+    _M_acceptor_ptr = new Acceptor(&_M_main_loop, ip, port);
     _M_acceptor_ptr->set_create_connection_callback(
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
 
-    _M_loop.set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
+    _M_main_loop.set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
 }
 
 void TcpServer::start()
 {
-    _M_loop.run();
+    _M_main_loop.run();
 }
 
 void TcpServer::deal_message(Connection* conn, std::string& message)
@@ -24,7 +24,7 @@ void TcpServer::deal_message(Connection* conn, std::string& message)
 void TcpServer::create_connection(Socket* clnt_sock)
 {
     // 创建Connection对象
-    Connection* conn = new Connection(&_M_loop, clnt_sock);
+    Connection* conn = new Connection(&_M_main_loop, clnt_sock);
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
     conn->set_send_complete_callback(std::bind(&TcpServer::send_complete, this, std::placeholders::_1));
