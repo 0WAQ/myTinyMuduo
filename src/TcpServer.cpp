@@ -93,6 +93,11 @@ TcpServer::~TcpServer()
     for(auto& [fd, conn] : _M_connections_map) {
         delete conn;
     }
+
+    // 释放从事件循环
+    for(auto& i : _M_sub_loops) {
+        delete i;
+    }
 }
 
 void TcpServer::set_deal_message_callback(std::function<void(Connection*,std::string &message)> func) {
