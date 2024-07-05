@@ -1,5 +1,7 @@
 #pragma once
 #include <functional>
+#include <unistd.h>
+#include <sys/syscall.h>
 #include "Socket.hpp"
 #include "EventLoop.hpp"
 #include "Channel.hpp"

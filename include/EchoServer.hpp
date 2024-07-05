@@ -16,10 +16,10 @@ public:
     /**
      * 
      * @describe: 用于初始化_M_tcp_server
-     * @param:    const std::string&, uint16_t
+     * @param:    const std::string&, uint16_t, size_t
      * 
      */
-    EchoServer(const std::string& ip, uint16_t port);
+    EchoServer(const std::string& ip, uint16_t port, size_t thread_num = 3);
 
 
     /**

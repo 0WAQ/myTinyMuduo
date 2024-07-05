@@ -12,7 +12,8 @@ void EventLoop::run()
 
         // 若channels为空, 则说明超时, 通知TcpServer
         if(channels.empty()) {
-            _M_epoll_wait_timeout_callback(this);
+            if(_M_epoll_wait_timeout_callback)
+                _M_epoll_wait_timeout_callback(this);
         }
         else {
             for(auto& ch : channels) {

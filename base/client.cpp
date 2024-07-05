@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     std::cout << "connect ok.\n";
 
     char buf[1024];
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < 1; i++)
     {
         memset(buf, 0, sizeof(buf));
         //std::cout << "please input: ";
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         send(sock_fd, tmpbuf, len + 4, 0);
     }
 
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < 1; i++)
     {
         int len;
         recv(sock_fd, &len, 4, 0);
@@ -64,5 +64,6 @@ int main(int argc, char* argv[])
         printf("recv:%s\n", buf);
     }
     
+    sleep(100);
     return 0;
 }

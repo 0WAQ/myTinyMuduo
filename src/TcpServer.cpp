@@ -1,15 +1,29 @@
 #include "../include/TcpServer.hpp"
 
 
-TcpServer::TcpServer(const std::string& ip, const uint16_t port)
+TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_num) 
+                                                : _M_thread_num(thread_num)
 {
     _M_main_loop = new EventLoop;
+    // _M_main_loop->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
 
+    // 主循环运行Acceptor
     _M_acceptor_ptr = new Acceptor(_M_main_loop, ip, port);
     _M_acceptor_ptr->set_create_connection_callback(
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
 
-    _M_main_loop->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
+    // // 线程池运行Connection
+    _M_pool_ptr = new ThreadPool(_M_thread_num);
+
+    // 创建从事件循环
+    for(int i = 0; i < _M_thread_num; i++) 
+    {
+        _M_sub_loops.push_back(new EventLoop); // 将从事件放入sub_loops中
+        // 设置超时回调函数
+        _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
+        // 将EventLoop的run函数作为任务添加给线程池
+        _M_pool_ptr->push(std::bind(&EventLoop::run, _M_sub_loops[i]));
+    }
 }
 
 void TcpServer::start()
@@ -25,8 +39,8 @@ void TcpServer::deal_message(Connection* conn, std::string& message)
 
 void TcpServer::create_connection(Socket* clnt_sock)
 {
-    // 创建Connection对象
-    Connection* conn = new Connection(_M_main_loop, clnt_sock);
+    // 创建Connection对象, 并将其指定给线程池中的loop  
+    Connection* conn = new Connection(_M_sub_loops[clnt_sock->get_fd() % _M_thread_num], clnt_sock);
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
     conn->set_send_complete_callback(std::bind(&TcpServer::send_complete, this, std::placeholders::_1));

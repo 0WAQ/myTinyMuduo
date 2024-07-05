@@ -99,7 +99,8 @@ void Connection::new_message()
                 _M_input_buffer.erase(0, len + 4); // 将该报文从缓冲区中删除
 
                 // 打印该报文
-                printf("message(clnt_fd = %d): %s\n", get_fd(), message.c_str());
+                printf("thread id = %d, message(clnt_fd = %d): %s\n", 
+                                syscall(SYS_gettid), get_fd(), message.c_str());
 
                 _M_deal_message_callback(this, message);
             }

@@ -35,8 +35,6 @@ ThreadPool::ThreadPool(size_t thread_num) : _M_stop(false)
                     }   // 锁作用域结束
                     //////////////////////////////////
 
-                    printf("thread is %d.\n", syscall(SYS_gettid));
-
                     // 执行任务
                     task();
                 }

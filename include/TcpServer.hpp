@@ -6,6 +6,7 @@
 #include "EventLoop.hpp"
 #include "Acceptor.hpp"
 #include "Connection.hpp"
+#include "ThreadPool.hpp"
 
 /**
  *  
@@ -19,10 +20,10 @@ public:
     /**
      * 
      * @describe: 构造函数, 用来初始化Socket
-     * @param:    要绑定的ip和端口
+     * @param:    要绑定的ip和端口和线程池的大小
      * 
      */
-    TcpServer(const std::string& ip, const uint16_t port);
+    TcpServer(const std::string& ip, const uint16_t port, size_t thread_nums);
 
 
     /**
@@ -105,8 +106,14 @@ public:
     ~TcpServer();
 
 private:
+
+    ThreadPool* _M_pool_ptr; // 线程池
+    size_t _M_thread_num;   // 线程池的大小, 即从事件循环的个数
+
     // 一个TcpServer中可以有多个事件循环, 在多线程中体现
     EventLoop* _M_main_loop;         // 事件循环变量, 用start方法开始
+    std::vector<EventLoop*> _M_sub_loops; // 从事件, 运行在线程池中
+
     Acceptor* _M_acceptor_ptr; // 用于创建监听sock
     std::map<int, Connection*> _M_connections_map;
 
