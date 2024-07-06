@@ -31,11 +31,11 @@ public:
      * 
      */
     void start();
-    void handle_deal_message(Connection* conn, std::string& message);
-    void handle_create_connection(Connection* conn);
-    void handle_close_connection(Connection* conn);
-    void handle_error_connection(Connection* conn);
-    void handle_send_complete(Connection* conn);
+    void handle_deal_message(Connection_ptr conn, std::string& message);
+    void handle_create_connection(Connection_ptr conn);
+    void handle_close_connection(Connection_ptr conn);
+    void handle_error_connection(Connection_ptr conn);
+    void handle_send_complete(Connection_ptr conn);
     void handle_epoll_timeout(EventLoop* loop);
 
 
@@ -46,7 +46,7 @@ public:
      * @return:
      * 
      */
-    void exec_business(Connection* conn, std::string& message);
+    void exec_business(Connection_ptr conn, std::string& message);
 
 
     ~EchoServer();

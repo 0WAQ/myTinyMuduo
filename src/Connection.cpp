@@ -34,28 +34,28 @@ uint16_t Connection::get_port() const {
 void Connection::close_callback()
 {
     // 调用回调函数, 转交给TcpServer处理
-    _M_close_callback(this);
+    _M_close_callback(shared_from_this());
 }
 
 void Connection::error_callback()
 {
     // 调用回调函数, 转交给TcpServer处理
-    _M_error_callback(this);
+    _M_error_callback(shared_from_this());
 }
 
-void Connection::set_close_callback(std::function<void(Connection*)> func)  {
+void Connection::set_close_callback(std::function<void(Connection_ptr)> func)  {
     _M_close_callback = func;
 }
 
-void Connection::set_error_callback(std::function<void(Connection*)> func)  {
+void Connection::set_error_callback(std::function<void(Connection_ptr)> func)  {
     _M_error_callback = func;
 }
 
-void Connection::set_send_complete_callback(std::function<void(Connection*)> func) {
+void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {
     _M_send_complete_callback = func;
 }
 
-void Connection::set_deal_message_callback(std::function<void(Connection*, std::string&)> func) {
+void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {
     _M_deal_message_callback = func;
 }
 
@@ -102,7 +102,7 @@ void Connection::new_message()
                 printf("thread id = %d, message(clnt_fd = %d): %s\n", 
                                 syscall(SYS_gettid), get_fd(), message.c_str());
 
-                _M_deal_message_callback(this, message);
+                _M_deal_message_callback(shared_from_this(), message);
             }
 
             break;
@@ -130,7 +130,7 @@ void Connection::write_events()
     // 若缓冲区中没有数据了, 表示数据已成功发送, 不再关注写事件
     if(_M_output_buffer.size() == 0) {
         _M_clnt_channel_ptr->unset_write_events();
-        _M_send_complete_callback(this);
+        _M_send_complete_callback(shared_from_this());
     }
 }
 

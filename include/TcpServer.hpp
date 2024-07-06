@@ -39,11 +39,11 @@ public:
     /**
      * 
      * @describe: 处理客户端报文请求时, Connection回调的函数
-     * @param:    Connection*, std::string&
+     * @param:    Connection_ptr, std::string&
      * @return:   void
      * 
      */
-    void deal_message(Connection* conn, std::string& message);
+    void deal_message(Connection_ptr conn, std::string& message);
 
 
     /**
@@ -62,7 +62,7 @@ public:
      * @param:    void
      * @return:   void
      */
-    void close_connection(Connection* conn);
+    void close_connection(Connection_ptr conn);
 
 
     /**
@@ -71,7 +71,7 @@ public:
      * @param:    void
      * @return:   void
      */
-    void error_connection(Connection* conn);
+    void error_connection(Connection_ptr conn);
 
 
     /**
@@ -81,7 +81,7 @@ public:
      * @return:   void
      * 
      */
-    void send_complete(Connection* conn);
+    void send_complete(Connection_ptr conn);
 
 
     /**
@@ -95,11 +95,11 @@ public:
 
 
     // 以下为设置回调函数的函数
-    void set_deal_message_callback(std::function<void(Connection*,std::string&)> func);
-    void set_create_connection_callback(std::function<void(Connection*)> func);
-    void set_close_connection_callback(std::function<void(Connection*)> func);
-    void set_error_connection_callback(std::function<void(Connection*)> func);
-    void set_send_complete_callback(std::function<void(Connection*)> func);
+    void set_deal_message_callback(std::function<void(Connection_ptr,std::string&)> func);
+    void set_create_connection_callback(std::function<void(Connection_ptr)> func);
+    void set_close_connection_callback(std::function<void(Connection_ptr)> func);
+    void set_error_connection_callback(std::function<void(Connection_ptr)> func);
+    void set_send_complete_callback(std::function<void(Connection_ptr)> func);
     void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
 
 
@@ -115,23 +115,23 @@ private:
     std::vector<EventLoop*> _M_sub_loops; // 从事件, 运行在线程池中
 
     Acceptor* _M_acceptor_ptr; // 用于创建监听sock
-    std::map<int, Connection*> _M_connections_map;
+    std::map<int, Connection_ptr> _M_connections_map;
 
 
      // 回调EchoServer::handle_deal_message
-    std::function<void(Connection*,std::string&)> _M_deal_message_callback;
+    std::function<void(Connection_ptr, std::string&)> _M_deal_message_callback;
 
     // 回调EchoServer::handle_create_connection
-    std::function<void(Connection*)> _M_create_connection_callback;
+    std::function<void(Connection_ptr)> _M_create_connection_callback;
 
     // 回调EchoServer::HandleClose
-    std::function<void(Connection*)> _M_close_connection_callback;
+    std::function<void(Connection_ptr)> _M_close_connection_callback;
 
     // 回调EchoServer::HandleError
-    std::function<void(Connection*)> _M_error_connection_callback;
+    std::function<void(Connection_ptr)> _M_error_connection_callback;
 
     // 回调EchoServer::HandleSendComplete
-    std::function<void(Connection*)> _M_send_complete_callback;
+    std::function<void(Connection_ptr)> _M_send_complete_callback;
 
     // 回调EchoServer::HandleTimeOut
     std::function<void(EventLoop*)>  _M_epoll_timeout_callback;

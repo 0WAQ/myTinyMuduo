@@ -30,7 +30,7 @@ void EchoServer::start() {
     _M_tcp_server.start();
 }
 
-void EchoServer::exec_business(Connection* conn, std::string& message)
+void EchoServer::exec_business(Connection_ptr conn, std::string& message)
 {
     printf("thread id = %d, deal message().\n", syscall(SYS_gettid));
 
@@ -41,31 +41,31 @@ void EchoServer::exec_business(Connection* conn, std::string& message)
     conn->send(message.data(), message.size());
 }
 
-void EchoServer::handle_deal_message(Connection* conn, std::string& message)
+void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 {
     // 将业务添加到线程池的工作队列中
     _M_pool_ptr->push(std::bind(&EchoServer::exec_business, this, conn, message));
 }
 
-void EchoServer::handle_create_connection(Connection* conn)
+void EchoServer::handle_create_connection(Connection_ptr conn)
 {
     printf("thread id = %d, new connection(ip = %s, port = %d).\n", 
             syscall(SYS_gettid), conn->get_ip().c_str(), conn->get_port());
 }
 
-void EchoServer::handle_close_connection(Connection* conn) 
+void EchoServer::handle_close_connection(Connection_ptr conn) 
 {
     printf("thread id = %d, close connection(client ip is %s).\n", 
                     syscall(SYS_gettid), conn->get_ip().c_str());
 }
 
-void EchoServer::handle_error_connection(Connection* conn) 
+void EchoServer::handle_error_connection(Connection_ptr conn) 
 {
     printf("thread id = %d, error connection(client ip is %s).\n", 
                     syscall(SYS_gettid), conn->get_ip().c_str());
 }
 
-void EchoServer::handle_send_complete(Connection* conn) 
+void EchoServer::handle_send_complete(Connection_ptr conn) 
 {
     printf("thread id = %d, error connection(client ip is %s).\n", 
                     syscall(SYS_gettid), conn->get_ip().c_str());

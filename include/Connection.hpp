@@ -2,15 +2,20 @@
 #include <functional>
 #include <unistd.h>
 #include <sys/syscall.h>
+#include <memory>
 #include "Socket.hpp"
 #include "EventLoop.hpp"
 #include "Channel.hpp"
 #include "Buffer.hpp"
 
+class Connection;
+using Connection_ptr = std::shared_ptr<Connection>;
+
 /**
  *  Channel之上的封装类, 专门用于创建客户端的Socket
+ *  继承自这个类, 用shared_from_this代替this指针
  */
-class Connection
+class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
 
@@ -73,18 +78,18 @@ public:
     /**
      * 
      * @describe: 设置回调函数
-     * @param:    std::function<void(Connection*)>
+     * @param:    std::function<void(Connection_ptr)>
      * @return :  void
      * 
      */
-    void set_close_callback(std::function<void(Connection*)> func);
-    void set_error_callback(std::function<void(Connection*)> func);
-    void set_send_complete_callback(std::function<void(Connection*)> func);
+    void set_close_callback(std::function<void(Connection_ptr)> func);
+    void set_error_callback(std::function<void(Connection_ptr)> func);
+    void set_send_complete_callback(std::function<void(Connection_ptr)> func);
 
     /**
      * @extra_param: std::string&
      */
-    void set_deal_message_callback(std::function<void(Connection*, std::string&)> func);
+    void set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func);
 
 
     /**
@@ -128,14 +133,14 @@ private:
     Buffer _M_output_buffer;
 
     // 关闭连接的回调函数, 将回调TcpServer::close_connection()
-    std::function<void(Connection*)> _M_close_callback;
+    std::function<void(Connection_ptr)> _M_close_callback;
 
     // 连接出错的回调函数, 将回调TcpServer::error_connection()
-    std::function<void(Connection*)> _M_error_callback;
+    std::function<void(Connection_ptr)> _M_error_callback;
 
     // 处理客户端报文请求时, 将回调TcpServer::deal_message()
-    std::function<void(Connection*, std::string&)> _M_deal_message_callback;
+    std::function<void(Connection_ptr, std::string&)> _M_deal_message_callback;
 
-    // 数据发送完成后, 将回调TcpServer::send_complete(Connection*)
-    std::function<void(Connection*)> _M_send_complete_callback;
+    // 数据发送完成后, 将回调TcpServer::send_complete(Connection_ptr)
+    std::function<void(Connection_ptr)> _M_send_complete_callback;
 };

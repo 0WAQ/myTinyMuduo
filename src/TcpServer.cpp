@@ -31,7 +31,7 @@ void TcpServer::start()
     _M_main_loop->run();
 }
 
-void TcpServer::deal_message(Connection* conn, std::string& message)
+void TcpServer::deal_message(Connection_ptr conn, std::string& message)
 {
     if(_M_deal_message_callback)
         _M_deal_message_callback(conn, message);
@@ -40,7 +40,7 @@ void TcpServer::deal_message(Connection* conn, std::string& message)
 void TcpServer::create_connection(Socket* clnt_sock)
 {
     // 创建Connection对象, 并将其指定给线程池中的loop  
-    Connection* conn = new Connection(_M_sub_loops[clnt_sock->get_fd() % _M_thread_num], clnt_sock);
+    Connection_ptr conn(new Connection(_M_sub_loops[clnt_sock->get_fd() % _M_thread_num], clnt_sock));
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
     conn->set_send_complete_callback(std::bind(&TcpServer::send_complete, this, std::placeholders::_1));
@@ -54,25 +54,23 @@ void TcpServer::create_connection(Socket* clnt_sock)
         _M_create_connection_callback(conn);
 }
 
-void TcpServer::close_connection(Connection* conn)
+void TcpServer::close_connection(Connection_ptr conn)
 {
     if(_M_close_connection_callback)
         _M_close_connection_callback(conn);
 
     _M_connections_map.erase(conn->get_fd());
-    delete conn;
 }
 
-void TcpServer::error_connection(Connection* conn)
+void TcpServer::error_connection(Connection_ptr conn)
 {
     if(_M_error_connection_callback)
         _M_error_connection_callback(conn);
 
     _M_connections_map.erase(conn->get_fd());
-    delete conn;
 }
 
-void TcpServer::send_complete(Connection* conn)
+void TcpServer::send_complete(Connection_ptr conn)
 {
     if(_M_send_complete_callback)
         _M_send_complete_callback(conn);
@@ -89,11 +87,6 @@ TcpServer::~TcpServer()
     delete _M_acceptor_ptr;
     delete _M_main_loop;
 
-    // 释放全部的连接
-    for(auto& [fd, conn] : _M_connections_map) {
-        delete conn;
-    }
-
     // 释放从事件循环
     for(auto& i : _M_sub_loops) {
         delete i;
@@ -103,23 +96,23 @@ TcpServer::~TcpServer()
     delete _M_pool_ptr;
 }
 
-void TcpServer::set_deal_message_callback(std::function<void(Connection*,std::string &message)> func) {
+void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {
     _M_deal_message_callback = func;
 }
 
-void TcpServer::set_create_connection_callback(std::function<void(Connection*)> func) {
+void TcpServer::set_create_connection_callback(std::function<void(Connection_ptr)> func) {
     _M_create_connection_callback = func;
 }
 
-void TcpServer::set_close_connection_callback(std::function<void(Connection*)> func) {
+void TcpServer::set_close_connection_callback(std::function<void(Connection_ptr)> func) {
     _M_close_connection_callback = func;
 }
 
-void TcpServer::set_error_connection_callback(std::function<void(Connection*)> func) {
+void TcpServer::set_error_connection_callback(std::function<void(Connection_ptr)> func) {
     _M_error_connection_callback = func;
 }
 
-void TcpServer::set_send_complete_callback(std::function<void(Connection*)> func) {
+void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> func) {
     _M_send_complete_callback = func;
 }
 
