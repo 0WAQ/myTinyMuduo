@@ -35,6 +35,15 @@ public:
 
     /**
      * 
+     * @describe: 转调用Epoll::remove
+     * @param:    Channel*
+     * @return:   void
+     */
+    void remove(Channel* ch_ptr);
+
+
+    /**
+     * 
      * @describe: 设置回调函数
      * @param:    void
      * @return:   void

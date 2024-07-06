@@ -20,7 +20,7 @@ void Epoll::updata_channel(Channel* ch_ptr)
     {
         // 若被监听, 则修改events
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_MOD, ch_ptr->get_fd(), &ev) == -1) {
-            std::cerr << "epoll_ctl() failed.\n";
+            std::cerr << "epoll_ctl() modify failed.\n";
             exit(-1);
         }
     }
@@ -28,10 +28,22 @@ void Epoll::updata_channel(Channel* ch_ptr)
     {
         // 否则, 新增该fd至epfd
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_ADD, ch_ptr->get_fd(), &ev) == -1) {
-            std::cerr << "epoll_ctl() failed.\n";
+            std::cerr << "epoll_ctl() add failed.\n";
             exit(-1);
         }
         ch_ptr->set_in_epoll();
+    }
+}
+
+void Epoll::remove(Channel* ch_ptr)
+{
+    // 若channel已经被监听, 那么删除
+    if(ch_ptr->get_in_epoll()) 
+    {
+        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_DEL, ch_ptr->get_fd(), 0) == -1) {
+            std::cerr << "epoll_ctl() remove failed.\n";
+            exit(-1);
+        }
     }
 }
 

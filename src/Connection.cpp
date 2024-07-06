@@ -1,7 +1,7 @@
 #include "../include/Connection.hpp"
 
 Connection::Connection(EventLoop* loop, Socket* clnt_sock) 
-                    : _M_loop_ptr(loop), _M_clnt_sock_ptr(clnt_sock)
+                    : _M_loop_ptr(loop), _M_clnt_sock_ptr(clnt_sock), _M_is_discon(false)
 {
     _M_clnt_channel_ptr = new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd());
     
@@ -33,12 +33,18 @@ uint16_t Connection::get_port() const {
 
 void Connection::close_callback()
 {
+    _M_is_discon = true;
+    // 从事件循环中删除Channel
+    _M_clnt_channel_ptr->remove();
     // 调用回调函数, 转交给TcpServer处理
     _M_close_callback(shared_from_this());
 }
 
 void Connection::error_callback()
 {
+    _M_is_discon = true;
+    // 从事件循环中删除Channel
+    _M_clnt_channel_ptr->remove();
     // 调用回调函数, 转交给TcpServer处理
     _M_error_callback(shared_from_this());
 }
@@ -137,6 +143,12 @@ void Connection::write_events()
 // TcpServer::deal_message中调用
 void Connection::send(const char* data, size_t size)
 {  
+    // 若连接已经断开
+    if(_M_is_discon) {
+        std::cout << "连接提前断开, send()直接返回." << std::endl;
+        return;
+    }
+
     // 先将数据发送到用户缓冲区中
     _M_output_buffer.append_with_head(data, size);
 

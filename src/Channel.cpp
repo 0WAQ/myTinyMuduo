@@ -26,6 +26,7 @@ void Channel::set_write_events()
     _M_loop_ptr->updata_channel(this);
 }
 
+// 目前没有用到
 void Channel::unset_read_events()
 {
     _M_monitored_events &= ~EPOLLIN;
@@ -37,6 +38,18 @@ void Channel::unset_write_events()
     _M_monitored_events &= ~EPOLLOUT;
     _M_loop_ptr->updata_channel(this);
 } 
+
+void Channel::unset_all_events()
+{
+    _M_monitored_events = 0; // 取消全部的事件
+    _M_loop_ptr->updata_channel(this);
+}
+
+void Channel::remove()
+{
+    unset_all_events();         // 先取消全部的事件
+    _M_loop_ptr->remove(this); // 从红黑树上删除fd
+}
 
 void Channel::set_in_epoll() {
     _M_in_epoll = true;

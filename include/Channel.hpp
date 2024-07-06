@@ -85,6 +85,26 @@ public:
 
     /**
      * 
+     * @describe: 取消全部的事件
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void unset_all_events();
+
+
+    /**
+     * 
+     * @describe: 从事件循环中删除Channel
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void remove();
+
+
+    /**
+     * 
      * @describe: 设置该Channel对应的fd已经被监听
      * @param:    void
      * @return:   void

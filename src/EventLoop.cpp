@@ -28,6 +28,11 @@ void EventLoop::updata_channel(Channel* ch_ptr)
     _M_ep_ptr->updata_channel(ch_ptr);
 }
 
+void EventLoop::remove(Channel* ch_ptr)
+{
+    _M_ep_ptr->remove(ch_ptr);
+}
+
 void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
     _M_epoll_wait_timeout_callback = func;
 }

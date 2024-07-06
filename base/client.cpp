@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
         send(sock_fd, tmpbuf, len + 4, 0);
     }
-
+    sleep(1); 
     for(int i = 0; i < 1; i++)
     {
         int len;
@@ -64,6 +64,6 @@ int main(int argc, char* argv[])
         printf("recv:%s\n", buf);
     }
     
-    sleep(100);
+    // sleep(100);
     return 0;
 }

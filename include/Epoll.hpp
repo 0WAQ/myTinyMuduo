@@ -41,6 +41,15 @@ public:
 
     /**
      * 
+     * @describe: 从红黑树上删除Channel
+     * @param:    Channel*
+     * @return:   void
+     */
+    void remove(Channel* ch_ptr);
+
+
+    /**
+     * 
      * @describe: 调用epoll_wait(), 返回所有响应的fd对应的Channel* 
      * @param:    int
      * @return:   std::vector<Channel*>
