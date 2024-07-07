@@ -2,6 +2,7 @@
 
 Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port) 
     : _M_loop_ptr(loop), _M_serv_sock(create_non_blocking_fd())
+    , _M_acceptor_channel(_M_loop_ptr, _M_serv_sock.get_fd())
 {
     // 初始化serv_sock的地址
     InetAddress serv_addr(ip, port);
@@ -21,11 +22,11 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port)
 
 
     // 使用acceptor_channel_ptr将serv_fd和ep绑定在一起
-    _M_acceptor_channel_ptr = new Channel(_M_loop_ptr, _M_serv_sock.get_fd());
+    // _M_acceptor_channel = new Channel(_M_loop_ptr, _M_serv_sock.get_fd());
     // 添加读事件, 并且监听
-    _M_acceptor_channel_ptr->set_read_events();
+    _M_acceptor_channel.set_read_events();
     // 设置acceptor_channel_ptr的执行函数为new_connection
-    _M_acceptor_channel_ptr->set_read_callback(std::bind(&Acceptor::new_connection, this));
+    _M_acceptor_channel.set_read_callback(std::bind(&Acceptor::new_connection, this));
 
 }
 
@@ -45,5 +46,5 @@ void Acceptor::new_connection()
 
 Acceptor::~Acceptor()
 {
-    delete _M_acceptor_channel_ptr;
+    // delete _M_acceptor_channel;
 }

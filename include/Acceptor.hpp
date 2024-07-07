@@ -47,9 +47,11 @@ public:
     ~Acceptor();
 
 private:
-    Socket _M_serv_sock;
-    Channel* _M_acceptor_channel_ptr;
+
+    // 修改声明的顺序, 应该与初始化顺序一致
     EventLoop* _M_loop_ptr;
+    Socket _M_serv_sock;
+    Channel _M_acceptor_channel;
 
     // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
     std::function<void(Socket*)> create_connection_callback;
