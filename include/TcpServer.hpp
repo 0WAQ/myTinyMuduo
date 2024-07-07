@@ -107,14 +107,15 @@ public:
 
 private:
 
-    ThreadPool* _M_pool_ptr; // 线程池
+    // 交换顺序, 和初始化列表顺序一致
     size_t _M_thread_num;   // 线程池的大小, 即从事件循环的个数
+    ThreadPool _M_pool; // 线程池
 
     // 一个TcpServer中可以有多个事件循环, 在多线程中体现
     std::unique_ptr<EventLoop> _M_main_loop;         // 事件循环变量, 用start方法开始
     std::vector<std::unique_ptr<EventLoop>> _M_sub_loops; // 从事件, 运行在线程池中
 
-    Acceptor* _M_acceptor_ptr; // 用于创建监听sock
+    Acceptor _M_acceptor; // 用于创建监听sock
     std::map<int, Connection_ptr> _M_connections_map;
 
 

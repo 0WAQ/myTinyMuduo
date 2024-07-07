@@ -2,18 +2,14 @@
 
 
 TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_num) 
-        : _M_thread_num(thread_num), _M_main_loop(new EventLoop)
+    : _M_thread_num(thread_num), _M_main_loop(new EventLoop), 
+      _M_acceptor(_M_main_loop.get(), ip, port), _M_pool("IO", _M_thread_num)
 {
     
     // _M_main_loop->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
-
-    // 主循环运行Acceptor
-    _M_acceptor_ptr = new Acceptor(_M_main_loop.get(), ip, port);
-    _M_acceptor_ptr->set_create_connection_callback(
+    
+    _M_acceptor.set_create_connection_callback(
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
-
-    // // 线程池运行Connection
-    _M_pool_ptr = new ThreadPool("IO", _M_thread_num);
 
     // 创建从事件循环
     for(int i = 0; i < _M_thread_num; i++) 
@@ -22,7 +18,7 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
         // 设置超时回调函数
         _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
         // 将EventLoop的run函数作为任务添加给线程池
-        _M_pool_ptr->push(std::bind(&EventLoop::run, _M_sub_loops[i].get()));
+        _M_pool.push(std::bind(&EventLoop::run, _M_sub_loops[i].get()));
     }
 }
 
@@ -88,10 +84,7 @@ void TcpServer::epoll_timeout(EventLoop* loop)
 
 TcpServer::~TcpServer()
 {
-    delete _M_acceptor_ptr;
 
-    // 释放线程池
-    delete _M_pool_ptr;
 }
 
 void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {
