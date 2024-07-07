@@ -38,5 +38,5 @@ void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func)
 }
 
 EventLoop::~EventLoop() {
-    delete _M_ep_ptr;
+
 }

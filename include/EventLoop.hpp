@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <functional>
 #include "Epoll.hpp"
 
@@ -55,7 +56,7 @@ public:
 
 private:
 
-    Epoll* _M_ep_ptr;
+    std::unique_ptr<Epoll> _M_ep_ptr;
 
     // 当epoll_wait()超时时, 回调TcpServer::epoll_timeout()
     std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
