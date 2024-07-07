@@ -4,8 +4,16 @@ EventLoop::EventLoop() : _M_ep_ptr(new Epoll) {
 
 }
 
+bool EventLoop::is_loop_thread() {
+    return _M_tid == syscall(SYS_gettid);
+}
+
 void EventLoop::run()
 {
+
+    // 初始化tid
+    _M_tid = syscall(SYS_gettid);
+
     while(true)
     {
         std::vector<Channel*> channels = _M_ep_ptr->wait(10*1000);

@@ -115,11 +115,20 @@ public:
 
     /**
      * 
-     * @describe: 封装了输出到用户缓冲区的功能
+     * @describe: 将send交由IO线程执行
      * @param:    const char*, size_t
      * @return:   void
      */
     void send(const char* data, size_t size);
+
+
+    /**
+     * 
+     * @describe: 封装将数据发送至缓冲区和注册写事件的功能
+     * @param:    const char*, size_t
+     * @return:   void
+     */
+    void send_a(const char* data, size_t size);
 
 
     ~Connection();

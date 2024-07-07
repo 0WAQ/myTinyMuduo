@@ -1,4 +1,6 @@
 #pragma once
+#include <unistd.h>
+#include <syscall.h>
 #include <memory>
 #include <functional>
 #include "Epoll.hpp"
@@ -15,6 +17,16 @@ class EventLoop
 public:
 
     EventLoop();
+
+
+    /**
+     * 
+     * @describe: 判断当前线程是否为事件循环线程
+     * @param:    
+     * @return:   bool
+     * 
+     */
+    bool is_loop_thread();
 
 
     /**
@@ -55,6 +67,8 @@ public:
     ~EventLoop();
 
 private:
+
+    pid_t _M_tid;
 
     std::unique_ptr<Epoll> _M_ep_ptr;
 

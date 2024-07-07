@@ -45,12 +45,24 @@ void Connection::send(const char* data, size_t size)
         return;
     }
 
+    // 判断当前线程是否为IO线程
+    if(_M_loop_ptr->is_loop_thread()) // 若是IO线程, 直接执行send_a
+    {
+        send_a(data, size);
+    }
+    else // 若是工作线程, 交由IO线程执行
+    {
+        printf("send函数再工作线程中");
+    }
+}
+
+void Connection::send_a(const char* data, size_t size)
+{
     // 先将数据发送到用户缓冲区中
     _M_output_buffer.append_with_head(data, size);
 
     // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
     _M_clnt_channel_ptr->set_write_events();
-
 }
 
 void Connection::new_message()
