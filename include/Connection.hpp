@@ -127,7 +127,7 @@ public:
 private:
     EventLoop* _M_loop_ptr;
     std::unique_ptr<Socket> _M_clnt_sock_ptr;
-    Channel* _M_clnt_channel_ptr;
+    std::unique_ptr<Channel> _M_clnt_channel_ptr;
     std::atomic_bool _M_is_discon; // 用于判断当前连接是否断开
 
     // 用户缓冲区

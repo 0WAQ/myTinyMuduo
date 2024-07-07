@@ -1,9 +1,10 @@
 #include "../include/Connection.hpp"
 
 Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock) 
-        : _M_loop_ptr(loop), _M_clnt_sock_ptr(std::move(clnt_sock)), _M_is_discon(false)
+        : _M_loop_ptr(loop), _M_clnt_sock_ptr(std::move(clnt_sock)), 
+          _M_clnt_channel_ptr(new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd())), 
+          _M_is_discon(false)
 {
-    _M_clnt_channel_ptr = new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd());
     
     // 设置clnt_channel的执行函数为new_message
     _M_clnt_channel_ptr->set_read_callback(std::bind(&Connection::new_message, this));
@@ -159,5 +160,5 @@ void Connection::send(const char* data, size_t size)
 
 Connection::~Connection()
 {
-    delete _M_clnt_channel_ptr;
+
 }
