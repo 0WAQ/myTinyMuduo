@@ -41,6 +41,16 @@ public:
     void push(std::function<void()> task);
 
 
+    /**
+     * 
+     * @describe: 获取线程池中的线程数量
+     * @param:    void
+     * @return:   std::size_t
+     * 
+     */
+    std::size_t size();
+
+
     ~ThreadPool();
 
 

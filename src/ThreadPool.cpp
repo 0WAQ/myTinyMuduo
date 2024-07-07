@@ -58,6 +58,10 @@ void ThreadPool::push(std::function<void()> task)
     _M_condition.notify_one();
 }
 
+std::size_t ThreadPool::size() {
+    return _M_threads.size();
+}
+
 ThreadPool::~ThreadPool() 
 {
     _M_stop = true;

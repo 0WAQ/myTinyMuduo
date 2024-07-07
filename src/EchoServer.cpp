@@ -6,7 +6,7 @@ EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_
 {
 
     // 业务需要什么事件,就回调什么事件
-    _M_tcp_server.set_deal_message_callback(std::bind(&EchoServer::handle_deal_message, this, 
+    _M_tcp_server.set_deal_message_callback(std::bind(&EchoServer::handle_deal_message_a, this, 
                                             std::placeholders::_1, std::placeholders::_2));
 
     _M_tcp_server.set_close_connection_callback(std::bind(&EchoServer::handle_close_connection, this,
@@ -29,13 +29,22 @@ void EchoServer::start() {
     _M_tcp_server.start();
 }
 
-void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
-{
-    // 将业务添加到线程池的工作队列中
-    _M_pool.push(std::bind(&EchoServer::handle_deal_message_a, this, conn, message));
+void EchoServer::handle_deal_message_a(Connection_ptr conn, std::string& message)
+{   
+    // 若没有工作线程, 再调用回去, 由IO线程处理
+    if(_M_pool.size() == 0) 
+    {
+        handle_deal_message(conn, message);
+    }
+    else
+    {
+        // 将业务添加到线程池的工作队列中a
+        _M_pool.push(std::bind(&EchoServer::handle_deal_message, this, conn, message));
+    }
+
 }
 
-void EchoServer::handle_deal_message_a(Connection_ptr conn, std::string& message)
+void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 {
     printf("thread id = %d, deal message().\n", syscall(SYS_gettid));
 
