@@ -47,7 +47,7 @@ public:
     ~Acceptor();
 
 private:
-    Socket* _M_serv_sock_ptr;
+    Socket _M_serv_sock;
     Channel* _M_acceptor_channel_ptr;
     EventLoop* _M_loop_ptr;
 
