@@ -42,11 +42,11 @@ public:
     /**
      * 
      * @describe: 业务处理函数
-     * @param: 
-     * @return:
+     * @param:    Connection_ptr, std::string&
+     * @return:   void
      * 
      */
-    void exec_business(Connection_ptr conn, std::string& message);
+    void handle_deal_message_a(Connection_ptr conn, std::string& message);
 
 
     ~EchoServer();

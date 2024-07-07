@@ -4,8 +4,7 @@ Buffer::Buffer() {
 
 }
 
-void Buffer::append(const char* data, size_t size)
-{
+void Buffer::append(const char* data, size_t size) {
     _M_buf.append(data, size);
 }
 
@@ -17,23 +16,19 @@ void Buffer::append_with_head(const char* data, size_t size)
     _M_buf.append(data, size);
 }
 
-void Buffer::erase(size_t pos, size_t len)
-{
+void Buffer::erase(size_t pos, size_t len) {
     _M_buf.erase(pos, len);
 }
 
-std::size_t Buffer::size()
-{
+std::size_t Buffer::size() {
     return _M_buf.size();
 }
 
-const char* Buffer::data()
-{
+const char* Buffer::data() {
     return _M_buf.data();
 }
 
-void Buffer::clear()
-{
+void Buffer::clear() {
     _M_buf.clear();
 }
 

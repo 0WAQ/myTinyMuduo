@@ -11,7 +11,7 @@ int Channel::get_fd() {
 }
 
 void Channel::set_ET() {
-    _M_monitored_events |= EPOLLET;
+    _M_monitored_events |= EPOLLET; // EPOLLET的值为 1u << 31
 }
 
 // 除了设置为读事件, 还直接调用updata_channel去添加

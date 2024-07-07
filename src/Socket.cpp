@@ -13,7 +13,9 @@ int create_non_blocking_fd()
     return listen_fd;
 }
 
-Socket::Socket(int fd):_M_fd(fd) {}
+Socket::Socket(int fd):_M_fd(fd) {
+
+}
 
 int Socket::get_fd() {
     return _M_fd;
@@ -37,7 +39,7 @@ void Socket::bind(const InetAddress& serv_addr)
 {
     if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
         std::cerr << "bind() failed\n";
-        ::close(_M_fd);
+        close(_M_fd);
         exit(-1);
     }
 
@@ -49,7 +51,7 @@ void Socket::listen(size_t max_connection)
 {
     if(::listen(_M_fd, max_connection) != 0) {
         std::cerr << "listen() failed\n";
-        ::close(_M_fd);
+        close(_M_fd);
         exit(-1);      
     }
 }
@@ -70,27 +72,27 @@ int Socket::accept(InetAddress& clnt_addr)
 void Socket::set_keep_alive(bool on)
 {
     int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));
+    setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));
 }
 
 void Socket::set_reuse_addr(bool on)
 {
     int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 }
 
 void Socket::set_reuse_port(bool on)
 {
     int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));
+    setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));
 }
 
 void Socket::set_tcp_nodelay(bool on)
 {
     int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt));
+    setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt));
 }
 
 Socket::~Socket() {
-    ::close(_M_fd);
+    close(_M_fd);
 }

@@ -77,7 +77,6 @@ std::vector<Channel*> Epoll::wait(int time_out)
 }
 
 
-Epoll::~Epoll()
-{
+Epoll::~Epoll() {
     close(_M_epoll_fd);
 }

@@ -82,11 +82,6 @@ void TcpServer::epoll_timeout(EventLoop* loop)
         _M_epoll_timeout_callback(loop);
 }
 
-TcpServer::~TcpServer()
-{
-
-}
-
 void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {
     _M_deal_message_callback = func;
 }
@@ -109,4 +104,8 @@ void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> f
 
 void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
     _M_epoll_timeout_callback = func;
+}
+
+TcpServer::~TcpServer() {
+
 }

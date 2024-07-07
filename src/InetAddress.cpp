@@ -31,7 +31,6 @@ void InetAddress::set_addr(sockaddr_in clnt_addr) {
     _M_addr = clnt_addr;
 }
 
-InetAddress::~InetAddress()
-{
+InetAddress::~InetAddress() {
 
 }

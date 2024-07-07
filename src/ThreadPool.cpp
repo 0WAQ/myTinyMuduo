@@ -19,7 +19,7 @@ ThreadPool::ThreadPool(const std::string& type, size_t thread_num)
                     {   // 锁作用域开始
                         std::unique_lock<std::mutex> lock(this->_M_mutex);
 
-                        // 等待生产者的条件变量
+                        // 等待生产者的条件变量, 满足条件时条件变量会唤醒进程, 否则会阻塞在这里
                         this->_M_condition.wait(lock, [this]{
                             // 只有当等待队列中有任务或者stop时才继续执行
                             return (this->_M_stop || !this->_M_task_queue.empty());

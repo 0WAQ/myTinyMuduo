@@ -29,7 +29,13 @@ void EchoServer::start() {
     _M_tcp_server.start();
 }
 
-void EchoServer::exec_business(Connection_ptr conn, std::string& message)
+void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
+{
+    // 将业务添加到线程池的工作队列中
+    _M_pool.push(std::bind(&EchoServer::handle_deal_message_a, this, conn, message));
+}
+
+void EchoServer::handle_deal_message_a(Connection_ptr conn, std::string& message)
 {
     printf("thread id = %d, deal message().\n", syscall(SYS_gettid));
 
@@ -38,12 +44,6 @@ void EchoServer::exec_business(Connection_ptr conn, std::string& message)
 
     // 将报文发送出去
     conn->send(message.data(), message.size());
-}
-
-void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
-{
-    // 将业务添加到线程池的工作队列中
-    _M_pool.push(std::bind(&EchoServer::exec_business, this, conn, message));
 }
 
 void EchoServer::handle_create_connection(Connection_ptr conn)
@@ -72,8 +72,7 @@ void EchoServer::handle_send_complete(Connection_ptr conn)
 
 void EchoServer::handle_epoll_timeout(EventLoop* loop) 
 {
-    // 方便查看日志
-    // printf("thread id = %d, epoll_wait() timeout.\n", syscall(SYS_gettid));
+    printf("thread id = %d, epoll_wait() timeout.\n", syscall(SYS_gettid));
 }
 
 EchoServer::~EchoServer() {
