@@ -36,34 +36,29 @@ int main(int argc, char* argv[])
     std::cout << "connect ok.\n";
 
     char buf[1024];
-    for(int i = 0; i < 1; i++)
+    while(true)
     {
-        memset(buf, 0, sizeof(buf));
-        //std::cout << "please input: ";
-        //std::cin >> buf;
-        sprintf(buf, "我是%d号超级大帅哥。", i + 1);
-
         char tmpbuf[1024]; // 临时buf,存放带有报文头的报文内容
         memset(tmpbuf, 0, sizeof(tmpbuf));
+        memset(buf, 0, sizeof(buf));
+
+        std::cout << "please input: ";
+        std::cin >> buf;
         
         int len = strlen(buf);      // 计算报文大小
         memcpy(tmpbuf, &len, 4);    // 拼接报文头部
         memcpy(tmpbuf + 4, buf, len);   // 拼接报文内容
 
         send(sock_fd, tmpbuf, len + 4, 0);
-    }
-    // sleep(1); 
-    for(int i = 0; i < 1; i++)
-    {
-        int len;
-        recv(sock_fd, &len, 4, 0);
 
+
+        len = 0;
+        recv(sock_fd, &len, 4, 0);
         memset(buf, 0, sizeof(buf));
         recv(sock_fd, buf, len, 0);
 
         printf("recv:%s\n", buf);
     }
     
-    // sleep(100);
     return 0;
 }
