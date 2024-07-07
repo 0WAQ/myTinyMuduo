@@ -54,8 +54,8 @@ public:
 private:
 
     // 增加线程池, 用来存放工作线程
-    ThreadPool* _M_pool_ptr;
     size_t _M_thread_num;
+    ThreadPool _M_pool;
 
     TcpServer _M_tcp_server;
 };

@@ -1,10 +1,9 @@
 #include "../include/EchoServer.hpp"
 
 EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_num, size_t work_thread_num) 
-        : _M_tcp_server(ip, port, loop_thread_num), _M_thread_num(work_thread_num)
+        : _M_tcp_server(ip, port, loop_thread_num), _M_thread_num(work_thread_num), 
+          _M_pool("WORK", _M_thread_num)
 {
-    // 创建工作线程池
-    _M_pool_ptr = new ThreadPool("WORK", _M_thread_num);
 
     // 业务需要什么事件,就回调什么事件
     _M_tcp_server.set_deal_message_callback(std::bind(&EchoServer::handle_deal_message, this, 
@@ -44,7 +43,7 @@ void EchoServer::exec_business(Connection_ptr conn, std::string& message)
 void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 {
     // 将业务添加到线程池的工作队列中
-    _M_pool_ptr->push(std::bind(&EchoServer::exec_business, this, conn, message));
+    _M_pool.push(std::bind(&EchoServer::exec_business, this, conn, message));
 }
 
 void EchoServer::handle_create_connection(Connection_ptr conn)
@@ -78,5 +77,5 @@ void EchoServer::handle_epoll_timeout(EventLoop* loop)
 }
 
 EchoServer::~EchoServer() {
-    delete _M_pool_ptr;
+
 }
