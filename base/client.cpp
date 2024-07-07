@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
         send(sock_fd, tmpbuf, len + 4, 0);
     }
-    sleep(1); 
+    // sleep(1); 
     for(int i = 0; i < 1; i++)
     {
         int len;
