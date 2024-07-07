@@ -111,8 +111,8 @@ private:
     size_t _M_thread_num;   // 线程池的大小, 即从事件循环的个数
 
     // 一个TcpServer中可以有多个事件循环, 在多线程中体现
-    EventLoop* _M_main_loop;         // 事件循环变量, 用start方法开始
-    std::vector<EventLoop*> _M_sub_loops; // 从事件, 运行在线程池中
+    std::unique_ptr<EventLoop> _M_main_loop;         // 事件循环变量, 用start方法开始
+    std::vector<std::unique_ptr<EventLoop>> _M_sub_loops; // 从事件, 运行在线程池中
 
     Acceptor* _M_acceptor_ptr; // 用于创建监听sock
     std::map<int, Connection_ptr> _M_connections_map;
