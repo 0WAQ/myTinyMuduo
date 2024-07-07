@@ -37,10 +37,14 @@ void TcpServer::deal_message(Connection_ptr conn, std::string& message)
         _M_deal_message_callback(conn, message);
 }
 
-void TcpServer::create_connection(Socket* clnt_sock)
+void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
 {
+    // 先获取fd, 因为在调用Connection构造时, 从右到左入栈, 已经将clnt_sock的资源转移出去了
+    int fd = clnt_sock->get_fd();
     // 创建Connection对象, 并将其指定给线程池中的loop  
-    Connection_ptr conn(new Connection(_M_sub_loops[clnt_sock->get_fd() % _M_thread_num], clnt_sock));
+    Connection_ptr conn(new Connection(
+        _M_sub_loops[fd % _M_thread_num], std::move(clnt_sock)));
+    
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
     conn->set_send_complete_callback(std::bind(&TcpServer::send_complete, this, std::placeholders::_1));

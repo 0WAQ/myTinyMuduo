@@ -49,11 +49,11 @@ public:
     /**
      * 
      * @describe: 封装处理新的连接请求的代码
-     * @param:    Socket*
+     * @param:    std::unique_ptr<Socket>
      * @return:   void
      * 
      */
-    void create_connection(Socket* clnt_sock);
+    void create_connection(std::unique_ptr<Socket> clnt_sock);
 
 
     /**

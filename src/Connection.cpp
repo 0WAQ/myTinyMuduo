@@ -1,7 +1,7 @@
 #include "../include/Connection.hpp"
 
-Connection::Connection(EventLoop* loop, Socket* clnt_sock) 
-                    : _M_loop_ptr(loop), _M_clnt_sock_ptr(clnt_sock), _M_is_discon(false)
+Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock) 
+        : _M_loop_ptr(loop), _M_clnt_sock_ptr(std::move(clnt_sock)), _M_is_discon(false)
 {
     _M_clnt_channel_ptr = new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd());
     
@@ -159,6 +159,5 @@ void Connection::send(const char* data, size_t size)
 
 Connection::~Connection()
 {
-    delete _M_clnt_sock_ptr;
     delete _M_clnt_channel_ptr;
 }

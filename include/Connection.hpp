@@ -23,10 +23,10 @@ public:
     /**
      * 
      * @describe: 初始化loop与clnt_sock
-     * @param:    EventLoop*, Socket*
+     * @param:    EventLoop*, std::unique_ptr<Socket>
      * 
      */
-    Connection(EventLoop* loop, Socket* clnt_sock);
+    Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock);
     
     
     /**
@@ -126,7 +126,7 @@ public:
 
 private:
     EventLoop* _M_loop_ptr;
-    Socket* _M_clnt_sock_ptr;
+    std::unique_ptr<Socket> _M_clnt_sock_ptr;
     Channel* _M_clnt_channel_ptr;
     std::atomic_bool _M_is_discon; // 用于判断当前连接是否断开
 

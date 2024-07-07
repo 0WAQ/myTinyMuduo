@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Socket.hpp"
 #include "InetAddress.hpp"
 #include "Channel.hpp"
@@ -31,7 +32,7 @@ public:
      * @return:   void
      * 
      */
-    void set_create_connection_callback(std::function<void(Socket*)> func);
+    void set_create_connection_callback(std::function<void(std::unique_ptr<Socket>)> func);
 
 
     /**
@@ -54,5 +55,5 @@ private:
     Channel _M_acceptor_channel;
 
     // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
-    std::function<void(Socket*)> create_connection_callback;
+    std::function<void(std::unique_ptr<Socket>)> create_connection_callback;
 };
