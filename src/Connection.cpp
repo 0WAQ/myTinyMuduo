@@ -52,7 +52,8 @@ void Connection::send(const char* data, size_t size)
     }
     else // 若是工作线程, 交由IO线程执行
     {
-        printf("send函数再工作线程中");
+        // 添加到loop的任务队列中
+        _M_loop_ptr->push(std::bind(&Connection::send_a, this, data, size));
     }
 }
 

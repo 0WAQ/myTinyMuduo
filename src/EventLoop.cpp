@@ -1,11 +1,72 @@
 #include "../include/EventLoop.hpp"
 
-EventLoop::EventLoop() : _M_ep_ptr(new Epoll) {
+EventLoop::EventLoop() : _M_ep_ptr(new Epoll), _M_efd(eventfd(0, EFD_NONBLOCK)) ,
+                         _M_channel(new Channel(this, _M_efd))
+{
+    // 监听efd的读事件
+    _M_channel->set_read_events();
 
+    // 设置读事件发生后的回调函数
+    _M_channel->set_read_callback(std::bind(&EventLoop::handle, this));
 }
 
 bool EventLoop::is_loop_thread() {
     return _M_tid == syscall(SYS_gettid);
+}
+
+void EventLoop::push(std::function<void()> task) 
+{
+    ////////////////////////////////////////////////
+    {   
+        std::lock_guard<std::mutex> lock(_M_mutex);
+        _M_task_queue.push(task);
+    }   
+    ////////////////////////////////////////////////
+
+    /**
+     * 
+     * 在线程池中, 用条件变量唤醒休眠的工作线程, 
+     * 而在IO线程中, 其本来就在运行态, 
+     * 所以用eventfd在当前epoll中注册读事件相当于唤醒
+     * 
+     */
+
+    // 唤醒事件循环
+    notify_one(); // 唤醒后, epoll会响应efd的读事件, 然后让其去执行handle
+}
+
+void EventLoop::notify_one()
+{
+    uint64_t val = 1;
+    write(_M_efd, &val, sizeof(val));
+}
+
+void EventLoop::handle()
+{
+    printf("thread is %d, IO thread is waked up\n", syscall(SYS_gettid));
+
+    uint64_t val;
+    read(_M_efd, &val, sizeof(val)); // 读出来, 否则在LT中会一直触发
+
+    // 开始执行任务
+    std::function<void()> task;
+
+    ///////////////////////////////////////////////////
+    {
+        std::lock_guard<std::mutex> lock(_M_mutex);
+        
+        // 处理任务队列中的所有任务
+        while(!_M_task_queue.empty())
+        {
+            task = std::move(_M_task_queue.front());
+            _M_task_queue.pop();
+            
+            task();
+        }
+
+    }
+    ///////////////////////////////////////////////////
+
 }
 
 void EventLoop::run()
