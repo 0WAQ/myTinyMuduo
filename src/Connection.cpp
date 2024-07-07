@@ -3,20 +3,18 @@
 Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock) 
         : _M_loop_ptr(loop), _M_clnt_sock_ptr(std::move(clnt_sock)), 
           _M_clnt_channel_ptr(new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd())), 
-          _M_is_discon(false)
+          _M_is_diconnected(false)
 {
     
-    // 设置clnt_channel的执行函数为new_message
+    // 设置Connection的回调函数
     _M_clnt_channel_ptr->set_read_callback(std::bind(&Connection::new_message, this));
-    // 设置clnt_channel的执行函数为write_events
     _M_clnt_channel_ptr->set_write_callback(std::bind(&Connection::write_events, this));
-    // 设置Channel需要回调的函数
     _M_clnt_channel_ptr->set_close_callback(std::bind(&Connection::close_callback, this));
     _M_clnt_channel_ptr->set_error_callback(std::bind(&Connection::error_callback, this));
 
     // 设置为边缘触发
     _M_clnt_channel_ptr->set_ET();
-    // 设置为读事件, 并监听
+    // 监听读事件
     _M_clnt_channel_ptr->set_read_events();
 }
 
@@ -34,7 +32,7 @@ uint16_t Connection::get_port() const {
 
 void Connection::close_callback()
 {
-    _M_is_discon = true;
+    _M_is_diconnected = true;
     // 从事件循环中删除Channel
     _M_clnt_channel_ptr->remove();
     // 调用回调函数, 转交给TcpServer处理
@@ -43,7 +41,7 @@ void Connection::close_callback()
 
 void Connection::error_callback()
 {
-    _M_is_discon = true;
+    _M_is_diconnected = true;
     // 从事件循环中删除Channel
     _M_clnt_channel_ptr->remove();
     // 调用回调函数, 转交给TcpServer处理
@@ -145,7 +143,7 @@ void Connection::write_events()
 void Connection::send(const char* data, size_t size)
 {  
     // 若连接已经断开
-    if(_M_is_discon) {
+    if(_M_is_diconnected) {
         std::cout << "连接提前断开, send()直接返回." << std::endl;
         return;
     }
