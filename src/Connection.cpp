@@ -45,22 +45,32 @@ void Connection::send(const char* data, size_t size)
         return;
     }
 
+    /**
+     * 
+     * 将数据包装成智能指针, 因为要发送给其他线程,
+     * 可能在其它线程使用数据时, 当前线程返回, 
+     * 导致在栈空间的数据变量message被释放,
+     * 造成未定义行为
+     * 
+     */
+    std::shared_ptr<std::string> message(new std::string(data, size));
+
     // 判断当前线程是否为IO线程
     if(_M_loop_ptr->is_loop_thread()) // 若是IO线程, 直接执行send_a
     {
-        send_a(data, size);
+        send_a(message);
     }
     else // 若是工作线程, 交由IO线程执行
     {
         // 添加到loop的任务队列中
-        _M_loop_ptr->push(std::bind(&Connection::send_a, this, data, size));
+        _M_loop_ptr->push(std::bind(&Connection::send_a, this, message));
     }
 }
 
-void Connection::send_a(const char* data, size_t size)
+void Connection::send_a(std::shared_ptr<std::string> message)
 {
     // 先将数据发送到用户缓冲区中
-    _M_output_buffer.append_with_head(data, size);
+    _M_output_buffer.append_with_head(message->data(), message->size());
 
     // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
     _M_clnt_channel_ptr->set_write_events();

@@ -125,10 +125,10 @@ public:
     /**
      * 
      * @describe: 封装将数据发送至缓冲区和注册写事件的功能
-     * @param:    const char*, size_t
+     * @param:    std::shared_ptr<std::string>
      * @return:   void
      */
-    void send_a(const char* data, size_t size);
+    void send_a(std::shared_ptr<std::string> message);
 
 
     ~Connection();
