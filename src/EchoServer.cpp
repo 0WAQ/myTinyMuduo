@@ -66,7 +66,7 @@ void EchoServer::handle_error_connection(Connection_ptr conn)
 
 void EchoServer::handle_send_complete(Connection_ptr conn) 
 {
-    printf("thread id = %d, error connection(client ip is %s).\n", 
+    printf("thread id = %d, send complete(client ip is %s).\n", 
                     syscall(SYS_gettid), conn->get_ip().c_str());
 }
 
