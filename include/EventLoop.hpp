@@ -7,6 +7,7 @@
 #include <future>
 #include <map>
 #include <mutex>
+#include <atomic>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 #include <sys/timerfd.h> // 定时器
 #include "Epoll.hpp"
@@ -93,6 +94,16 @@ public:
 
 
     /**
+     * 
+     * @describe: 停止事件循环
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void stop();
+
+
+    /**
      * @describe:  调用成员变量_M_ep的updata_channel
      * @param:     Channel*
      * @return:    void
@@ -149,6 +160,8 @@ private:
     bool _M_is_main_loop; // 用于判断当前线程为主线程还是从线程
 
     std::mutex _M_mmutex; // 用于对map容器的操作上锁
+
+    std::atomic_bool _M_stop = false; // 停止事件循环, true为停止
 
     // 存放运行在该事件循环上的所有Connection对象
     std::map<int, Connection_ptr> _M_conns;

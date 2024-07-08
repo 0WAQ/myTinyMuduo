@@ -129,7 +129,7 @@ void EventLoop::run()
     // 初始化tid
     _M_tid = syscall(SYS_gettid);
 
-    while(true)
+    while(!_M_stop)
     {
         std::vector<Channel*> channels = _M_ep_ptr->wait(10*1000);
 
@@ -145,6 +145,15 @@ void EventLoop::run()
                 ch->handle();
         }
     }
+}
+
+void EventLoop::stop() 
+{
+    // 标志位
+    _M_stop = true;
+
+    // 唤醒epoll_wait
+    notify_one();
 }
 
 void EventLoop::updata_channel(Channel* ch_ptr) {
