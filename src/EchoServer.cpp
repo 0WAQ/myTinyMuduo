@@ -36,7 +36,7 @@ void EchoServer::stop()
     // 停止工作线程
     _M_pool.stop();
 
-    // 停止IO线程
+    // tcp_server
     _M_tcp_server.stop();
 }
 
