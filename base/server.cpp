@@ -1,4 +1,21 @@
+#include <iostream>
+#include <signal.h>
 #include "../include/EchoServer.hpp"
+
+EchoServer* server;
+
+void stop(int sig)
+{
+    std::cout << "sig: " << sig << std::endl;
+
+    // 调用EchoServer::stop函数停止服务
+    server->stop();
+
+    std::cout << "echo-server已停止\n" << fflush;
+
+    delete server;
+    exit(0);
+}
 
 int main(int argc, char* argv[])
 {
@@ -8,9 +25,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    EchoServer echo_server(argv[1], atoi(argv[2]));
-    
-    echo_server.start();
+    signal(SIGTERM, stop);
+    signal(SIGINT, stop);
+
+    server = new EchoServer(argv[1], atoi(argv[2]));
+    server->start();
 
     return 0;
 }

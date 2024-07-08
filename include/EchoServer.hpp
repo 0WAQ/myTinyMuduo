@@ -31,6 +31,7 @@ public:
      * 
      */
     void start();
+    void stop();
     void handle_deal_message(Connection_ptr conn, std::string& message);
     void handle_create_connection(Connection_ptr conn);
     void handle_close_connection(Connection_ptr conn);

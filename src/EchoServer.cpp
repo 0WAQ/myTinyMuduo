@@ -31,6 +31,15 @@ void EchoServer::start() {
     _M_tcp_server.start();
 }
 
+void EchoServer::stop() 
+{
+    // 停止工作线程
+    _M_pool.stop();
+
+    // 停止IO线程
+    _M_tcp_server.stop();
+}
+
 void EchoServer::handle_deal_message_a(Connection_ptr conn, std::string& message)
 {   
     // 若没有工作线程, 再调用回去, 由IO线程处理
