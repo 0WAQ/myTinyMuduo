@@ -98,11 +98,11 @@ public:
     /**
      * 
      * @describe: 删除conns中的Connection对象, 在EventLoop::handle_timerfd中回调
-     * @param:    int
+     * @param:    Connection_ptr
      * @return:   void
      * 
      */
-    void remove_conn(int fd);
+    void timer_out(Connection_ptr conn);
 
 
     // 以下为设置回调函数的函数
@@ -112,6 +112,7 @@ public:
     void set_error_connection_callback(std::function<void(Connection_ptr)> func);
     void set_send_complete_callback(std::function<void(Connection_ptr)> func);
     void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
+    void set_timer_out_callback(std::function<void(Connection_ptr)> func);
 
     ~TcpServer();
 
@@ -148,4 +149,6 @@ private:
     // 回调EchoServer::HandleTimeOut
     std::function<void(EventLoop*)>  _M_epoll_timeout_callback;
     
+    // 回调EchoServer::HandleTimerOut
+    std::function<void(Connection_ptr)> _M_timer_out_callback;
 };

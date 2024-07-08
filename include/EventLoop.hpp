@@ -124,7 +124,7 @@ public:
      * @return:   void
      */
     void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
-    void set_timer_out_callback(std::function<void(int)> func);
+    void set_timer_out_callback(std::function<void(Connection_ptr)> func);
 
     ~EventLoop();
 
@@ -157,5 +157,5 @@ private:
     std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
 
     // 当定时器超时时, 回调TcpServer::remove_conn()
-    std::function<void(int)> _M_timer_out_callback;
+    std::function<void(Connection_ptr)> _M_timer_out_callback;
 };

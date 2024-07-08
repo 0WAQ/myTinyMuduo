@@ -110,7 +110,7 @@ void EventLoop::handle_timerfd()
             if(it->second->timer_out(_M_timeout)) 
             {
                 // 将TcpServer中的map容器对应的conn删除
-                _M_timer_out_callback(it->first);
+                _M_timer_out_callback(it->second);
 
                 ///////////////////////////////////////////////////
                 std::lock_guard<std::mutex> lock(_M_mmutex);
@@ -163,7 +163,7 @@ void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func)
     _M_epoll_wait_timeout_callback = func;
 }
 
-void EventLoop::set_timer_out_callback(std::function<void(int)> func) {
+void EventLoop::set_timer_out_callback(std::function<void(Connection_ptr)> func) {
     _M_timer_out_callback = func;
 }
 

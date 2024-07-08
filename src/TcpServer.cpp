@@ -18,7 +18,7 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
         // 设置epoll_wait超时回调函数
         _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
         // 设置定时器超时回调函数, 用于清理空闲超时Connection
-        _M_sub_loops[i]->set_timer_out_callback(std::bind(&TcpServer::remove_conn, this, std::placeholders::_1));
+        _M_sub_loops[i]->set_timer_out_callback(std::bind(&TcpServer::timer_out, this, std::placeholders::_1));
         // 将EventLoop的run函数作为任务添加给线程池
         _M_pool.push(std::bind(&EventLoop::run, _M_sub_loops[i].get()));
     }
@@ -107,13 +107,16 @@ void TcpServer::epoll_timeout(EventLoop* loop)
 }
 
 // 清理空闲的Connection
-void TcpServer::remove_conn(int fd)
+void TcpServer::timer_out(Connection_ptr conn)
 {
+    if(_M_timer_out_callback)
+        _M_timer_out_callback(conn);
+
     ///////////////////////////////////////////////////////////////
     {
         std::lock_guard<std::mutex> lock(_M_mutex);
 
-        _M_connections_map.erase(fd);
+        _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
 }
@@ -140,6 +143,10 @@ void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> f
 
 void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
     _M_epoll_timeout_callback = func;
+}
+
+void TcpServer::set_timer_out_callback(std::function<void(Connection_ptr)> func) {
+    _M_timer_out_callback = func;
 }
 
 TcpServer::~TcpServer() {

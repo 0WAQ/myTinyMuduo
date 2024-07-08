@@ -23,6 +23,8 @@ EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_
 
     _M_tcp_server.set_epoll_timeout_callback(std::bind(&EchoServer::handle_epoll_timeout, this,
                                             std::placeholders::_1));
+
+    _M_tcp_server.set_timer_out_callback(std::bind(&EchoServer::handle_timer_out, this, std::placeholders::_1));
 }
 
 void EchoServer::start() {
@@ -82,6 +84,12 @@ void EchoServer::handle_send_complete(Connection_ptr conn)
 void EchoServer::handle_epoll_timeout(EventLoop* loop) 
 {
     printf("thread id = %d, epoll_wait() timeout.\n", syscall(SYS_gettid));
+}
+
+void EchoServer::handle_timer_out(Connection_ptr conn)
+{
+    printf("thread id = %d, timer_out(client ip is %s).\n", 
+                    syscall(SYS_gettid), conn->get_ip().c_str());
 }
 
 EchoServer::~EchoServer() {

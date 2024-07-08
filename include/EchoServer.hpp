@@ -37,7 +37,7 @@ public:
     void handle_error_connection(Connection_ptr conn);
     void handle_send_complete(Connection_ptr conn);
     void handle_epoll_timeout(EventLoop* loop);
-
+    void handle_timer_out(Connection_ptr conn);
 
     /**
      * 
