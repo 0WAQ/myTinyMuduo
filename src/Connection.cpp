@@ -121,7 +121,7 @@ void Connection::new_message()
 
                 // 更新时间戳
                 _M_ts = TimeStamp();
-                // std::cout << "当前时间: " << _M_ts.to_string() << std::endl;
+                std::cout << "当前时间: " << _M_ts.to_string() << std::endl;
 
                 _M_deal_message_callback(shared_from_this(), message);
             }
@@ -135,6 +135,10 @@ void Connection::new_message()
             break;
         }
     }
+}
+
+bool Connection::timer_out(time_t val) {
+    return time(0) - _M_ts.to_time_t() > val;
 }
 
 void Connection::close_callback()

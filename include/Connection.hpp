@@ -10,6 +10,8 @@
 #include "Buffer.hpp"
 #include "TimeStamp.hpp"
 
+class EventLoop;
+class Channel;
 class Connection;
 using Connection_ptr = std::shared_ptr<Connection>;
 
@@ -130,6 +132,16 @@ public:
      * @return:   void
      */
     void send_a(std::shared_ptr<std::string> message);
+
+
+    /**
+     * 
+     * @describe: 用于判断当前时间now是否超过定时器事件val秒
+     * @param:    time_t
+     * @return:   bool
+     * 
+     */
+    bool timer_out(time_t val);
 
 
     ~Connection();

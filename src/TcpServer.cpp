@@ -14,9 +14,11 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
     // 创建从事件循环
     for(int i = 0; i < _M_thread_num; i++) 
     {
-        _M_sub_loops.emplace_back(new EventLoop(false)); // 将从事件放入sub_loops中
-        // 设置超时回调函数
+        _M_sub_loops.emplace_back(new EventLoop(false, 5, 10)); // 将从事件放入sub_loops中
+        // 设置epoll_wait超时回调函数
         _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
+        // 设置定时器超时回调函数, 用于清理空闲超时Connection
+        _M_sub_loops[i]->set_timer_out_callback(std::bind(&TcpServer::remove_conn, this, std::placeholders::_1));
         // 将EventLoop的run函数作为任务添加给线程池
         _M_pool.push(std::bind(&EventLoop::run, _M_sub_loops[i].get()));
     }
@@ -47,8 +49,17 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
     conn->set_deal_message_callback(std::bind(&TcpServer::deal_message, this, 
                                                     std::placeholders::_1, std::placeholders::_2));
 
-    // 将连接用map来管理
-    _M_connections_map[conn->get_fd()] = conn;
+    ///////////////////////////////////////////////////////////////
+    {
+        std::lock_guard<std::mutex> lock(_M_mutex);
+
+        // 将conn存放到TcpServer的map容器中, 用于在连接中断时释放连接
+        _M_connections_map[conn->get_fd()] = conn;
+    }
+    ///////////////////////////////////////////////////////////////
+
+    // 将conn存放到EventLoop的map容器中, 用于处理定时器事件
+    _M_sub_loops[fd % _M_thread_num]->push(conn);
 
     if(_M_create_connection_callback)
         _M_create_connection_callback(conn);
@@ -59,7 +70,14 @@ void TcpServer::close_connection(Connection_ptr conn)
     if(_M_close_connection_callback)
         _M_close_connection_callback(conn);
 
-    _M_connections_map.erase(conn->get_fd());
+    ///////////////////////////////////////////////////////////////
+    {
+        std::lock_guard<std::mutex> lock(_M_mutex);
+
+        _M_connections_map.erase(conn->get_fd());
+    }
+    ///////////////////////////////////////////////////////////////
+    
 }
 
 void TcpServer::error_connection(Connection_ptr conn)
@@ -67,7 +85,13 @@ void TcpServer::error_connection(Connection_ptr conn)
     if(_M_error_connection_callback)
         _M_error_connection_callback(conn);
 
-    _M_connections_map.erase(conn->get_fd());
+    ///////////////////////////////////////////////////////////////
+    {
+        std::lock_guard<std::mutex> lock(_M_mutex);
+
+        _M_connections_map.erase(conn->get_fd());
+    }
+    ///////////////////////////////////////////////////////////////
 }
 
 void TcpServer::send_complete(Connection_ptr conn)
@@ -80,6 +104,18 @@ void TcpServer::epoll_timeout(EventLoop* loop)
 {
     if(_M_epoll_timeout_callback)
         _M_epoll_timeout_callback(loop);
+}
+
+// 清理空闲的Connection
+void TcpServer::remove_conn(int fd)
+{
+    ///////////////////////////////////////////////////////////////
+    {
+        std::lock_guard<std::mutex> lock(_M_mutex);
+
+        _M_connections_map.erase(fd);
+    }
+    ///////////////////////////////////////////////////////////////
 }
 
 void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {

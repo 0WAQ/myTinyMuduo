@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <mutex>
 #include "Socket.hpp"
 #include "Channel.hpp"
 #include "EventLoop.hpp"
@@ -94,6 +95,16 @@ public:
     void epoll_timeout(EventLoop* loop);
 
 
+    /**
+     * 
+     * @describe: 删除conns中的Connection对象, 在EventLoop::handle_timerfd中回调
+     * @param:    int
+     * @return:   void
+     * 
+     */
+    void remove_conn(int fd);
+
+
     // 以下为设置回调函数的函数
     void set_deal_message_callback(std::function<void(Connection_ptr,std::string&)> func);
     void set_create_connection_callback(std::function<void(Connection_ptr)> func);
@@ -101,7 +112,6 @@ public:
     void set_error_connection_callback(std::function<void(Connection_ptr)> func);
     void set_send_complete_callback(std::function<void(Connection_ptr)> func);
     void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
-
 
     ~TcpServer();
 
@@ -118,8 +128,9 @@ private:
     Acceptor _M_acceptor; // 用于创建监听sock
     std::map<int, Connection_ptr> _M_connections_map;
 
+    std::mutex _M_mutex; // 用于对map容器的操作上锁
 
-     // 回调EchoServer::handle_deal_message
+    // 回调EchoServer::handle_deal_message
     std::function<void(Connection_ptr, std::string&)> _M_deal_message_callback;
 
     // 回调EchoServer::handle_create_connection

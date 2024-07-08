@@ -1,23 +1,24 @@
 #include "../include/EventLoop.hpp"
 
 // 用于创建timerfd
-int create_timerfd(time_t sec = 5, time_t nsec = 0)
+int create_timerfd(time_t sec)
 {
     int tfd = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
     
     itimerspec timeout;
     memset(&timeout, 0, sizeof(itimerspec));
     timeout.it_value.tv_sec = sec;
-    timeout.it_value.tv_nsec = nsec;
+    timeout.it_value.tv_nsec = 0;
 
     timerfd_settime(tfd, 0, &timeout, 0);
 
     return tfd;
 }
 
-EventLoop::EventLoop(bool main_loop, time_t sec, time_t nsec) : _M_ep_ptr(new Epoll), 
+EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) : _M_ep_ptr(new Epoll),
+        _M_timeval(timeval), _M_timeout(timeout),
         _M_efd(eventfd(0, EFD_NONBLOCK)), _M_ech(new Channel(this, _M_efd)), 
-        _M_tfd(create_timerfd(sec, nsec)), _M_tch(new Channel(this, _M_tfd)),
+        _M_tfd(create_timerfd(_M_timeval)), _M_tch(new Channel(this, _M_tfd)),
         _M_is_main_loop(main_loop)
 {
     // 监听efd的读事件
@@ -28,7 +29,7 @@ EventLoop::EventLoop(bool main_loop, time_t sec, time_t nsec) : _M_ep_ptr(new Ep
     // 监听tfd的读事件
     _M_tch->set_read_events();
     // 设置其回调函数
-    _M_tch->set_read_callback(std::bind(&EventLoop::handle_timerfd, this, sec, nsec));
+    _M_tch->set_read_callback(std::bind(&EventLoop::handle_timerfd, this));
 }
 
 bool EventLoop::is_loop_thread() {
@@ -90,30 +91,41 @@ void EventLoop::handle_eventfd()
 
 }
 
-// 闹钟想时
-void EventLoop::handle_timerfd(time_t sec, time_t nsec)
+void EventLoop::handle_timerfd()
 {
-    // 重新计时
+    // 重新计时, 用于每隔timeout秒, 就检测是否有空闲Connection
     itimerspec timeout;
     memset(&timeout, 0, sizeof(itimerspec));
-    timeout.it_value.tv_sec = sec;
-    timeout.it_value.tv_nsec = nsec;
+    timeout.it_value.tv_sec = _M_timeval;
+    timeout.it_value.tv_nsec = 0;
 
     timerfd_settime(_M_tfd, 0, &timeout, 0);
 
-    if(_M_is_main_loop) // 若为主线程
+    if(!_M_is_main_loop) // 若为从线程
     {
-        std::cout << "主线程的闹钟时间到了!!!\n";
-    }
-    else // 若为从线程
-    {
-        std::cout << "从线程的闹钟时间到了!!!\n";
+        time_t now = time(0);
+        for(auto it = _M_conns.begin(); it != _M_conns.end();) 
+        {
+            // 空闲Connection定义为: 当前事件距离上次发送消息的时间超过timeout秒
+            if(it->second->timer_out(_M_timeout)) 
+            {
+                // 将TcpServer中的map容器对应的conn删除
+                _M_timer_out_callback(it->first);
+
+                ///////////////////////////////////////////////////
+                std::lock_guard<std::mutex> lock(_M_mmutex);
+                it = _M_conns.erase(it);
+                ///////////////////////////////////////////////////
+            }
+            else {
+                it++;
+            }
+        }
     }
 }
 
 void EventLoop::run()
 {
-
     // 初始化tid
     _M_tid = syscall(SYS_gettid);
 
@@ -143,8 +155,16 @@ void EventLoop::remove(Channel* ch_ptr) {
     _M_ep_ptr->remove(ch_ptr);
 }
 
+void EventLoop::push(Connection_ptr conn) {
+    _M_conns[conn->get_fd()] = conn;
+}
+
 void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
     _M_epoll_wait_timeout_callback = func;
+}
+
+void EventLoop::set_timer_out_callback(std::function<void(int)> func) {
+    _M_timer_out_callback = func;
 }
 
 EventLoop::~EventLoop() {

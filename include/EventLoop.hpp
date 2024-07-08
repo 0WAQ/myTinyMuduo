@@ -5,12 +5,17 @@
 #include <functional>
 #include <queue>
 #include <future>
+#include <map>
+#include <mutex>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 #include <sys/timerfd.h> // 定时器
 #include "Epoll.hpp"
+#include "Connection.hpp"
 
 class Channel;
 class Epoll;
+class Connection;
+using Connection_ptr = std::shared_ptr<Connection>;
 
 /**
  *  事件循环类
@@ -26,7 +31,7 @@ public:
      * @param:    time_t, time_t
      * 
      */
-    EventLoop(bool main_loop, time_t sec = 5, time_t nsec = 0);
+    EventLoop(bool main_loop, time_t timeval = 30, time_t timeout = 80);
 
 
     /**
@@ -71,11 +76,11 @@ public:
     /**
      * 
      * @describe: 用于处理定时器发生后的待调函数
-     * @param:    time_t, time_t
+     * @param:    void
      * @return:   void
      * 
      */
-    void handle_timerfd(time_t sec, time_t nsec);
+    void handle_timerfd();
 
 
     /**
@@ -106,12 +111,20 @@ public:
 
     /**
      * 
+     * @describe: 将Connection对象加入到map容器
+     * @param:    Connection_ptr
+     * @return:   void
+     */
+    void push(Connection_ptr conn);
+
+
+    /**
+     * 
      * @describe: 设置回调函数
-     * @param:    void
      * @return:   void
      */
     void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
-
+    void set_timer_out_callback(std::function<void(int)> func);
 
     ~EventLoop();
 
@@ -127,11 +140,22 @@ private:
     int _M_efd; // 用于唤醒事件循环的eventfd
     std::unique_ptr<Channel> _M_ech; // 用于将eventfd加入到epoll
 
+    // 定时器的时间间隔和超时时间
+    time_t _M_timeval, _M_timeout;
+
     int _M_tfd; // 用于清理空闲Connection的timerfd
     std::unique_ptr<Channel> _M_tch; // 用于将timerfd加入到epoll
 
     bool _M_is_main_loop; // 用于判断当前线程为主线程还是从线程
 
+    std::mutex _M_mmutex; // 用于对map容器的操作上锁
+
+    // 存放运行在该事件循环上的所有Connection对象
+    std::map<int, Connection_ptr> _M_conns;
+
     // 当epoll_wait()超时时, 回调TcpServer::epoll_timeout()
     std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
+
+    // 当定时器超时时, 回调TcpServer::remove_conn()
+    std::function<void(int)> _M_timer_out_callback;
 };
