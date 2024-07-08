@@ -8,6 +8,7 @@
 #include "EventLoop.hpp"
 #include "Channel.hpp"
 #include "Buffer.hpp"
+#include "TimeStamp.hpp"
 
 class Connection;
 using Connection_ptr = std::shared_ptr<Connection>;
@@ -142,6 +143,9 @@ private:
     // 用户缓冲区
     Buffer _M_input_buffer;
     Buffer _M_output_buffer;
+
+    // 时间戳变量
+    TimeStamp _M_ts; // 每接收到一个报文, 将时间戳更新为当前时间
 
     // 关闭连接的回调函数, 将回调TcpServer::close_connection()
     std::function<void(Connection_ptr)> _M_close_callback;
