@@ -51,6 +51,16 @@ public:
     std::size_t size();
 
 
+    /**
+     * 
+     * @describe: 停止线程
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void stop();
+    
+
     ~ThreadPool();
 
 

@@ -62,8 +62,10 @@ std::size_t ThreadPool::size() {
     return _M_threads.size();
 }
 
-ThreadPool::~ThreadPool() 
+void ThreadPool::stop() 
 {
+    if(_M_stop) return;
+
     _M_stop = true;
     _M_condition.notify_all(); // 唤醒全部线程, 去执行剩余的任务 并且 退出
 
@@ -71,4 +73,8 @@ ThreadPool::~ThreadPool()
     for(auto &th : _M_threads) {
         th.join();
     }
+}
+
+ThreadPool::~ThreadPool() {
+    stop();
 }
