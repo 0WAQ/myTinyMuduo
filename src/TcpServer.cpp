@@ -2,7 +2,7 @@
 
 
 TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_num) 
-    : _M_thread_num(thread_num), _M_main_loop(new EventLoop), 
+    : _M_thread_num(thread_num), _M_main_loop(new EventLoop(true)), 
       _M_acceptor(_M_main_loop.get(), ip, port), _M_pool("IO", _M_thread_num)
 {
     
@@ -14,7 +14,7 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
     // 创建从事件循环
     for(int i = 0; i < _M_thread_num; i++) 
     {
-        _M_sub_loops.emplace_back(new EventLoop); // 将从事件放入sub_loops中
+        _M_sub_loops.emplace_back(new EventLoop(false)); // 将从事件放入sub_loops中
         // 设置超时回调函数
         _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
         // 将EventLoop的run函数作为任务添加给线程池

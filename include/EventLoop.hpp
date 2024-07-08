@@ -6,6 +6,7 @@
 #include <queue>
 #include <future>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
+#include <sys/timerfd.h> // 定时器
 #include "Epoll.hpp"
 
 class Channel;
@@ -19,7 +20,13 @@ class EventLoop
 {
 public:
 
-    EventLoop();
+    /**
+     * 
+     * @describe: 初始化对象
+     * @param:    time_t, time_t
+     * 
+     */
+    EventLoop(bool main_loop, time_t sec = 5, time_t nsec = 0);
 
 
     /**
@@ -55,10 +62,20 @@ public:
     /**
      * 
      * @describe: 唤醒线程后执行的函数
-     * @param:    
-     * @return:   
+     * @param:    void
+     * @return:   void
      */
-    void handle();
+    void handle_eventfd();
+
+
+    /**
+     * 
+     * @describe: 用于处理定时器发生后的待调函数
+     * @param:    time_t, time_t
+     * @return:   void
+     * 
+     */
+    void handle_timerfd(time_t sec, time_t nsec);
 
 
     /**
@@ -108,8 +125,12 @@ private:
     std::mutex _M_mutex;  // 任务同步队列的互斥锁
 
     int _M_efd; // 用于唤醒事件循环的eventfd
+    std::unique_ptr<Channel> _M_ech; // 用于将eventfd加入到epoll
 
-    std::unique_ptr<Channel> _M_channel; // 用于将eventfd加入到epoll
+    int _M_tfd; // 用于清理空闲Connection的timerfd
+    std::unique_ptr<Channel> _M_tch; // 用于将timerfd加入到epoll
+
+    bool _M_is_main_loop; // 用于判断当前线程为主线程还是从线程
 
     // 当epoll_wait()超时时, 回调TcpServer::epoll_timeout()
     std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
