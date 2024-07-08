@@ -39,6 +39,16 @@ public:
 
     /**
      * 
+     * @describe: 停止运行服务器
+     * @param:    void
+     * @return:   void
+     * 
+     */
+    void stop();
+
+
+    /**
+     * 
      * @describe: 处理客户端报文请求时, Connection回调的函数
      * @param:    Connection_ptr, std::string&
      * @return:   void

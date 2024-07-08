@@ -24,9 +24,24 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
     }
 }
 
-void TcpServer::start()
-{
+void TcpServer::start() {
     _M_main_loop->run();
+}
+
+void TcpServer::stop() 
+{
+    // 停止主事件循环
+    _M_main_loop->stop();
+    std::cout << "主事件循环已停止." << std::endl;
+
+    // 停止从事件循环
+    for(int i = 0; i < _M_thread_num; i++) {
+        _M_sub_loops[i]->stop();
+    }
+    std::cout << "从事件循环已停止." << std::endl; 
+
+    // 停止IO线程
+    _M_pool.stop();
 }
 
 void TcpServer::deal_message(Connection_ptr conn, std::string& message)
