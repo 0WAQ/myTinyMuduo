@@ -73,6 +73,8 @@ void ThreadPool::stop()
     for(auto &th : _M_threads) {
         th.join();
     }
+
+    std::cout << _M_thread_type << "线程已停止" << std::endl;
 }
 
 ThreadPool::~ThreadPool() {
