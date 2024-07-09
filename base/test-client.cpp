@@ -9,10 +9,10 @@
 #include <ctime>
 
 // 用于测试没有分割符的报文
-void sep_0(int sock_fd)
+void sep_0(int sock_fd, size_t n)
 {
     char buf[1024];
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < n; i++)
     {
         memset(buf, 0, sizeof(buf));
         sprintf(buf, "我是%d号超级大帅哥。", i + 1);
@@ -20,7 +20,7 @@ void sep_0(int sock_fd)
         send(sock_fd, buf, strlen(buf), 0);
     }
 
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < n; i++)
     {
         memset(buf, 0, sizeof(buf));
         recv(sock_fd, buf, sizeof(buf), 0);
@@ -30,10 +30,10 @@ void sep_0(int sock_fd)
 }
 
 // 用于测试报头长4字节
-void sep_1(int sock_fd)
+void sep_1(int sock_fd, size_t n)
 {
     char buf[1024];
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < n; i++)
     {
         char tmpbuf[1024]; // 临时buf,存放带有报文头的报文内容
         memset(tmpbuf, 0, sizeof(tmpbuf));
@@ -55,15 +55,15 @@ void sep_1(int sock_fd)
         memset(buf, 0, sizeof(buf));
         recv(sock_fd, buf, len, 0);
 
-        printf("recv: %s\n", buf);
+        // printf("recv: %s\n", buf);
     }
 }
 
 // 用于测试尾部加上"\r\n\r\n"的分割符
-void sep_2(int sock_fd)
+void sep_2(int sock_fd, size_t n)
 {
     char buf[1024];
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < n; i++)
     {
         char tmpbuf[1024];
         memset(tmpbuf, 0, sizeof(tmpbuf));
@@ -79,7 +79,7 @@ void sep_2(int sock_fd)
     }
 
     std::string buffer;
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < n; i++)
     {
         memset(buf, 0, sizeof(buf));
         recv(sock_fd, buf, sizeof(buf), 0);
@@ -124,9 +124,15 @@ int main(int argc, char* argv[])
     }
     std::cout << "connect ok.\n";
 
-    // sep_0(sock_fd);
-    sep_1(sock_fd);
-    // sep_2(sock_fd);
+    printf("开始时间: %d\n", time(0));
+
+    size_t n = 100000;
+
+    // sep_0(sock_fd, n);
+    sep_1(sock_fd, n);
+    // sep_2(sock_fd, n);
+
+    printf("结束时间: %d\n", time(0));
 
     return 0;
 }

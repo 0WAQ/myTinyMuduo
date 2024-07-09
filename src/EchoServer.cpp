@@ -57,9 +57,9 @@ void EchoServer::handle_deal_message_a(Connection_ptr conn, std::string& message
 
 void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 {
-    printf("%s: message(ip=%s, fd=%d): %s\n", 
-                TimeStamp::now().to_string().c_str(),
-                conn->get_ip().c_str(), conn->get_fd(), message.c_str());
+    // printf("%s: message(ip=%s, fd=%d): %s\n", 
+    //             TimeStamp::now().to_string().c_str(),
+    //             conn->get_ip().c_str(), conn->get_fd(), message.c_str());
 
     // 假设将数据经过计算后             
     message = "reply: " + message;
@@ -91,9 +91,9 @@ void EchoServer::handle_error_connection(Connection_ptr conn)
 
 void EchoServer::handle_send_complete(Connection_ptr conn) 
 {
-    printf("%s: send complete(ip=%s, fd=%d).\n", 
-                TimeStamp::now().to_string().c_str(),
-                conn->get_ip().c_str(), conn->get_fd());
+    // printf("%s: send complete(ip=%s, fd=%d).\n", 
+    //             TimeStamp::now().to_string().c_str(),
+    //             conn->get_ip().c_str(), conn->get_fd());
 }
 
 void EchoServer::handle_epoll_timeout(EventLoop* loop) 
