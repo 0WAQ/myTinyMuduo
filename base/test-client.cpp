@@ -46,11 +46,10 @@ void sep_1(int sock_fd)
         memcpy(tmpbuf + 4, buf, len);   // 拼接报文内容
 
         send(sock_fd, tmpbuf, len + 4, 0);
-    }
 
-    for(int i = 0; i < 10; i++)
-    {
-        int len;
+        /// 以下为接收报文
+
+        len = 0;
         recv(sock_fd, &len, 4, 0);
 
         memset(buf, 0, sizeof(buf));
