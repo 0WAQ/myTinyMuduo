@@ -124,15 +124,19 @@ int main(int argc, char* argv[])
     }
     std::cout << "connect ok.\n";
 
-    printf("开始时间: %d\n", time(0));
+    size_t n = 1000000;
 
-    size_t n = 100000;
+    time_t start = time(0);
+    // printf("开始时间: %d\n", start);
 
     // sep_0(sock_fd, n);
     sep_1(sock_fd, n);
     // sep_2(sock_fd, n);
 
-    printf("结束时间: %d\n", time(0));
+    time_t end = time(0);
+    // printf("结束时间: %d\n", end);
+
+    printf("消耗时间: %d\n", end - start);
 
     return 0;
 }
