@@ -70,7 +70,7 @@ void Connection::send(const char* data, size_t size)
 void Connection::send_a(std::shared_ptr<std::string> message)
 {
     // 先将数据发送到用户缓冲区中
-    _M_output_buffer.append_with_head(message->data(), message->size());
+    _M_output_buffer.append_with_sep(message->data(), message->size());
 
     // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
     _M_clnt_channel_ptr->set_write_events();
@@ -104,16 +104,10 @@ void Connection::new_message()
             // 每次读完后, 将数据以报文为单位循环发送出去
             while(true)
             {
-                int len; // 获取报文头部
-                memcpy(&len, _M_input_buffer.data(), 4);
-                
-                // 若接收缓冲区中的数据量长度小于报文(有分包现象), 则不完整, 等待
-                if(_M_input_buffer.size() < len + 4)
+                // 取出一个报文
+                std::string message;
+                if(!_M_input_buffer.pick_datagram(message))
                     break;
-
-                // 跳过报文头, 只取报文内容
-                std::string message(_M_input_buffer.data() + 4, len);
-                _M_input_buffer.erase(0, len + 4); // 将该报文从缓冲区中删除
 
                 // 打印该报文
                 printf("thread id = %d, message(clnt_fd = %d): %s\n", 
