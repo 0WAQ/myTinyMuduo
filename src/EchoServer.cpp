@@ -59,7 +59,7 @@ void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 {
     printf("%s: message(ip=%s, fd=%d): %s\n", 
                 TimeStamp::now().to_string().c_str(),
-                conn->get_ip().c_str(), conn->get_fd(), message);
+                conn->get_ip().c_str(), conn->get_fd(), message.c_str());
 
     // 假设将数据经过计算后             
     message = "reply: " + message;
