@@ -57,7 +57,9 @@ void EchoServer::handle_deal_message_a(Connection_ptr conn, std::string& message
 
 void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 {
-    printf("thread id = %d, deal message().\n", syscall(SYS_gettid));
+    printf("%s: message(ip=%s, fd=%d): %s\n", 
+                TimeStamp::now().to_string().c_str(),
+                conn->get_ip().c_str(), conn->get_fd(), message);
 
     // 假设将数据经过计算后             
     message = "reply: " + message;
@@ -68,37 +70,43 @@ void EchoServer::handle_deal_message(Connection_ptr conn, std::string& message)
 
 void EchoServer::handle_create_connection(Connection_ptr conn)
 {
-    printf("thread id = %d, new connection(ip = %s, port = %d).\n", 
-            syscall(SYS_gettid), conn->get_ip().c_str(), conn->get_port());
+    printf("%s: new connection(ip=%s, fd=%d).\n", 
+                TimeStamp::now().to_string().c_str(), 
+                conn->get_ip().c_str(), conn->get_fd());
 }
 
 void EchoServer::handle_close_connection(Connection_ptr conn) 
 {
-    printf("thread id = %d, close connection(client ip is %s).\n", 
-                    syscall(SYS_gettid), conn->get_ip().c_str());
+    printf("%s: close connection(ip=%s, fd=%d).\n", 
+                TimeStamp::now().to_string().c_str(), 
+                conn->get_ip().c_str(), conn->get_fd());
 }
 
 void EchoServer::handle_error_connection(Connection_ptr conn) 
 {
-    printf("thread id = %d, error connection(client ip is %s).\n", 
-                    syscall(SYS_gettid), conn->get_ip().c_str());
+    printf("%s: error connection(ip=%s, fd=%d).\n", 
+                TimeStamp::now().to_string().c_str(),
+                conn->get_ip().c_str(), conn->get_fd());
 }
 
 void EchoServer::handle_send_complete(Connection_ptr conn) 
 {
-    printf("thread id = %d, send complete(client ip is %s).\n", 
-                    syscall(SYS_gettid), conn->get_ip().c_str());
+    printf("%s: send complete(ip=%s, fd=%d).\n", 
+                TimeStamp::now().to_string().c_str(),
+                conn->get_ip().c_str(), conn->get_fd());
 }
 
 void EchoServer::handle_epoll_timeout(EventLoop* loop) 
 {
-    printf("thread id = %d, epoll_wait() timeout.\n", syscall(SYS_gettid));
+    printf("%s: epoll_wait() timeout.\n",
+                TimeStamp::now().to_string().c_str());
 }
 
 void EchoServer::handle_timer_out(Connection_ptr conn)
 {
-    printf("thread id = %d, timer_out(client ip is %s).\n", 
-                    syscall(SYS_gettid), conn->get_ip().c_str());
+    printf("%s: timer_out(ip=%s, fd=%d).\n", 
+                TimeStamp::now().to_string().c_str(),
+                conn->get_ip().c_str(), conn->get_fd());
 }
 
 EchoServer::~EchoServer() {

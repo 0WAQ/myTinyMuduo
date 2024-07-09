@@ -65,7 +65,7 @@ void EventLoop::notify_one()
 
 void EventLoop::handle_eventfd()
 {
-    printf("thread is %d, IO thread is waked up\n", syscall(SYS_gettid));
+    // printf("thread is %d, IO thread is waked up\n", syscall(SYS_gettid));
 
     uint64_t val;
     read(_M_efd, &val, sizeof(val)); // 读出来, 否则在LT中会一直触发
