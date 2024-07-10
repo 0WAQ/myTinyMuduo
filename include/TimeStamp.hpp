@@ -25,10 +25,10 @@ public:
     /**
      * 
      * @describe: 用指定时间初始化对象
-     * @param:    int64_t
+     * @param:    std::chrono::high_resolution_clock::time_point
      * 
      */
-    TimeStamp(std::chrono::system_clock::time_point sec);
+    TimeStamp(std::chrono::high_resolution_clock::time_point sec);
 
 
     /**
@@ -43,12 +43,22 @@ public:
 
     /**
      * 
-     * @describe: 返回当前对象的整数表示时间
+     * @describe: 返回当前时间点的整数表示时间
      * @param:    void
      * @return:   time_t
      * 
      */
     time_t to_time_t() const;
+
+
+    /**
+     * 
+     * @describe: 返回当前时间点
+     * @param:    void
+     * @return:   std::chrono::system_clock::time_point
+     * 
+     */
+    std::chrono::system_clock::time_point to_time_point() const;
 
 
     /**
@@ -63,6 +73,6 @@ public:
     ~TimeStamp();
 
 private:
-    // 从1970到现在
-    std::chrono::system_clock::time_point _M_sec;
+    // 从1970起
+    std::chrono::high_resolution_clock::time_point _M_sec;
 };
