@@ -172,11 +172,11 @@ void EventLoop::push(Connection_ptr conn) {
 }
 
 void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
-    _M_epoll_wait_timeout_callback = func;
+    _M_epoll_wait_timeout_callback = std::move(func);
 }
 
 void EventLoop::set_timer_out_callback(std::function<void(Connection_ptr)> func) {
-    _M_timer_out_callback = func;
+    _M_timer_out_callback = std::move(func);
 }
 
 EventLoop::~EventLoop() {

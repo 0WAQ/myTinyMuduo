@@ -25,7 +25,7 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port)
 }
 
 void Acceptor::set_create_connection_callback(std::function<void(std::unique_ptr<Socket>)> func) {
-    create_connection_callback = func;
+    create_connection_callback = std::move(func);
 } 
 
 void Acceptor::new_connection()

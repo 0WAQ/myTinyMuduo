@@ -97,19 +97,19 @@ void Channel::handle()
 }
 
 void Channel::set_read_callback(std::function<void()> func) {
-    _M_read_callback = func;
+    _M_read_callback = std::move(func);
 }
 
 void Channel::set_write_callback(std::function<void()> func) {
-    _M_write_callback = func;
+    _M_write_callback = std::move(func);
 }
 
 void Channel::set_close_callback(std::function<void()> func) {
-    _M_close_callback = func;
+    _M_close_callback = std::move(func);
 }
 
 void Channel::set_error_callback(std::function<void()> func) {
-    _M_error_callback = func;
+    _M_error_callback = std::move(func);
 }
 
 Channel::~Channel()

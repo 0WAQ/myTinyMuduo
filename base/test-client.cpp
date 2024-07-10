@@ -134,8 +134,9 @@ int main(int argc, char* argv[])
 
     auto end = std::chrono::steady_clock::now();
 
-    std::cout << "消耗时间: " <<
-     std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << std::endl;
+    std::cout << "消耗时间: " 
+        << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() 
+        << std::endl;
 
     return 0;
 }

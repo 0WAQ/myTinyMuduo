@@ -153,19 +153,19 @@ uint16_t Connection::get_port() const {
 }
 
 void Connection::set_close_callback(std::function<void(Connection_ptr)> func)  {
-    _M_close_callback = func;
+    _M_close_callback = std::move(func);
 }
 
 void Connection::set_error_callback(std::function<void(Connection_ptr)> func)  {
-    _M_error_callback = func;
+    _M_error_callback = std::move(func);
 }
 
 void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {
-    _M_send_complete_callback = func;
+    _M_send_complete_callback = std::move(func);
 }
 
 void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {
-    _M_deal_message_callback = func;
+    _M_deal_message_callback = std::move(func);
 }
 
 Connection::~Connection() {

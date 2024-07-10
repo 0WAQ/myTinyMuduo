@@ -49,7 +49,7 @@ void ThreadPool::push(std::function<void()> task)
     {   // 锁所用域开始
 
         std::lock_guard<std::mutex> lock(_M_mutex);
-        _M_task_queue.push(task);
+        _M_task_queue.push(std::move(task));
     
     }   // 锁作用域结束
     ////////////////////////////////////////

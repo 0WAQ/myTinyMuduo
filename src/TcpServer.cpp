@@ -137,31 +137,31 @@ void TcpServer::timer_out(Connection_ptr conn)
 }
 
 void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {
-    _M_deal_message_callback = func;
+    _M_deal_message_callback = std::move(func);
 }
 
 void TcpServer::set_create_connection_callback(std::function<void(Connection_ptr)> func) {
-    _M_create_connection_callback = func;
+    _M_create_connection_callback = std::move(func);
 }
 
 void TcpServer::set_close_connection_callback(std::function<void(Connection_ptr)> func) {
-    _M_close_connection_callback = func;
+    _M_close_connection_callback = std::move(func);
 }
 
 void TcpServer::set_error_connection_callback(std::function<void(Connection_ptr)> func) {
-    _M_error_connection_callback = func;
+    _M_error_connection_callback = std::move(func);
 }
 
 void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> func) {
-    _M_send_complete_callback = func;
+    _M_send_complete_callback = std::move(func);
 }
 
 void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
-    _M_epoll_timeout_callback = func;
+    _M_epoll_timeout_callback = std::move(func);
 }
 
 void TcpServer::set_timer_out_callback(std::function<void(Connection_ptr)> func) {
-    _M_timer_out_callback = func;
+    _M_timer_out_callback = std::move(func);
 }
 
 TcpServer::~TcpServer() {
