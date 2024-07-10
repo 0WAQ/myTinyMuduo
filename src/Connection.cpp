@@ -109,13 +109,8 @@ void Connection::new_message()
                 if(!_M_input_buffer.pick_datagram(message))
                     break;
 
-                // 打印该报文
-                // printf("thread id = %d, message(clnt_fd = %d): %s\n", 
-                //                 syscall(SYS_gettid), get_fd(), message.c_str());
-
                 // 更新时间戳
                 _M_ts = TimeStamp();
-                // std::cout << "当前时间: " << _M_ts.to_string() << std::endl;
 
                 _M_deal_message_callback(shared_from_this(), message);
             }
