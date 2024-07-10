@@ -137,7 +137,9 @@ void EventLoop::loop()
     {
         _M_channels.clear();
 
-        _M_channels = _M_ep_ptr->wait(10*1000);
+        auto dur = TimeDuration(10, ratio::second);
+
+        _M_channels = _M_ep_ptr->wait(dur.get_milliseconds());
 
         // 若channels为空, 则说明超时, 通知TcpServer
         if(_M_channels.empty()) 
