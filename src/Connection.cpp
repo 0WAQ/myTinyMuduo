@@ -18,6 +18,7 @@ Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock)
     _M_clnt_channel_ptr->set_read_events();
 }
 
+// 写事件的被调函数, 代表对应的socket内核可写
 void Connection::write_events()
 {
     // 当可写后, 尝试把用户缓冲区的数据全部发送出去
@@ -36,7 +37,7 @@ void Connection::write_events()
     }
 }
 
-// 封装消息发送
+// 封装消息发送, 选择由IO线程执行
 void Connection::send(const char* data, size_t size)
 {  
     // 若连接已经断开
@@ -68,6 +69,7 @@ void Connection::send_a(std::shared_ptr<std::string> message)
     _M_clnt_channel_ptr->set_write_events();
 }
 
+// 读事件的被调函数, 代表对应客户端有新请求
 void Connection::new_message()
 {
     char buf[1024];
@@ -118,10 +120,12 @@ void Connection::new_message()
     }
 }
 
+// 清理空闲Connection的超时时间
 bool Connection::timer_out(time_t val) {
     return time(0) - _M_ts.to_time_t() > val;
 }
 
+// 连接关闭 与 出错的被调函数, 同时会回调TcpServer中对应的待调函数
 void Connection::close_callback()
 {
     _M_is_diconnected = true;
@@ -130,7 +134,6 @@ void Connection::close_callback()
     // 调用回调函数, 转交给TcpServer处理
     _M_close_callback(shared_from_this());
 }
-
 void Connection::error_callback()
 {
     _M_is_diconnected = true;
@@ -140,34 +143,15 @@ void Connection::error_callback()
     _M_error_callback(shared_from_this());
 }
 
-int Connection::get_fd() {
-    return _M_clnt_sock_ptr->get_fd();
-}
+// 获取fd, ip, port
+int Connection::get_fd() { return _M_clnt_sock_ptr->get_fd();}
+std::string Connection::get_ip() const { return _M_clnt_sock_ptr->get_ip();}
+uint16_t Connection::get_port() const { return _M_clnt_sock_ptr->get_port();}
 
-std::string Connection::get_ip() const {
-    return _M_clnt_sock_ptr->get_ip();
-}
+// 读,写,关闭,错误 四个设置回调函数
+void Connection::set_close_callback(std::function<void(Connection_ptr)> func) {_M_close_callback = std::move(func);}
+void Connection::set_error_callback(std::function<void(Connection_ptr)> func) {_M_error_callback = std::move(func);}
+void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {_M_send_complete_callback = std::move(func);}
+void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {_M_deal_message_callback = std::move(func);}
 
-uint16_t Connection::get_port() const {
-    return _M_clnt_sock_ptr->get_port();
-}
-
-void Connection::set_close_callback(std::function<void(Connection_ptr)> func)  {
-    _M_close_callback = std::move(func);
-}
-
-void Connection::set_error_callback(std::function<void(Connection_ptr)> func)  {
-    _M_error_callback = std::move(func);
-}
-
-void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {
-    _M_send_complete_callback = std::move(func);
-}
-
-void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {
-    _M_deal_message_callback = std::move(func);
-}
-
-Connection::~Connection() {
-
-}
+Connection::~Connection() { }

@@ -1,6 +1,5 @@
 #include "../include/Epoll.hpp"
 
-
 Epoll::Epoll()
 {
     if((_M_epoll_fd = epoll_create(1)) == -1) {
@@ -76,7 +75,4 @@ std::vector<Channel*> Epoll::wait(int time_out)
     return channels;
 }
 
-
-Epoll::~Epoll() {
-    close(_M_epoll_fd);
-}
+Epoll::~Epoll() { close(_M_epoll_fd);}

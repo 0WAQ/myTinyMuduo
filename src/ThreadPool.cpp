@@ -43,6 +43,7 @@ ThreadPool::ThreadPool(const std::string& type, size_t thread_num)
     }
 }
 
+// 将任务添加到任务队列, 被条件变量唤醒 
 void ThreadPool::push(std::function<void()> task) 
 {
     ////////////////////////////////////////
@@ -58,10 +59,7 @@ void ThreadPool::push(std::function<void()> task)
     _M_condition.notify_one();
 }
 
-std::size_t ThreadPool::size() {
-    return _M_threads.size();
-}
-
+// 结束线程池
 void ThreadPool::stop() 
 {
     if(_M_stop) return;
@@ -70,13 +68,13 @@ void ThreadPool::stop()
     _M_condition.notify_all(); // 唤醒全部线程, 去执行剩余的任务 并且 退出
 
     // 等待所有线程执行完毕后, 任务退出
-    for(auto &th : _M_threads) {
+    for(auto &th : _M_threads)
         th.join();
-    }
 
     std::cout << _M_thread_type << "线程已停止" << std::endl;
 }
 
-ThreadPool::~ThreadPool() {
-    stop();
-}
+// 返回线程池中线程的总数量
+std::size_t ThreadPool::size() { return _M_threads.size();}
+
+ThreadPool::~ThreadPool() { stop();}

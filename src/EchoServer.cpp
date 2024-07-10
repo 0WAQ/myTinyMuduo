@@ -104,6 +104,4 @@ void EchoServer::handle_timer_out(Connection_ptr conn)
                 conn->get_ip().c_str(), conn->get_fd());
 }
 
-EchoServer::~EchoServer() {
-
-}
+EchoServer::~EchoServer() { }

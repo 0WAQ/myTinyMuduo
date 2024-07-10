@@ -1,6 +1,5 @@
 #include "../include/TcpServer.hpp"
 
-
 TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_num) 
     : _M_thread_num(thread_num), _M_main_loop(new EventLoop(true)), 
       _M_acceptor(_M_main_loop.get(), ip, port), _M_pool("IO", _M_thread_num)
@@ -24,10 +23,12 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
     }
 }
 
+// 启动服务器
 void TcpServer::start() {
     _M_main_loop->run();
 }
 
+// 关闭服务器
 void TcpServer::stop() 
 {
     // 停止主事件循环
@@ -44,12 +45,8 @@ void TcpServer::stop()
     _M_pool.stop();
 }
 
-void TcpServer::deal_message(Connection_ptr conn, std::string& message)
-{
-    if(_M_deal_message_callback)
-        _M_deal_message_callback(conn, message);
-}
 
+// 以下是被调函数
 void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
 {
     // 先获取fd, 因为在调用Connection构造时, 从右到左入栈, 已经将clnt_sock的资源转移出去了
@@ -74,7 +71,7 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
     ///////////////////////////////////////////////////////////////
 
     // 将conn存放到EventLoop的map容器中, 用于处理定时器事件
-    _M_sub_loops[fd % _M_thread_num]->push(conn);
+    _M_sub_loops[fd % _M_thread_num]->insert(conn);
 
     if(_M_create_connection_callback)
         _M_create_connection_callback(conn);
@@ -109,6 +106,12 @@ void TcpServer::error_connection(Connection_ptr conn)
     ///////////////////////////////////////////////////////////////
 }
 
+void TcpServer::deal_message(Connection_ptr conn, std::string& message)
+{
+    if(_M_deal_message_callback)
+        _M_deal_message_callback(conn, message);
+}
+
 void TcpServer::send_complete(Connection_ptr conn)
 {
     if(_M_send_complete_callback)
@@ -121,7 +124,6 @@ void TcpServer::epoll_timeout(EventLoop* loop)
         _M_epoll_timeout_callback(loop);
 }
 
-// 清理空闲的Connection
 void TcpServer::timer_out(Connection_ptr conn)
 {
     if(_M_timer_out_callback)
@@ -136,34 +138,17 @@ void TcpServer::timer_out(Connection_ptr conn)
     ///////////////////////////////////////////////////////////////
 }
 
-void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {
-    _M_deal_message_callback = std::move(func);
-}
+// 读,写,关闭,错误 设置回调函数
+void TcpServer::set_create_connection_callback(std::function<void(Connection_ptr)> func) {_M_create_connection_callback = std::move(func);}
+void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {_M_deal_message_callback = std::move(func);}
+void TcpServer::set_close_connection_callback(std::function<void(Connection_ptr)> func) {_M_close_connection_callback = std::move(func);}
+void TcpServer::set_error_connection_callback(std::function<void(Connection_ptr)> func) {_M_error_connection_callback = std::move(func);}
 
-void TcpServer::set_create_connection_callback(std::function<void(Connection_ptr)> func) {
-    _M_create_connection_callback = std::move(func);
-}
+// 写完成 设置回调函数
+void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> func) {_M_send_complete_callback = std::move(func);}
 
-void TcpServer::set_close_connection_callback(std::function<void(Connection_ptr)> func) {
-    _M_close_connection_callback = std::move(func);
-}
+// 两个超时 设置回调函数
+void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {_M_epoll_timeout_callback = std::move(func);}
+void TcpServer::set_timer_out_callback(std::function<void(Connection_ptr)> func) {_M_timer_out_callback = std::move(func);}
 
-void TcpServer::set_error_connection_callback(std::function<void(Connection_ptr)> func) {
-    _M_error_connection_callback = std::move(func);
-}
-
-void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> func) {
-    _M_send_complete_callback = std::move(func);
-}
-
-void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
-    _M_epoll_timeout_callback = std::move(func);
-}
-
-void TcpServer::set_timer_out_callback(std::function<void(Connection_ptr)> func) {
-    _M_timer_out_callback = std::move(func);
-}
-
-TcpServer::~TcpServer() {
-
-}
+TcpServer::~TcpServer() { }

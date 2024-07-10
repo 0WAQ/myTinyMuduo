@@ -62,7 +62,7 @@ public:
      * @return:   void
      * 
      */
-    void notify_one();
+    void wakeup();
 
 
     /**
@@ -126,7 +126,7 @@ public:
      * @param:    Connection_ptr
      * @return:   void
      */
-    void push(Connection_ptr conn);
+    void insert(Connection_ptr conn);
 
 
     /**

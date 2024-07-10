@@ -8,10 +8,10 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port)
     InetAddress serv_addr(ip, port);
 
     // 设置serv_sock的属性
-    _M_serv_sock.set_keep_alive(true);
-    _M_serv_sock.set_reuse_addr(true);
-    _M_serv_sock.set_reuse_port(true);
-    _M_serv_sock.set_tcp_nodelay(true);
+    _M_serv_sock.set_keep_alive(1);
+    _M_serv_sock.set_reuse_addr(1);
+    _M_serv_sock.set_reuse_port(1);
+    _M_serv_sock.set_tcp_nodelay(1);
 
     // 绑定且监听
     _M_serv_sock.bind(serv_addr);
@@ -24,10 +24,12 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port)
 
 }
 
+// 创建连接的回调函数, 调用TcpServer中的create_connection
 void Acceptor::set_create_connection_callback(std::function<void(std::unique_ptr<Socket>)> func) {
     create_connection_callback = std::move(func);
 } 
 
+// 读事件的被调函数, 代表有新连接
 void Acceptor::new_connection()
 {
     InetAddress clnt_addr;
@@ -38,7 +40,4 @@ void Acceptor::new_connection()
     create_connection_callback(std::move(clnt_sock_ptr));
 }
 
-Acceptor::~Acceptor()
-{
-    
-}
+Acceptor::~Acceptor() { }

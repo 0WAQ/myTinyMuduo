@@ -1,10 +1,7 @@
 #include "../include/Channel.hpp"
 #include "../include/Connection.hpp"
 
-Channel::Channel(EventLoop* loop_ptr, int fd) : _M_loop_ptr(loop_ptr), _M_fd(fd)
-{
-
-}
+Channel::Channel(EventLoop* loop_ptr, int fd) : _M_loop_ptr(loop_ptr), _M_fd(fd) { }
 
 int Channel::get_fd() {
     return _M_fd;
@@ -96,23 +93,10 @@ void Channel::handle()
     }
 }
 
-void Channel::set_read_callback(std::function<void()> func) {
-    _M_read_callback = std::move(func);
-}
+// 读,写,关闭,错误 四个设置回调函数
+void Channel::set_read_callback(std::function<void()> func) {_M_read_callback = std::move(func);}
+void Channel::set_write_callback(std::function<void()> func) {_M_write_callback = std::move(func);}
+void Channel::set_close_callback(std::function<void()> func) {_M_close_callback = std::move(func);}
+void Channel::set_error_callback(std::function<void()> func) {_M_error_callback = std::move(func);}
 
-void Channel::set_write_callback(std::function<void()> func) {
-    _M_write_callback = std::move(func);
-}
-
-void Channel::set_close_callback(std::function<void()> func) {
-    _M_close_callback = std::move(func);
-}
-
-void Channel::set_error_callback(std::function<void()> func) {
-    _M_error_callback = std::move(func);
-}
-
-Channel::~Channel()
-{
-
-}
+Channel::~Channel() { }

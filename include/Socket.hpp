@@ -103,10 +103,10 @@ public:
      * @return:   void
      * 
      */
-    void set_reuse_addr(bool on);   // 地址重用
-    void set_reuse_port(bool on);   // 端口重用
-    void set_tcp_nodelay(bool on);  // tcp无延迟
-    void set_keep_alive(bool on);   // 保持连接
+    void set_reuse_addr(int opt);   // 地址重用
+    void set_reuse_port(int opt);   // 端口重用
+    void set_tcp_nodelay(int opt);  // tcp无延迟
+    void set_keep_alive(int opt);   // 保持连接
 
     ~Socket();
 

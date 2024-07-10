@@ -1,27 +1,19 @@
 #include "../include/TimeStamp.hpp"
 
-TimeStamp::TimeStamp() : _M_sec(std::chrono::high_resolution_clock::now())
-{
+TimeStamp::TimeStamp() : _M_sec(std::chrono::high_resolution_clock::now()) { }
+TimeStamp::TimeStamp(std::chrono::high_resolution_clock::time_point sec) : _M_sec(sec) { }
+TimeStamp::~TimeStamp() { }
 
-}
+// 获取当前时间戳
+TimeStamp TimeStamp::now() { return TimeStamp();}
 
-TimeStamp::TimeStamp(std::chrono::high_resolution_clock::time_point sec) : _M_sec(sec)
-{
+// 将时间戳转换为time_t
+time_t TimeStamp::to_time_t() const { return std::chrono::system_clock::to_time_t(_M_sec);}
 
-}
+// 将时间戳转换为chrono中的time_point
+std::chrono::system_clock::time_point TimeStamp::to_time_point() const { return _M_sec;}
 
-TimeStamp TimeStamp::now() {
-    return TimeStamp();
-}
-
-time_t TimeStamp::to_time_t() const {
-    return std::chrono::system_clock::to_time_t(_M_sec);
-}
-
-std::chrono::system_clock::time_point TimeStamp::to_time_point() const {
-    return _M_sec;
-}
-
+// 将时间戳转换为字符串对应的格式
 std::string TimeStamp::to_string() const
 {
     std::time_t t = to_time_t();
@@ -32,8 +24,3 @@ std::string TimeStamp::to_string() const
 
     return buf;
 }
-
-TimeStamp::~TimeStamp() {
-
-}
-

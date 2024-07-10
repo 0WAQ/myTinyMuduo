@@ -32,9 +32,7 @@ EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) : _M_ep_ptr
     _M_tch->set_read_callback(std::bind(&EventLoop::handle_timerfd, this));
 }
 
-bool EventLoop::is_loop_thread() {
-    return _M_tid == syscall(SYS_gettid);
-}
+bool EventLoop::is_loop_thread() { return _M_tid == syscall(SYS_gettid);}
 
 void EventLoop::push(std::function<void()> task) 
 {
@@ -54,15 +52,17 @@ void EventLoop::push(std::function<void()> task)
      */
 
     // 唤醒事件循环
-    notify_one(); // 唤醒后, epoll会响应efd的读事件, 然后让其去执行handle_eventfd
+    wakeup(); // 唤醒后, epoll会响应efd的读事件, 然后让其去执行handle_eventfd
 }
 
-void EventLoop::notify_one()
+// 让该事件循环触发读事件, 从而可以执行对应Channel的回调函数
+void EventLoop::wakeup()
 {
     uint64_t val = 1;
     write(_M_efd, &val, sizeof(val));
 }
 
+// eventfd的被调函数, 执行eventfd的任务, 用于处理WORK线程的任务
 void EventLoop::handle_eventfd()
 {
     // printf("thread is %d, IO thread is waked up\n", syscall(SYS_gettid));
@@ -94,6 +94,7 @@ void EventLoop::handle_eventfd()
 
 }
 
+// timerfd的被调函数, 执行timerfd的任务, 用于清理空闲Connection
 void EventLoop::handle_timerfd()
 {
     // 重新计时, 用于每隔timeout秒, 就检测是否有空闲Connection
@@ -106,7 +107,6 @@ void EventLoop::handle_timerfd()
 
     if(!_M_is_main_loop) // 若为从线程
     {
-        time_t now = time(0);
         for(auto it = _M_conns.begin(); it != _M_conns.end();) 
         {
             // 空闲Connection定义为: 当前事件距离上次发送消息的时间超过timeout秒
@@ -127,6 +127,7 @@ void EventLoop::handle_timerfd()
     }
 }
 
+// 运行事件循环
 void EventLoop::run()
 {
     // 初始化tid
@@ -150,35 +151,25 @@ void EventLoop::run()
     }
 }
 
+// 停止事件循环
 void EventLoop::stop() 
 {
     // 标志位
     _M_stop = true;
 
     // 唤醒epoll_wait
-    notify_one();
+    wakeup();
 }
 
-void EventLoop::updata_channel(Channel* ch_ptr) {
-    _M_ep_ptr->updata_channel(ch_ptr);
-}
+// 转调用Epoll中对应的函数
+void EventLoop::updata_channel(Channel* ch_ptr) {_M_ep_ptr->updata_channel(ch_ptr); }
+void EventLoop::remove(Channel* ch_ptr) { _M_ep_ptr->remove(ch_ptr);}
 
-void EventLoop::remove(Channel* ch_ptr) {
-    _M_ep_ptr->remove(ch_ptr);
-}
+// 将Connection放入map容器, 用来指示WORK线程将Connection的IO任务交给哪个IO线程
+void EventLoop::insert(Connection_ptr conn) { _M_conns[conn->get_fd()] = conn;}
 
-void EventLoop::push(Connection_ptr conn) {
-    _M_conns[conn->get_fd()] = conn;
-}
+// 两个超时 设置回调函数
+void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {_M_epoll_wait_timeout_callback = std::move(func);}
+void EventLoop::set_timer_out_callback(std::function<void(Connection_ptr)> func) {_M_timer_out_callback = std::move(func);}
 
-void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {
-    _M_epoll_wait_timeout_callback = std::move(func);
-}
-
-void EventLoop::set_timer_out_callback(std::function<void(Connection_ptr)> func) {
-    _M_timer_out_callback = std::move(func);
-}
-
-EventLoop::~EventLoop() {
-
-}
+EventLoop::~EventLoop() { }
