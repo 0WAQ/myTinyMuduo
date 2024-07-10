@@ -45,14 +45,6 @@ void Connection::send(const char* data, size_t size)
         return;
     }
 
-    /**
-     * 
-     * 将数据包装成智能指针, 因为要发送给其他线程,
-     * 可能在其它线程使用数据时, 当前线程返回, 
-     * 导致在栈空间的数据变量message被释放,
-     * 造成未定义行为
-     * 
-     */
     std::shared_ptr<std::string> message(new std::string(data, size));
 
     // 判断当前线程是否为IO线程
