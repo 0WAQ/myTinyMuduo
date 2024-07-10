@@ -4,6 +4,10 @@
 #include <string>
 #include <chrono>
 
+#include "TimeDuration.hpp"
+
+class TimeDuration;
+
 /**
  * 
  * 时间戳类
