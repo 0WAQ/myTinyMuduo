@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <ctime>
+#include <chrono>
 
 // 用于测试没有分割符的报文
 void sep_0(int sock_fd, size_t n)
@@ -124,19 +124,18 @@ int main(int argc, char* argv[])
     }
     std::cout << "connect ok.\n";
 
-    size_t n = 1000000;
+    size_t n = 100'0000;
 
-    time_t start = time(0);
-    // printf("开始时间: %d\n", start);
+    auto start = std::chrono::steady_clock::now();
 
     // sep_0(sock_fd, n);
     sep_1(sock_fd, n);
     // sep_2(sock_fd, n);
 
-    time_t end = time(0);
-    // printf("结束时间: %d\n", end);
+    auto end = std::chrono::steady_clock::now();
 
-    printf("消耗时间: %d\n", end - start);
+    std::cout << "消耗时间: " <<
+     std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << std::endl;
 
     return 0;
 }
