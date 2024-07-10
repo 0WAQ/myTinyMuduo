@@ -9,88 +9,56 @@ class Buffer
 {
 public:
     
-    /**
-     * 
-     * @describe: 选择报文分割格式
-     * @param:    uint16_t
-     * 
-     */
+    /// @brief 初始化buffer
+    /// @param sep 选择报文分割类型: 0-无分割符; 1-四字节的报文头; 2-"\r\n\r\n"分割符(Http协议)
     Buffer(uint16_t sep = 1);
 
-    /**
-     * 
-     * @describe: 将数据追加到_M_buf中
-     * @param:    const char*, size_t
-     * @reutrn:   void
-     * 
-     */
+
+    /// @brief 将数据追加至缓冲区
+    /// @param data 数据首地址
+    /// @param size 数据大小
     void append(const char* data, size_t size);
     
 
-    /**
-     * 
-     * @describe: 将数据追加到_M_buf中, 但是会增加头部
-     * @param:    const char*. size_t
-     * @return: void
-     * 
-     */
+    /// @brief 将带有报头的数据追加至buf
+    /// @param data 同上
+    /// @param size 同上
     void append_with_sep(const char* data, size_t size);
 
 
-    /**
-     * 
-     * @describe: 从缓冲区中拆分出一个报文存放在ss中, 失败返回false
-     * @param:    std::string
-     * @return:   bool
-     * 
-     */
-    bool pick_datagram(std::string& ss);
+    /// @brief 从buf中取出一个报文
+    /// @param msg 报文数据
+    /// @return 成功true, 失败false
+    bool pick_datagram(std::string& msg);
 
 
-    /**
-     * @describe: 将数据从_M_buf中删除
-     * @param:    size_t, size_t
-     * @return:   void
-     * 
-     */
+    /// @brief 从buf中删除数据
+    /// @param pos 起始位置 
+    /// @param len 长度
     void erase(size_t pos, size_t len);
 
 
-    /**
-     * 
-     * @describe: 获取buf的长度
-     * @param:    void
-     * @return:   size_t
-     */
+    /// @brief 获取buf的长度
+    /// @return 
     size_t size();
 
 
-    /**
-     * 
-     * @describe: 获取_M_buf数据的首地址
-     * @param:    void
-     * @return:   const char*
-     * 
-     */
+    /// @brief 获取数据首地址
+    /// @return 
     const char* data();
     
     
-    /**
-     * 
-     * @describe: 清空_M_buf
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 清空buf
     void clear();
 
 
+    /// @brief 
     ~Buffer();
 
 private:
-    std::string _M_buf; // 用于存放数据
 
-    /// 0-无分割符(固定的报文长, 视频会议); 1-四字节的报文头; 2-"\r\n\r\n"分割符(Http协议)
-    const uint16_t _M_sep; // 表示报文的分割符
+    std::string _M_buf;
+
+    const uint16_t _M_sep;
     
 };
