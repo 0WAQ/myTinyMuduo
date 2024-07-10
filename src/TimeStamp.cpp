@@ -1,11 +1,11 @@
 #include "../include/TimeStamp.hpp"
 
-TimeStamp::TimeStamp() : _M_sec(time(0))
+TimeStamp::TimeStamp() : _M_sec(std::chrono::system_clock::now())
 {
 
 }
 
-TimeStamp::TimeStamp(int64_t sec) : _M_sec(sec)
+TimeStamp::TimeStamp(std::chrono::system_clock::time_point sec) : _M_sec(sec)
 {
 
 }
@@ -15,20 +15,17 @@ TimeStamp TimeStamp::now() {
 }
 
 time_t TimeStamp::to_time_t() const {
-    return _M_sec;
+    return std::chrono::system_clock::to_time_t(_M_sec);
 }
 
 std::string TimeStamp::to_string() const
 {
-    char buf[32] = {0};
-    tm* tm_time = localtime(&_M_sec);
-    snprintf(buf, 32, "%4d-%02d-%02d %02d:%02d:%02d", 
-            tm_time->tm_year + 1900,
-            tm_time->tm_mon + 1,
-            tm_time->tm_mday,
-            tm_time->tm_hour,
-            tm_time->tm_min,
-            tm_time->tm_sec);
+    std::time_t t = to_time_t();
+    std::tm* now_tm = std::localtime(&t);
+
+    char buf[80];
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", now_tm);
+
     return buf;
 }
 

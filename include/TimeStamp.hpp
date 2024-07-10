@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-
+#include <chrono>
 
 /**
  * 
@@ -28,7 +28,7 @@ public:
      * @param:    int64_t
      * 
      */
-    TimeStamp(int64_t sec);
+    TimeStamp(std::chrono::system_clock::time_point sec);
 
 
     /**
@@ -63,5 +63,6 @@ public:
     ~TimeStamp();
 
 private:
-    time_t _M_sec; // 从1970到现在
+    // 从1970到现在
+    std::chrono::system_clock::time_point _M_sec;
 };
