@@ -75,15 +75,18 @@ void EventLoop::handle_eventfd()
 
     ///////////////////////////////////////////////////
     {
-        std::lock_guard<std::mutex> lock(_M_mutex);
+        std::unique_lock<std::mutex> grd(_M_mutex);
         
         // 处理任务队列中的所有任务
         while(!_M_task_queue.empty())
         {
+            // 队列是共享的
             task = std::move(_M_task_queue.front());
             _M_task_queue.pop();
             
+            grd.unlock();
             task();
+            grd.lock();
         }
 
     }
