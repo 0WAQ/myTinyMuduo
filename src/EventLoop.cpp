@@ -128,24 +128,26 @@ void EventLoop::handle_timerfd()
 }
 
 // 运行事件循环
-void EventLoop::run()
+void EventLoop::loop()
 {
     // 初始化tid
     _M_tid = syscall(SYS_gettid);
 
     while(!_M_stop)
     {
-        std::vector<Channel*> channels = _M_ep_ptr->wait(10*1000);
+        _M_channels.clear();
+
+        _M_channels = _M_ep_ptr->wait(10*1000);
 
         // 若channels为空, 则说明超时, 通知TcpServer
-        if(channels.empty()) 
+        if(_M_channels.empty()) 
         {
             if(_M_epoll_wait_timeout_callback)
                 _M_epoll_wait_timeout_callback(this);
         }
         else 
         {
-            for(auto& ch : channels) 
+            for(auto& ch :_M_channels) 
                 ch->handle();
         }
     }

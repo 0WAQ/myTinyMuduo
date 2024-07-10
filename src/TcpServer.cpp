@@ -18,14 +18,14 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
         _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
         // 设置定时器超时回调函数, 用于清理空闲超时Connection
         _M_sub_loops[i]->set_timer_out_callback(std::bind(&TcpServer::timer_out, this, std::placeholders::_1));
-        // 将EventLoop的run函数作为任务添加给线程池
-        _M_pool.push(std::bind(&EventLoop::run, _M_sub_loops[i].get()));
+        // 将EventLoop的loop函数作为任务添加给线程池
+        _M_pool.push(std::bind(&EventLoop::loop, _M_sub_loops[i].get()));
     }
 }
 
 // 启动服务器
 void TcpServer::start() {
-    _M_main_loop->run();
+    _M_main_loop->loop();
 }
 
 // 关闭服务器

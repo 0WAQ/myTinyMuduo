@@ -90,7 +90,7 @@ public:
      * @return:   void
      * 
      */
-    void run();
+    void loop();
 
 
     /**
@@ -143,6 +143,8 @@ private:
 
     pid_t _M_tid;
     std::unique_ptr<Epoll> _M_ep_ptr;
+
+    std::vector<Channel*> _M_channels;
 
     // IO线程的任务队列, 用来存放工作线程的任务
     std::queue<std::function<void()>> _M_task_queue;

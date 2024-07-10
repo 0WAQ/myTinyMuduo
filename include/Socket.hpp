@@ -34,7 +34,7 @@ public:
      * @return:   int
      * 
      */
-    int get_fd();
+    int get_fd() const;
 
 
     /**

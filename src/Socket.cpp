@@ -16,20 +16,6 @@ int create_non_blocking_fd()
 Socket::Socket(int fd):_M_fd(fd) { }
 Socket::~Socket() { close(_M_fd);}
 
-// 获取fd, ip, port
-int Socket::get_fd() { return _M_fd;}
-
-std::string Socket::get_ip() const { return _M_ip;}
-
-uint16_t Socket::get_port() const { return _M_port;}
-
-// 设置ip, port
-void Socket::set_ip_port(const std::string& ip, uint16_t port)
-{
-    _M_ip = ip;
-    _M_port = port;
-}
-
 // bind, listen, accept
 void Socket::bind(const InetAddress& serv_addr)
 {
@@ -62,6 +48,18 @@ int Socket::accept(InetAddress& clnt_addr)
     
     return clnt_fd;
 }
+
+// 设置ip, port
+void Socket::set_ip_port(const std::string& ip, uint16_t port)
+{
+    _M_ip = ip;
+    _M_port = port;
+}
+
+// 获取fd, ip, port
+int Socket::         get_fd()   const { return _M_fd;}
+std::string Socket:: get_ip()   const { return _M_ip;}
+uint16_t Socket::    get_port() const { return _M_port;}
 
 // 设置fd属性的函数
 void Socket::set_keep_alive(int opt) {setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));}
