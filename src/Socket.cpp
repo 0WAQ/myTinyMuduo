@@ -62,7 +62,7 @@ std::string Socket:: get_ip()   const { return _M_ip;}
 uint16_t Socket::    get_port() const { return _M_port;}
 
 // 设置fd属性的函数
-void Socket::set_keep_alive(int opt) {setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));}
-void Socket::set_reuse_addr(int opt) {setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));}
-void Socket::set_reuse_port(int opt) {setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));}
-void Socket::set_tcp_nodelay(int opt) {setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt));}
+void Socket::set_keep_alive(int on) {setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on));}
+void Socket::set_reuse_addr(int on) {setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));}
+void Socket::set_reuse_port(int on) {setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on));}
+void Socket::set_tcp_nodelay(int on) {setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));}
