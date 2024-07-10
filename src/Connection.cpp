@@ -1,76 +1,26 @@
 #include "../include/Connection.hpp"
 
-Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock) 
-        : _M_loop_ptr(loop), _M_clnt_sock_ptr(std::move(clnt_sock)), 
-          _M_clnt_channel_ptr(new Channel(_M_loop_ptr, _M_clnt_sock_ptr->get_fd())), 
+Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock) 
+        : _M_loop_ptr(loop), _M_sock_ptr(std::move(sock)), 
+          _M_channel_ptr(new Channel(_M_loop_ptr, _M_sock_ptr->get_fd())), 
           _M_is_diconnected(false)
 {
     
     // 设置Connection的回调函数
-    _M_clnt_channel_ptr->set_read_callback(std::bind(&Connection::new_message, this));
-    _M_clnt_channel_ptr->set_write_callback(std::bind(&Connection::write_events, this));
-    _M_clnt_channel_ptr->set_close_callback(std::bind(&Connection::close_callback, this));
-    _M_clnt_channel_ptr->set_error_callback(std::bind(&Connection::error_callback, this));
+    _M_channel_ptr->set_read_callback(std::bind(&Connection::read_events, this));
+    _M_channel_ptr->set_write_callback(std::bind(&Connection::write_events, this));
+    _M_channel_ptr->set_close_callback(std::bind(&Connection::close_events, this));
+    _M_channel_ptr->set_error_callback(std::bind(&Connection::read_events, this));
 
     // 设置为边缘触发
-    _M_clnt_channel_ptr->set_ET();
+    _M_channel_ptr->set_ET();
     // 监听读事件
-    _M_clnt_channel_ptr->set_read_events();
+    _M_channel_ptr->set_read_events();
 }
 
-// 写事件的被调函数, 代表对应的socket内核可写
-void Connection::write_events()
-{
-    // 当可写后, 尝试把用户缓冲区的数据全部发送出去
-    int len = ::send(get_fd(), _M_output_buffer.data(), _M_output_buffer.size(), 0);
-    // 因为操作系统的原因(tcp滑动窗口), 数据不一定能全部接收, 剩下的数据等待下一次写事件触发
+/// 四种事件函数, 被channel调用
 
-    // 将成功发送的数据从用户缓冲区中删除掉
-    if(len > 0) {
-        _M_output_buffer.erase(0, len);
-    }
-    
-    // 若缓冲区中没有数据了, 表示数据已成功发送, 不再关注写事件
-    if(_M_output_buffer.size() == 0) {
-        _M_clnt_channel_ptr->unset_write_events();
-        _M_send_complete_callback(shared_from_this());
-    }
-}
-
-// 封装消息发送, 选择由IO线程执行
-void Connection::send(const char* data, size_t size)
-{  
-    // 若连接已经断开
-    if(_M_is_diconnected) {
-        std::cout << "连接提前断开, send()直接返回." << std::endl;
-        return;
-    }
-
-    std::shared_ptr<std::string> message(new std::string(data, size));
-
-    // 判断当前线程是否为IO线程
-    if(_M_loop_ptr->is_loop_thread()) // 若是IO线程, 直接执行send_a
-    {
-        send_a(message);
-    }
-    else // 若是工作线程, 交由IO线程执行
-    {
-        // 添加到loop的任务队列中
-        _M_loop_ptr->push(std::bind(&Connection::send_a, this, message));
-    }
-}
-
-void Connection::send_a(std::shared_ptr<std::string> message)
-{
-    // 先将数据发送到用户缓冲区中
-    _M_output_buffer.append_with_sep(message->data(), message->size());
-
-    // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
-    _M_clnt_channel_ptr->set_write_events();
-}
-
-// 读事件的被调函数, 代表对应客户端有新请求
-void Connection::new_message()
+void Connection::read_events()
 {
     char buf[1024];
 
@@ -114,44 +64,100 @@ void Connection::new_message()
         // 连接断开
         else if(nlen == 0) 
         {
-            close_callback();
+            close_events();
             break;
         }
     }
 }
 
-// 清理空闲Connection的超时时间
-bool Connection::timer_out(time_t val) {
-    return time(0) - _M_ts.to_time_t() > val;
+void Connection::write_events()
+{
+    // 当可写后, 尝试把用户缓冲区的数据全部发送出去
+    int len = ::send(get_fd(), _M_output_buffer.data(), _M_output_buffer.size(), 0);
+    // 因为操作系统的原因(tcp滑动窗口), 数据不一定能全部接收, 剩下的数据等待下一次写事件触发
+
+    // 将成功发送的数据从用户缓冲区中删除掉
+    if(len > 0) {
+        _M_output_buffer.erase(0, len);
+    }
+    
+    // 若缓冲区中没有数据了, 表示数据已成功发送, 不再关注写事件
+    if(_M_output_buffer.size() == 0) {
+        _M_channel_ptr->unset_write_events();
+        _M_send_complete_callback(shared_from_this());
+    }
 }
 
-// 连接关闭 与 出错的被调函数, 同时会回调TcpServer中对应的待调函数
-void Connection::close_callback()
+// 在两个地方被调用: 1.channel的handle中; 2.channel回调的read_events中
+void Connection::close_events()
 {
     _M_is_diconnected = true;
     // 从事件循环中删除Channel
-    _M_clnt_channel_ptr->remove();
+    _M_channel_ptr->remove();
     // 调用回调函数, 转交给TcpServer处理
     _M_close_callback(shared_from_this());
 }
-void Connection::error_callback()
+
+void Connection::error_events()
 {
     _M_is_diconnected = true;
     // 从事件循环中删除Channel
-    _M_clnt_channel_ptr->remove();
+    _M_channel_ptr->remove();
     // 调用回调函数, 转交给TcpServer处理
     _M_error_callback(shared_from_this());
 }
 
-// 获取fd, ip, port
-int Connection::get_fd() { return _M_clnt_sock_ptr->get_fd();}
-std::string Connection::get_ip() const { return _M_clnt_sock_ptr->get_ip();}
-uint16_t Connection::get_port() const { return _M_clnt_sock_ptr->get_port();}
+
+// 清理空闲Connection的超时时间
+bool Connection::timer_out(time_t val) { return time(0) - _M_ts.to_time_t() > val; }
+
+
+
+// 封装消息发送, 选择由IO线程执行
+void Connection::send(const char* data, size_t size)
+{  
+    // 若连接已经断开
+    if(_M_is_diconnected) {
+        std::cout << "连接提前断开, send()直接返回." << std::endl;
+        return;
+    }
+
+    std::shared_ptr<std::string> message(new std::string(data, size));
+
+    // 判断当前线程是否为IO线程
+    if(_M_loop_ptr->is_loop_thread()) // 若是IO线程, 直接执行send_a
+    {
+        send_a(message);
+    }
+    else // 若是工作线程, 交由IO线程执行
+    {
+        // 添加到loop的任务队列中
+        _M_loop_ptr->push(std::bind(&Connection::send_a, this, message));
+    }
+}
+
+void Connection::send_a(std::shared_ptr<std::string> message)
+{
+    // 先将数据发送到用户缓冲区中
+    _M_output_buffer.append_with_sep(message->data(), message->size());
+
+    // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
+    _M_channel_ptr->set_write_events();
+}
+
+
 
 // 读,写,关闭,错误 四个设置回调函数
+void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {_M_deal_message_callback = std::move(func);}
+void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {_M_send_complete_callback = std::move(func);}
 void Connection::set_close_callback(std::function<void(Connection_ptr)> func) {_M_close_callback = std::move(func);}
 void Connection::set_error_callback(std::function<void(Connection_ptr)> func) {_M_error_callback = std::move(func);}
-void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {_M_send_complete_callback = std::move(func);}
-void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {_M_deal_message_callback = std::move(func);}
+
+
+
+// 获取fd, ip, port
+int Connection::get_fd() const { return _M_sock_ptr->get_fd();}
+std::string Connection::get_ip() const { return _M_sock_ptr->get_ip();}
+uint16_t Connection::get_port() const { return _M_sock_ptr->get_port();}
 
 Connection::~Connection() { }

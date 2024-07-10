@@ -1,9 +1,11 @@
 #pragma once
+
 #include <functional>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <memory>
 #include <atomic>
+
 #include "Socket.hpp"
 #include "EventLoop.hpp"
 #include "Channel.hpp"
@@ -15,6 +17,7 @@ class Channel;
 class Connection;
 using Connection_ptr = std::shared_ptr<Connection>;
 
+
 /**
  *  Channel之上的封装类, 专门用于创建客户端的Socket
  *  继承自这个类, 用shared_from_this代替this指针
@@ -23,151 +26,91 @@ class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
 
-    /**
-     * 
-     * @describe: 初始化loop与clnt_sock
-     * @param:    EventLoop*, std::unique_ptr<Socket>
-     * 
-     */
-    Connection(EventLoop* loop, std::unique_ptr<Socket> clnt_sock);
+
+    /// @brief 将sock绑定到事件循环
+    /// @param loop 事件循环
+    /// @param sock sock
+    Connection(EventLoop* loop, std::unique_ptr<Socket> sock);
     
-    
-    /**
-     * 
-     * @describe: 获取fd
-     * @param:    void
-     * @return:   int
-     * 
-     */
-    int get_fd();
 
-
-    /**
-     * 
-     * @describe: 获取ip
-     * @param:    void
-     * @return:   uint16_t
-     */
-    std::string get_ip() const;
-
-
-    /**
-     * 
-     * @describe: 获取port
-     * @param:    void
-     * @return:   uint16_t
-     * 
-     */
-    uint16_t get_port() const;
-
-
-    /**
-     * 
-     * @describe: Tcp连接断开后, Channel回调的函数
-     * @param:    void
-     * @return:   void
-     */
-    void close_callback();
-
-
-    /**
-     * 
-     * @describe: Tcp连接出错后, Channel回调的函数
-     * @param:    void
-     * @return:   void
-     */
-    void error_callback();
-
-    
-    /**
-     * 
-     * @describe: 设置回调函数
-     * @param:    std::function<void(Connection_ptr)>
-     * @return :  void
-     * 
-     */
-    void set_close_callback(std::function<void(Connection_ptr)> func);
-    void set_error_callback(std::function<void(Connection_ptr)> func);
-    void set_send_complete_callback(std::function<void(Connection_ptr)> func);
-
-    /**
-     * @extra_param: std::string&
-     */
-    void set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func);
-
-
-    /**
-     * 
-     * @describe: 封装处理新消息的代码, 有新消息时, 被Channel的读事件回调
-     * @param:    void
-     * @return:   void
-     * 
-     */
-    void new_message();
-
-
-    /**
-     * 
-     * @describe: 写事件发生时, Channel回调的函数
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 四种事件
+    void read_events();
     void write_events();
-    
+    void close_events();
+    void error_events();
 
-    /**
-     * 
-     * @describe: 将send交由IO线程执行
-     * @param:    const char*, size_t
-     * @return:   void
-     */
+
+    /// @brief 定时器是否超时, 用于清理空闲Connection
+    /// @param val 距上次请求的时间
+    /// @return true超时, false不超时
+    bool timer_out(time_t val);
+
+
+    /// @brief 将send交由IO线程执行
+    /// @param data 数据首地址
+    /// @param size 数据长度
     void send(const char* data, size_t size);
 
-
-    /**
-     * 
-     * @describe: 封装将数据发送至缓冲区和注册写事件的功能
-     * @param:    std::shared_ptr<std::string>
-     * @return:   void
-     */
+    /// @brief 封装将数据发送至缓冲区和注册写事件的功能
+    /// @param message 数据
     void send_a(std::shared_ptr<std::string> message);
 
 
-    /**
-     * 
-     * @describe: 用于判断当前时间now是否超过定时器事件val秒
-     * @param:    time_t
-     * @return:   bool
-     * 
-     */
-    bool timer_out(time_t val);
+
+    
+    /// @brief 设置回调函数, 分别在四种事件处理后调用
+    /// @param func 函数对象
+    void set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func);
+    void set_send_complete_callback(std::function<void(Connection_ptr)> func);
+    void set_close_callback(std::function<void(Connection_ptr)> func);
+    void set_error_callback(std::function<void(Connection_ptr)> func);
+
+
+    /// @brief 获取连接fd
+    /// @return fd
+    int get_fd() const;
+
+
+    /// @brief 获取连接ip
+    /// @return ip
+    std::string get_ip() const;
+
+
+    /// @brief 获取连接port
+    /// @return port
+    uint16_t get_port() const;
 
 
     ~Connection();
 
 private:
+
+    // 从事件循环
     EventLoop* _M_loop_ptr;
-    std::unique_ptr<Socket> _M_clnt_sock_ptr;
-    std::unique_ptr<Channel> _M_clnt_channel_ptr;
-    std::atomic_bool _M_is_diconnected; // 用于判断当前连接是否断开
+
+    // Socket及其信息
+    std::unique_ptr<Socket> _M_sock_ptr;
+    std::unique_ptr<Channel> _M_channel_ptr;
 
     // 用户缓冲区
     Buffer _M_input_buffer;
     Buffer _M_output_buffer;
 
-    // 时间戳变量
-    TimeStamp _M_ts; // 每接收到一个报文, 将时间戳更新为当前时间
+    // 表示Tcp连接的状态: true-已连接, false-已断开
+    std::atomic_bool _M_is_diconnected; 
 
-    // 关闭连接的回调函数, 将回调TcpServer::close_connection()
+    // 每接收到一个报文, 将时间戳更新为当前时间
+    TimeStamp _M_ts; 
+
+    // 关闭连接的回调函数, 将回调TcpServer::close_connection
     std::function<void(Connection_ptr)> _M_close_callback;
 
-    // 连接出错的回调函数, 将回调TcpServer::error_connection()
+    // 连接出错的回调函数, 将回调TcpServer::error_connection
     std::function<void(Connection_ptr)> _M_error_callback;
 
-    // 处理客户端报文请求时, 将回调TcpServer::deal_message()
+    // 处理客户端报文请求时, 将回调TcpServer::deal_message
     std::function<void(Connection_ptr, std::string&)> _M_deal_message_callback;
 
-    // 数据发送完成后, 将回调TcpServer::send_complete(Connection_ptr)
+    // 数据发送完成后, 将回调TcpServer::send_complete
     std::function<void(Connection_ptr)> _M_send_complete_callback;
 };
