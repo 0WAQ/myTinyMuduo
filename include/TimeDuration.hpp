@@ -17,14 +17,22 @@ class TimeDuration
 {
 public:
 
+    /// @brief 初始化时间段
+    /// @param t 时间数量
+    /// @param r 时间单位
     TimeDuration(uint64_t t, ratio r);
+
+    /// @brief 拷贝构造
     TimeDuration(std::chrono::high_resolution_clock::duration d);
 
+
+    /// @brief 获取四种时间
     DEF()
     DEF(milli)
     DEF(micro)
     DEF(nano)
 
+    /// @brief 运算符重载
     TimeDuration& operator++();
     TimeDuration& operator--();
     TimeDuration operator++(int);

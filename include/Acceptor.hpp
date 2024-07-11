@@ -7,41 +7,24 @@
 #include "EventLoop.hpp"
 #include "Connection.hpp"
 
-/**
- * 
- * Channel之上的封装类, 专门用于创建服务端的监听Socket
- *  
- */
+
 class Acceptor
 {
 public:
 
-    /**
-     * 
-     * @describe: 初始化loop与服务端监听地址
-     * @param:    EventLoop*, const std::string&, const uint16_t
-     * 
-     */
+    /// @brief 初始化loop与服务端监听地址
+    /// @param loop 事件循环
+    /// @param ip   ip地址
+    /// @param port 监听端口
     Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port);
 
 
-    /**
-     * 
-     * @describe: 设置创建连接回调函数的函数, 有TcpServer在创建Acceptor对象时调用
-     * @param:    std::function<void(Socket*)>
-     * @return:   void
-     * 
-     */
+    /// @brief 设置回调函数
+    /// @param func 函数对象
     void set_create_connection_callback(std::function<void(std::unique_ptr<Socket>)> func);
 
 
-    /**
-     * 
-     * @describe: 封装处理新的连接请求的代码
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 读事件被调函数, 在channel中被回调
     void new_connection();
 
 

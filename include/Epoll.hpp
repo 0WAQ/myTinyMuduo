@@ -13,53 +13,41 @@
 
 class Channel;
 
-/**
- *  封住了epoll的三种主要方法和其所需的变量
- */
+
 class Epoll
 {
 public:
 
-    /**
-     *  
-     * @describe: 调用epoll_create()初始化_M_epoll_fd
-     * @param:    void
-     * 
-     */
+    /// @brief 调用epoll_create, 初始化epfd
     Epoll();
 
 
-    /**
-     *  
-     * @describe: 监听Channel或者修改Channel的监视事件, 封装了epoll_ctl方法
-     * @param:    Channel*
-     * @return:   void
-     * 
-     */
-    void updata_channel(Channel* ch_ptr);
+    /// @brief 调用epoll_ctl, 修改ch监听事件
+    /// @param ch 
+    void updata_channel(Channel* ch);
 
 
-    /**
-     * 
-     * @describe: 从红黑树上删除Channel
-     * @param:    Channel*
-     * @return:   void
-     */
-    void remove(Channel* ch_ptr);
+    /// @brief 取消监听ch的事件
+    /// @param ch 
+    void remove(Channel* ch);
 
 
-    /**
-     * 
-     * @describe: 调用epoll_wait(), 返回所有响应的fd对应的Channel* 
-     * @param:    int
-     * @return:   std::vector<Channel*>
-     */
+    /// @brief 调用epoll_wait, 返回发生事件的合集
+    /// @param time_out 超时时间
+    /// @return 发生的事件合集
     std::vector<Channel*> wait(int time_out = -1);
+
 
     ~Epoll();
     
 private:
+
+    // 发生事件的最大数量
     static const int _M_max_events = 100;
+
+    // epfd
     int _M_epoll_fd = -1;
+
+    // 发生事件的合集
     epoll_event _M_events_arr[_M_max_events];
 };

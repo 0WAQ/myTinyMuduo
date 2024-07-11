@@ -52,7 +52,7 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
     // 先获取fd, 因为在调用Connection构造时, 从右到左入栈, 已经将clnt_sock的资源转移出去了
     int fd = clnt_sock->get_fd();
     // 创建Connection对象, 并将其指定给线程池中的loop  
-    Connection_ptr conn(new Connection(
+    sp_Connection conn(new Connection(
         _M_sub_loops[fd % _M_thread_num].get(), std::move(clnt_sock)));
     
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
@@ -77,7 +77,7 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
         _M_create_connection_callback(conn);
 }
 
-void TcpServer::close_connection(Connection_ptr conn)
+void TcpServer::close_connection(sp_Connection conn)
 {
     if(_M_close_connection_callback)
         _M_close_connection_callback(conn);
@@ -92,7 +92,7 @@ void TcpServer::close_connection(Connection_ptr conn)
     
 }
 
-void TcpServer::error_connection(Connection_ptr conn)
+void TcpServer::error_connection(sp_Connection conn)
 {
     if(_M_error_connection_callback)
         _M_error_connection_callback(conn);
@@ -106,13 +106,13 @@ void TcpServer::error_connection(Connection_ptr conn)
     ///////////////////////////////////////////////////////////////
 }
 
-void TcpServer::deal_message(Connection_ptr conn, std::string& message)
+void TcpServer::deal_message(sp_Connection conn, std::string& message)
 {
     if(_M_deal_message_callback)
         _M_deal_message_callback(conn, message);
 }
 
-void TcpServer::send_complete(Connection_ptr conn)
+void TcpServer::send_complete(sp_Connection conn)
 {
     if(_M_send_complete_callback)
         _M_send_complete_callback(conn);
@@ -124,7 +124,7 @@ void TcpServer::epoll_timeout(EventLoop* loop)
         _M_epoll_timeout_callback(loop);
 }
 
-void TcpServer::timer_out(Connection_ptr conn)
+void TcpServer::timer_out(sp_Connection conn)
 {
     if(_M_timer_out_callback)
         _M_timer_out_callback(conn);
@@ -139,16 +139,16 @@ void TcpServer::timer_out(Connection_ptr conn)
 }
 
 // 读,写,关闭,错误 设置回调函数
-void TcpServer::set_create_connection_callback(std::function<void(Connection_ptr)> func) {_M_create_connection_callback = std::move(func);}
-void TcpServer::set_deal_message_callback(std::function<void(Connection_ptr,std::string &message)> func) {_M_deal_message_callback = std::move(func);}
-void TcpServer::set_close_connection_callback(std::function<void(Connection_ptr)> func) {_M_close_connection_callback = std::move(func);}
-void TcpServer::set_error_connection_callback(std::function<void(Connection_ptr)> func) {_M_error_connection_callback = std::move(func);}
+void TcpServer::set_create_connection_callback(std::function<void(sp_Connection)> func) {_M_create_connection_callback = std::move(func);}
+void TcpServer::set_deal_message_callback(std::function<void(sp_Connection,std::string &message)> func) {_M_deal_message_callback = std::move(func);}
+void TcpServer::set_close_connection_callback(std::function<void(sp_Connection)> func) {_M_close_connection_callback = std::move(func);}
+void TcpServer::set_error_connection_callback(std::function<void(sp_Connection)> func) {_M_error_connection_callback = std::move(func);}
 
 // 写完成 设置回调函数
-void TcpServer::set_send_complete_callback(std::function<void(Connection_ptr)> func) {_M_send_complete_callback = std::move(func);}
+void TcpServer::set_send_complete_callback(std::function<void(sp_Connection)> func) {_M_send_complete_callback = std::move(func);}
 
 // 两个超时 设置回调函数
 void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {_M_epoll_timeout_callback = std::move(func);}
-void TcpServer::set_timer_out_callback(std::function<void(Connection_ptr)> func) {_M_timer_out_callback = std::move(func);}
+void TcpServer::set_timer_out_callback(std::function<void(sp_Connection)> func) {_M_timer_out_callback = std::move(func);}
 
 TcpServer::~TcpServer() { }

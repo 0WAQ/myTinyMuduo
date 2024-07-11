@@ -17,162 +17,67 @@ class Channel
 {
 public:
 
-    /**
-     * 
-     * @describe: 初始化该Channel对应的fd与epoll_fd
-     * @param:    epfd -> Epoll*
-     *            fd   -> int
-     * 
-     */
+
+    /// @brief 将fd与事件循环绑定
+    /// @param loop_ptr 事件循环
+    /// @param fd fd
     Channel(EventLoop* loop_ptr, int fd);
 
 
-    /**
-     * 
-     * @describe: 获取该Channel实例对应的fd
-     * @param:    void
-     * @return:   int
-     */
+    /// @brief 事件发生后的处理函数
+    void handle();
+
+
+    /// @brief 获取channel的fd
+    /// @return fd
     int get_fd();
 
 
-    /**
-     * 
-     * @describe: 设置该fd为边缘触发
-     * @param:    void
-     * @return:   void
-     * 
-     */
-    void set_ET();
 
-
-    /**
-     * 
-     * @describe: 注册读事件
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 四种事件
     void set_read_events();
-
-
-    /**
-     * 
-     * @describe: 注册写事件
-     * @param:    void
-     * @return:   void
-     */
     void set_write_events();
-    
-    
-    /**
-     * 
-     * @describe: 取消读事件
-     * @param:    void
-     * @return:   void
-     */
     void unset_read_events();
-
-
-    /**
-     * 
-     * @describe: 取消写事件
-     * @param:    void
-     * @return:   void
-     */
     void unset_write_events();
-
-
-    /**
-     * 
-     * @describe: 取消全部的事件
-     * @param:    void
-     * @return:   void
-     * 
-     */
     void unset_all_events();
 
 
-    /**
-     * 
-     * @describe: 从事件循环中删除Channel
-     * @param:    void
-     * @return:   void
-     * 
-     */
+
+    /// @brief 从事件循环中删除Channel
     void remove();
 
 
-    /**
-     * 
-     * @describe: 设置该Channel对应的fd已经被监听
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 表示该channel已被监听
     void set_in_epoll();
 
-
-    /**
-     * 
-     * @describe: 判断该Channel对应的fd是否被监听
-     * @param:    void
-     * @return:   bool
-     * 
-     */
+    /// @brief 判断该Channel对应的fd是否被监听
+    /// @return true-是, false-否
     bool get_in_epoll();
 
 
-    /**
-     * 
-     * @describe: 设置该fd发生的事件, 在epoll_wait()之后
-     * @param:    uint32_t
-     * @return:   void
-     * 
-     */
+    /// @brief 设置边缘触发
+    void set_ET();
+
+    /// @brief 设置channel发生的事件
+    /// @param events 发生的事件
     void set_happened_events(uint32_t events);
 
-
-    /**
-     * 
-     * @describe: 获取该fd发生的事件
-     * @param:    void
-     * @return:   uint32_t
-     * 
-     */
+    /// @brief 设置该fd发生的事件, 在epoll_wait()之后
+    /// @return 
     uint32_t get_happened_events();
 
-
-    /**
-     * 
-     * @describe: 获取fd被epoll监听的事件
-     * @param:    void
-     * @return:   uint32_t
-     * 
-     */
+    /// @brief 获取监听的事件
+    /// @return 
     uint32_t get_monitored_events();
 
 
-    /**
-     * 
-     * @describe: 设置回调函数
-     * @param:    待执行的回调函数
-     * @return:   void
-     * 
-     */
+
+    /// @brief 设置回调函数
+    /// @param func 函数对象
     void set_read_callback(std::function<void()> func);  // 读事件
     void set_write_callback(std::function<void()> func); // 写事件
     void set_close_callback(std::function<void()> func); // 关闭连接
     void set_error_callback(std::function<void()> func); // 错误事件
-
-
-    /**
-     * 
-     * @describe: 封装epoll_wait()之后的处理逻辑
-     * @param:    void
-     * @return:   void
-     */
-    void handle();
 
     ~Channel();
 

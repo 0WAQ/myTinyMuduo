@@ -148,10 +148,10 @@ void Connection::send_a(std::shared_ptr<std::string> message)
 
 
 // 读,写,关闭,错误 四个设置回调函数
-void Connection::set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func) {_M_deal_message_callback = std::move(func);}
-void Connection::set_send_complete_callback(std::function<void(Connection_ptr)> func) {_M_send_complete_callback = std::move(func);}
-void Connection::set_close_callback(std::function<void(Connection_ptr)> func) {_M_close_callback = std::move(func);}
-void Connection::set_error_callback(std::function<void(Connection_ptr)> func) {_M_error_callback = std::move(func);}
+void Connection::set_deal_message_callback(std::function<void(sp_Connection, std::string&)> func) {_M_deal_message_callback = std::move(func);}
+void Connection::set_send_complete_callback(std::function<void(sp_Connection)> func) {_M_send_complete_callback = std::move(func);}
+void Connection::set_close_callback(std::function<void(sp_Connection)> func) {_M_close_callback = std::move(func);}
+void Connection::set_error_callback(std::function<void(sp_Connection)> func) {_M_error_callback = std::move(func);}
 
 
 

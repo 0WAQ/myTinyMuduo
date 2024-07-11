@@ -17,60 +17,33 @@ class TimeStamp
 {
 public:
 
-    /**
-     * 
-     * @describe: 用当前时间初始化对象
-     * @param:    void
-     * 
-     */
+
+    /// @brief 用当前时间初始化对象
     TimeStamp();
 
 
-    /**
-     * 
-     * @describe: 用指定时间初始化对象
-     * @param:    std::chrono::high_resolution_clock::time_point
-     * 
-     */
+    /// @brief 用指定时间初始化对象  
+    /// @param sec std::chrono::high_resolution_clock::time_point
     TimeStamp(std::chrono::high_resolution_clock::time_point sec);
 
 
-    /**
-     * 
-     * @describe: 获取当前时间对象
-     * @param:    void
-     * @return:   static TimeStamp
-     * 
-     */
+    /// @brief 获取当前时间对象
+    /// @return 当前时间
     static TimeStamp now();
 
 
-    /**
-     * 
-     * @describe: 返回当前时间点的整数表示时间
-     * @param:    void
-     * @return:   time_t
-     * 
-     */
+    /// @brief 返回当前时间点的整数表示时间
+    /// @return time_t
     time_t to_time_t() const;
 
 
-    /**
-     * 
-     * @describe: 返回当前时间点
-     * @param:    void
-     * @return:   std::chrono::system_clock::time_point
-     * 
-     */
+    /// @brief  返回当前时间点  
+    /// @return std::chrono::system_clock::time_point
     std::chrono::system_clock::time_point to_time_point() const;
 
 
-    /**
-     * 
-     * @describe: 返回当前对象的字符串表示时间
-     * @param:    void
-     * @return:   std::string, 格式为 yyyy-mm-dd hh24:mi:ss
-     */
+    /// @brief  返回当前对象的字符串表示时间 
+    /// @return std::string, 格式为 yyyy-mm-dd hh24:mi:ss
     std::string to_string() const;
 
 

@@ -8,17 +8,17 @@ Epoll::Epoll()
     }
 }
 
-void Epoll::updata_channel(Channel* ch_ptr)
+void Epoll::updata_channel(Channel* ch)
 {
     epoll_event ev;
-    ev.data.ptr = ch_ptr;
-    ev.events = ch_ptr->get_monitored_events();
+    ev.data.ptr = ch;
+    ev.events = ch->get_monitored_events();
     
     // 判断该fd是否已被监听
-    if(ch_ptr->get_in_epoll()) 
+    if(ch->get_in_epoll()) 
     {
         // 若被监听, 则修改events
-        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_MOD, ch_ptr->get_fd(), &ev) == -1) {
+        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_MOD, ch->get_fd(), &ev) == -1) {
             std::cerr << "epoll_ctl() modify failed.\n";
             exit(-1);
         }
@@ -26,20 +26,20 @@ void Epoll::updata_channel(Channel* ch_ptr)
     else 
     {
         // 否则, 新增该fd至epfd
-        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_ADD, ch_ptr->get_fd(), &ev) == -1) {
+        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_ADD, ch->get_fd(), &ev) == -1) {
             std::cerr << "epoll_ctl() add failed.\n";
             exit(-1);
         }
-        ch_ptr->set_in_epoll();
+        ch->set_in_epoll();
     }
 }
 
-void Epoll::remove(Channel* ch_ptr)
+void Epoll::remove(Channel* ch)
 {
     // 若channel已经被监听, 那么删除
-    if(ch_ptr->get_in_epoll()) 
+    if(ch->get_in_epoll()) 
     {
-        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_DEL, ch_ptr->get_fd(), 0) == -1) {
+        if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_DEL, ch->get_fd(), 0) == -1) {
             std::cerr << "epoll_ctl() remove failed.\n";
             exit(-1);
         }
@@ -53,23 +53,22 @@ std::vector<Channel*> Epoll::wait(int time_out)
     bzero(_M_events_arr, sizeof(_M_events_arr));
     int num_fds = epoll_wait(_M_epoll_fd, _M_events_arr, _M_max_events, time_out);
 
-    // error
+
     if(num_fds < 0) 
     { 
         std::cerr << "epoll_wait() failed\n";
         exit(-1);
     }
-    // timeout
     else if(num_fds == 0) { 
         return channels;
     }
 
-    Channel* ch_ptr;
+    Channel* ch;
     for(int i = 0; i < num_fds; i++)
     {
-        ch_ptr = (Channel*)_M_events_arr[i].data.ptr;
-        ch_ptr->set_happened_events(_M_events_arr[i].events);
-        channels.emplace_back(ch_ptr);
+        ch = (Channel*)_M_events_arr[i].data.ptr;
+        ch->set_happened_events(_M_events_arr[i].events);
+        channels.emplace_back(ch);
     }
 
     return channels;

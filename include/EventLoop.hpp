@@ -17,7 +17,7 @@
 class Channel;
 class Epoll;
 class Connection;
-using Connection_ptr = std::shared_ptr<Connection>;
+using sp_Connection = std::shared_ptr<Connection>;
 
 /**
  *  事件循环类
@@ -27,116 +27,64 @@ class EventLoop
 {
 public:
 
-    /**
-     * 
-     * @describe: 初始化对象
-     * @param:    time_t, time_t
-     * 
-     */
+
+    /// @brief 初始化对象
+    /// @param main_loop 主事件循环-true, 从事件循环-false
+    /// @param timeval   服务器检测定时器事件的周期
+    /// @param timeout   定时器超时时间
     EventLoop(bool main_loop, time_t timeval = 30, time_t timeout = 80);
 
 
-    /**
-     * 
-     * @describe: 判断当前线程是否为事件循环线程
-     * @param:    
-     * @return:   bool
-     * 
-     */
+    /// @brief 判断当前线程是否为事件循环线程
+    /// @return ture-是, false-不是
     bool is_loop_thread();
 
 
-    /**
-     * 
-     * @describe: 用来存放工作线程的任务
-     * @param:    std::function<void()>
-     * @return:   void
-     * 
-     */
+    /// @brief 用来存放工作线程的任务
+    /// @param task 任务
     void push(std::function<void()> task);
 
 
-    /**
-     * 
-     * @describe: 唤醒事件循环
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 唤醒事件循环
     void wakeup();
 
 
-    /**
-     * 
-     * @describe: 唤醒线程后执行的函数
-     * @param:    void
-     * @return:   void
-     */
+    /// @brief 唤醒线程后执行的函数
     void handle_eventfd();
 
 
-    /**
-     * 
-     * @describe: 用于处理定时器发生后的待调函数
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 用于处理定时器发生后的待调函数
     void handle_timerfd();
 
 
-    /**
-     * @describe: 封装服务器代码中的事件循环过程
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 运行事件循环
     void loop();
 
 
-    /**
-     * 
-     * @describe: 停止事件循环
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 停止事件循环
     void stop();
 
 
-    /**
-     * @describe:  调用成员变量_M_ep的updata_channel
-     * @param:     Channel*
-     * @return:    void
-     */
-    void updata_channel(Channel* ch_ptr);
+    /// @brief 转调用Epoll中的updata_channel
+    /// @param ch
+    void updata_channel(Channel* ch);
 
 
-    /**
-     * 
-     * @describe: 转调用Epoll::remove
-     * @param:    Channel*
-     * @return:   void
-     */
-    void remove(Channel* ch_ptr);
+    /// @brief 转调用Epoll中的remove
+    /// @param ch
+    void remove(Channel* ch);
 
 
-    /**
-     * 
-     * @describe: 将Connection对象加入到map容器
-     * @param:    Connection_ptr
-     * @return:   void
-     */
-    void insert(Connection_ptr conn);
+    /// @brief 将Connection对象加入到map容器
+    /// @param conn 
+    void insert(sp_Connection conn);
 
 
-    /**
-     * 
-     * @describe: 设置回调函数
-     * @return:   void
-     */
+    /// @brief 设置回调函数
+    /// @param func 函数对象
     void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
-    void set_timer_out_callback(std::function<void(Connection_ptr)> func);
+    void set_timer_out_callback(std::function<void(sp_Connection)> func);
+
 
     ~EventLoop();
 
@@ -167,11 +115,11 @@ private:
     std::atomic_bool _M_stop = false; // 停止事件循环, true为停止
 
     // 存放运行在该事件循环上的所有Connection对象
-    std::map<int, Connection_ptr> _M_conns;
+    std::map<int, sp_Connection> _M_conns;
 
     // 当epoll_wait()超时时, 回调TcpServer::epoll_timeout()
     std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
 
     // 当定时器超时时, 回调TcpServer::remove_conn()
-    std::function<void(Connection_ptr)> _M_timer_out_callback;
+    std::function<void(sp_Connection)> _M_timer_out_callback;
 };

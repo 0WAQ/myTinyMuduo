@@ -22,42 +22,23 @@ class ThreadPool
 {
 public:
 
-    /**
-     * 
-     * @describe: 用来初始化线程
-     * @param:    size_t
-     * 
-     */
+    /// @brief 初始化线程池
+    /// @param type 线程类型
+    /// @param thread_num 线程数量
     ThreadPool(const std::string& type, size_t thread_num);
 
 
-    /**
-     * 
-     * @describe: 将任务添加到任务队列中
-     * @param:    std::function<void()>
-     * @return:   void
-     * 
-     */
+    /// @brief 将任务添加到任务队列
+    /// @param task 函数对象
     void push(std::function<void()> task);
 
 
-    /**
-     * 
-     * @describe: 获取线程池中的线程数量
-     * @param:    void
-     * @return:   std::size_t
-     * 
-     */
+    /// @brief 获取线程池中的线程数量
+    /// @return 
     std::size_t size();
 
 
-    /**
-     * 
-     * @describe: 停止线程
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 终止线程池
     void stop();
     
 
@@ -67,14 +48,18 @@ public:
 private:
     // 线程池中的线程
     std::vector<std::thread> _M_threads;
+
     // 任务队列
     std::queue<std::function<void()>> _M_task_queue;
     // 任务队列同步的互斥锁
     std::mutex _M_mutex;
+
     // 任务队列同步的条件变量
     std::condition_variable _M_condition;
+
     // 在析构函数中, 将其值设置为ture, 全部的线程将退出
     std::atomic_bool _M_stop;
+
     // 线程种类
     std::string _M_thread_type; // 取值为IO, WORK
 };
