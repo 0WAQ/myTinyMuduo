@@ -99,7 +99,7 @@ private:
     // 表示Tcp连接的状态: true-已连接, false-已断开
     std::atomic_bool _M_is_diconnected; 
 
-    // 每接收到一个报文, 将时间戳更新为当前时间
+    // 最后接收到数据的时间, 每接收到一个报文, 将时间戳更新为当前时间
     TimeStamp _M_ts; 
 
     // 关闭连接的回调函数, 将回调TcpServer::close_connection

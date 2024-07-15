@@ -108,7 +108,7 @@ void Connection::error_events()
 }
 
 
-// 清理空闲Connection的超时时间
+// 判断最后一次接收到数据的时间到现在, 有没有超过val
 bool Connection::timer_out(time_t val) { return time(0) - _M_ts.to_time_t() > val; }
 
 
