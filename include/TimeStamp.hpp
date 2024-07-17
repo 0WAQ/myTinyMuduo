@@ -7,6 +7,10 @@
 class TimeStamp
 {
 public:
+    using TimeDuration = std::chrono::system_clock::duration;
+    using TimePoint = std::chrono::system_clock::time_point;
+
+public:
 
 
     /// @brief 用当前时间初始化对象
@@ -14,8 +18,8 @@ public:
 
 
     /// @brief 用指定时间初始化对象  
-    /// @param sec std::chrono::high_resolution_clock::time_point
-    TimeStamp(std::chrono::high_resolution_clock::time_point sec);
+    /// @param sec TimePoint
+    TimeStamp(TimePoint sec);
 
 
     /// @brief 获取当前时间对象
@@ -29,8 +33,8 @@ public:
 
 
     /// @brief  返回当前时间点  
-    /// @return std::chrono::system_clock::time_point
-    std::chrono::system_clock::time_point to_time_point() const;
+    /// @return TimePoint
+    TimePoint to_time_point() const;
 
 
     /// @brief  返回当前对象的字符串表示时间 
@@ -42,5 +46,5 @@ public:
 
 private:
     // 从1970起
-    std::chrono::high_resolution_clock::time_point _M_sec;
+    TimePoint _M_sec;
 };

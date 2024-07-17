@@ -5,12 +5,12 @@ int create_timerfd(time_t sec)
 {
     int tfd = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
     
-    itimerspec timeout;
-    memset(&timeout, 0, sizeof(itimerspec));
-    timeout.it_value.tv_sec = sec;
-    timeout.it_value.tv_nsec = 0;
+    itimerspec tm;
+    memset(&tm, 0, sizeof(itimerspec));
+    tm.it_value.tv_sec = sec;
+    tm.it_value.tv_nsec = 0;
 
-    timerfd_settime(tfd, 0, &timeout, 0);
+    timerfd_settime(tfd, 0, &tm, 0);
 
     return tfd;
 }
@@ -42,12 +42,8 @@ void EventLoop::loop()
     while(!_M_stop)
     {
         _M_channels.clear();
-
-        // auto dur = TimeDuration(10, ratio::second);
-
-        _M_channels = _M_ep_ptr->wait(10 * 1000); // dur.get_milliseconds()
+        _M_channels = _M_ep_ptr->wait();
         
-
         // 若channels为空, 则说明超时, 通知TcpServer
         if(_M_channels.empty()) 
         {
@@ -108,12 +104,12 @@ void EventLoop::handle_eventfd()
 void EventLoop::handle_timerfd()
 {
     // 重新计时, 用于每隔timeout秒, 就检测是否有空闲Connection
-    itimerspec timeout;
-    memset(&timeout, 0, sizeof(itimerspec));
-    timeout.it_value.tv_sec = _M_timeval;
-    timeout.it_value.tv_nsec = 0;
+    itimerspec tm;
+    memset(&tm, 0, sizeof(itimerspec));
+    tm.it_value.tv_sec = _M_timeval;
+    tm.it_value.tv_nsec = 0;
 
-    timerfd_settime(_M_tfd, 0, &timeout, 0);
+    timerfd_settime(_M_tfd, 0, &tm, 0);
 
     if(!_M_is_main_loop) // 若为从线程
     {
