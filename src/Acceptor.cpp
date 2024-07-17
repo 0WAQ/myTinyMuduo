@@ -39,5 +39,3 @@ void Acceptor::new_connection()
     // 通过回调函数将创建好的clnt_sock传递给TcpServer, 让TcpServer创建Connection对象
     _M_create_connection_callback(std::move(clnt_sock_ptr));
 }
-
-Acceptor::~Acceptor() { }

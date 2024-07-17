@@ -34,6 +34,8 @@ void EchoServer::start() {
 
 void EchoServer::stop() 
 {
+    _M_is_stop = true;
+
     // 停止工作线程
     _M_pool.stop();
 
@@ -105,4 +107,8 @@ void EchoServer::handle_timer_out(SpConnection conn)
                 conn->get_ip().c_str(), conn->get_fd());
 }
 
-EchoServer::~EchoServer() { }
+EchoServer::~EchoServer() 
+{
+    if(!_M_is_stop)
+        stop();
+}

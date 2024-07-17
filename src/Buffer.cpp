@@ -1,7 +1,6 @@
 #include "../include/Buffer.hpp"
 
 Buffer::Buffer(uint16_t sep) : _M_sep(sep) { }
-Buffer::~Buffer() { }
 
 
 void Buffer::append(const char* data, size_t size) {

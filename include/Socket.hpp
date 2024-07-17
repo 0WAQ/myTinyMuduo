@@ -49,7 +49,4 @@ private:
     const int _M_fd;
     std::string _M_ip;
     uint16_t _M_port;
-
-    Socket(Socket&) = delete;
-
 };

@@ -55,8 +55,6 @@ public:
     void set_epoll_timeout_callback(EpollTimeoutCallback func);
     void set_error_connection_callback(ErrorCallback func);
 
-    ~TcpServer();
-
 private:
 
     // 交换顺序, 和初始化列表顺序一致

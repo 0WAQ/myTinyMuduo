@@ -14,6 +14,7 @@
 class Channel;
 
 
+/// @brief 封装Epoll
 class Epoll
 {
 public:

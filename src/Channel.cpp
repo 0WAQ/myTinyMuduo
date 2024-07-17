@@ -1,23 +1,28 @@
 #include "../include/Channel.hpp"
 #include "../include/Connection.hpp"
 
-Channel::Channel(EventLoop* loop_ptr, int fd) : _M_loop_ptr(loop_ptr), _M_fd(fd) { }
-Channel::~Channel() { }
+Channel::Channel(EventLoop* loop_ptr, int fd) : 
+        _M_loop_ptr(loop_ptr), _M_fd(fd) 
+{ }
 
 // 判断该fd对应的channel发生的是什么事件
 void Channel::handle()
-{
-    if(_M_happened_events & EPOLLRDHUP) // 连接中断事件
+{   
+    // 连接中断事件
+    if(_M_happened_events & EPOLLRDHUP) 
         _M_close_callback();
-    
-    else if(_M_happened_events & (EPOLLIN | EPOLLPRI)) // 读事件
+
+    // 读事件
+    else if(_M_happened_events & (EPOLLIN | EPOLLPRI)) 
         _M_read_callback();
-    
-    else if(_M_happened_events & EPOLLOUT) // 写事件
+
+    // 写事件
+    else if(_M_happened_events & EPOLLOUT) 
         _M_write_callback();
-    
+
+    // 错误
     else 
-        _M_error_callback(); // 错误
+        _M_error_callback(); 
     
 }
 
@@ -30,7 +35,7 @@ void Channel::remove()
 
 /// 获取于设置内部成员变量
 int Channel::get_fd() { return _M_fd;}
-bool Channel::get_in_epoll() {return _M_in_epoll;}
+bool Channel::in_epoll() {return _M_in_epoll;}
 void Channel::set_in_epoll() {_M_in_epoll = true;}
 void Channel::set_happened_events(uint32_t events) {_M_happened_events = events;}
 uint32_t Channel::get_happened_events() {return _M_happened_events;}
@@ -38,6 +43,7 @@ uint32_t Channel::get_monitored_events() {return _M_monitored_events;}
 
 // 设置边缘触发
 void Channel::set_ET() { _M_monitored_events |= EPOLLET;}
+
 // 设置监听事件
 #define updata _M_loop_ptr->updata_channel(this)
 void Channel::set_read_events() {    _M_monitored_events |= EPOLLIN;   updata;}

@@ -41,9 +41,6 @@ public:
     /// @return std::string, 格式为 yyyy-mm-dd hh24:mi:ss
     std::string to_string() const;
 
-
-    ~TimeStamp();
-
 private:
     // 从1970起
     TimePoint _M_sec;

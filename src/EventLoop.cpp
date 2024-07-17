@@ -116,7 +116,7 @@ void EventLoop::handle_timerfd()
         for(auto it = _M_conns.begin(); it != _M_conns.end();) 
         {
             // 空闲Connection定义为: 当前事件距离上次发送消息的时间超过timeout秒
-            if(it->second->timer_out(_M_timeout)) 
+            if(it->second->is_expired(_M_timeout)) 
             {
                 // 将TcpServer中的map容器对应的conn删除
                 _M_timer_out_callback(it->second);
@@ -167,5 +167,3 @@ void EventLoop::insert(SpConnection conn) { _M_conns[conn->get_fd()] = conn;}
 // 两个超时 设置回调函数
 void EventLoop::set_epoll_timeout_callback(EpollTimeoutCallback func) {_M_epoll_wait_timeout_callback = std::move(func);}
 void EventLoop::set_timer_out_callback(TimeroutCallback func) {_M_timer_out_callback = std::move(func);}
-
-EventLoop::~EventLoop() { }

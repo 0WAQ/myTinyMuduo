@@ -34,10 +34,6 @@ public:
     /// @param clnt_addr 客户端地址结构体
     void set_addr(sockaddr_in clnt_addr);
 
-
-    ~InetAddress();
-
-
 private:
     sockaddr_in _M_addr;
 };

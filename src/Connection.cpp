@@ -109,7 +109,7 @@ void Connection::error_events()
 
 
 // 判断最后一次接收到数据的时间到现在, 有没有超过val
-bool Connection::timer_out(time_t val) { return time(0) - _M_ts.to_time_t() > val; }
+bool Connection::is_expired(time_t val) { return time(0) - _M_ts.to_time_t() > val; }
 
 
 
@@ -159,5 +159,3 @@ void Connection::set_error_callback(ErrorCallback func) {_M_error_callback = std
 int Connection::get_fd() const { return _M_sock_ptr->get_fd();}
 std::string Connection::get_ip() const { return _M_sock_ptr->get_ip();}
 uint16_t Connection::get_port() const { return _M_sock_ptr->get_port();}
-
-Connection::~Connection() { }

@@ -51,10 +51,6 @@ public:
     /// @brief 清空buf
     void clear();
 
-
-    /// @brief 
-    ~Buffer();
-
 private:
 
     std::string _M_buf;

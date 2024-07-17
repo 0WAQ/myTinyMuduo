@@ -21,7 +21,7 @@ using SpConnection = std::shared_ptr<Connection>;
 
 /**
  *  事件循环类
- *  封装了事件循环的过程,内含一个Epoll对象
+ *  封装了事件循环的过程, 内含一个Epoll对象
  */
 class EventLoop
 {
@@ -90,9 +90,6 @@ public:
     /// @param func 函数对象
     void set_epoll_timeout_callback(EpollTimeoutCallback func);
     void set_timer_out_callback(TimeroutCallback func);
-
-
-    ~EventLoop();
 
 private:
 

@@ -15,7 +15,7 @@ void Epoll::updata_channel(Channel* ch)
     ev.events = ch->get_monitored_events();
     
     // 判断该fd是否已被监听
-    if(ch->get_in_epoll()) 
+    if(ch->in_epoll()) 
     {
         // 若被监听, 则修改events
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_MOD, ch->get_fd(), &ev) == -1) {
@@ -37,7 +37,7 @@ void Epoll::updata_channel(Channel* ch)
 void Epoll::remove(Channel* ch)
 {
     // 若channel已经被监听, 那么删除
-    if(ch->get_in_epoll()) 
+    if(ch->in_epoll()) 
     {
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_DEL, ch->get_fd(), 0) == -1) {
             std::cerr << "epoll_ctl() remove failed.\n";

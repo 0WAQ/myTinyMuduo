@@ -162,6 +162,3 @@ void TcpServer::set_epoll_timeout_callback(EpollTimeoutCallback func)
 
 void TcpServer::set_timer_out_callback(TimeroutCallback func) 
     {_M_timer_out_callback = std::move(func);}
-
-
-TcpServer::~TcpServer() { }

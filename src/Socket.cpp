@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../include/Socket.hpp"
 
+// 创建非阻塞的sockfd
 int create_non_blocking_fd()
 {
     int listen_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, IPPROTO_TCP);

@@ -44,4 +44,6 @@ private:
     ThreadPool _M_pool;
 
     TcpServer _M_tcp_server;
+
+    bool _M_is_stop = false;
 };

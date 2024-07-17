@@ -2,7 +2,6 @@
 
 TimeStamp::TimeStamp() : _M_sec(std::chrono::system_clock::now()) { }
 TimeStamp::TimeStamp(TimePoint sec) : _M_sec(sec) { }
-TimeStamp::~TimeStamp() { }
 
 // 获取当前时间戳
 TimeStamp TimeStamp::now() { return TimeStamp();}

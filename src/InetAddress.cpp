@@ -18,5 +18,3 @@ uint16_t InetAddress::get_port() const {return ntohs(_M_addr.sin_port);}
 const sockaddr* InetAddress::get_addr() const {return (sockaddr*)&_M_addr;}
 
 void InetAddress::set_addr(sockaddr_in clnt_addr) {_M_addr = clnt_addr;}
-
-InetAddress::~InetAddress() { }

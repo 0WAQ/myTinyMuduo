@@ -50,7 +50,7 @@ public:
     /// @brief 定时器是否超时, 用于清理空闲Connection
     /// @param val 距上次请求的时间
     /// @return true超时, false不超时
-    bool timer_out(time_t val);
+    bool is_expired(time_t val);
 
 
     /// @brief 将send交由IO线程执行
@@ -87,9 +87,6 @@ public:
     /// @return port
     uint16_t get_port() const;
 
-
-    ~Connection();
-
 private:
 
     // 从事件循环
@@ -103,7 +100,7 @@ private:
     Buffer _M_input_buffer;
     Buffer _M_output_buffer;
 
-    // 表示Tcp连接的状态: true-已连接, false-已断开
+    // 表示Tcp连接的状态: false-已连接, true-已断开
     std::atomic_bool _M_is_diconnected; 
 
     // 最后接收到数据的时间, 每接收到一个报文, 将时间戳更新为当前时间

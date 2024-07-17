@@ -32,8 +32,6 @@ public:
     void new_connection();
 
 
-    ~Acceptor();
-
 private:
 
     // 修改声明的顺序, 应该与初始化顺序一致

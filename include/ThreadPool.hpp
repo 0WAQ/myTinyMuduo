@@ -13,11 +13,7 @@
 #include <future>
 #include <atomic>
 
-/**
- * 
- * 线程池类
- * 
- */
+/// @brief 线程池类
 class ThreadPool
 {
 public:

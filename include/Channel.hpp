@@ -35,12 +35,6 @@ public:
     void handle();
 
 
-    /// @brief 获取channel的fd
-    /// @return fd
-    int get_fd();
-
-
-
     /// @brief 四种事件
     void set_read_events();
     void set_write_events();
@@ -54,27 +48,19 @@ public:
     void remove();
 
 
-    /// @brief 表示该channel已被监听
+    /// @brief 用来设置和判断该channel是否已被监视
     void set_in_epoll();
-
-    /// @brief 判断该Channel对应的fd是否被监听
-    /// @return true-是, false-否
-    bool get_in_epoll();
+    bool in_epoll();
 
 
     /// @brief 设置边缘触发
     void set_ET();
 
-    /// @brief 设置channel发生的事件
-    /// @param events 发生的事件
+
+    /// @brief 设置, 获取事件
+    /// @param events 
     void set_happened_events(uint32_t events);
-
-    /// @brief 设置该fd发生的事件, 在epoll_wait()之后
-    /// @return 
     uint32_t get_happened_events();
-
-    /// @brief 获取监听的事件
-    /// @return 
     uint32_t get_monitored_events();
 
 
@@ -86,11 +72,17 @@ public:
     void set_close_callback(CloseCallback func); // 关闭连接
     void set_error_callback(ErrorCallback func); // 错误事件
 
-    ~Channel();
+
+    /// @brief 获取channel的fd
+    /// @return fd
+    int get_fd();
+
 
 private:
-    int _M_fd = -1;
+    // channel两边的fd和loop
+    const int _M_fd = -1;
     EventLoop* _M_loop_ptr = nullptr;
+    
     bool _M_in_epoll = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;
