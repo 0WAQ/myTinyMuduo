@@ -24,9 +24,8 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
 }
 
 // 启动服务器
-void TcpServer::start() {
-    _M_main_loop->loop();
-}
+void TcpServer::start() 
+    { _M_main_loop->loop(); }
 
 // 关闭服务器
 void TcpServer::stop() 
@@ -139,16 +138,30 @@ void TcpServer::timer_out(SpConnection conn)
 }
 
 // 读,写,关闭,错误 设置回调函数
-void TcpServer::set_create_connection_callback(std::function<void(SpConnection)> func) {_M_create_connection_callback = std::move(func);}
-void TcpServer::set_deal_message_callback(std::function<void(SpConnection,std::string &message)> func) {_M_deal_message_callback = std::move(func);}
-void TcpServer::set_close_connection_callback(std::function<void(SpConnection)> func) {_M_close_connection_callback = std::move(func);}
-void TcpServer::set_error_connection_callback(std::function<void(SpConnection)> func) {_M_error_connection_callback = std::move(func);}
+void TcpServer::set_create_connection_callback(CreateConnCallback func) 
+    {_M_create_connection_callback = std::move(func);}
+
+void TcpServer::set_deal_message_callback(DealMsgCallback func) 
+    {_M_deal_message_callback = std::move(func);}
+
+void TcpServer::set_close_connection_callback(CloseCallback func) 
+    {_M_close_connection_callback = std::move(func);}
+
+void TcpServer::set_error_connection_callback(ErrorCallback func) 
+    {_M_error_connection_callback = std::move(func);}
+
 
 // 写完成 设置回调函数
-void TcpServer::set_send_complete_callback(std::function<void(SpConnection)> func) {_M_send_complete_callback = std::move(func);}
+void TcpServer::set_send_complete_callback(SendCompleteCallback func) 
+    {_M_send_complete_callback = std::move(func);}
+
 
 // 两个超时 设置回调函数
-void TcpServer::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {_M_epoll_timeout_callback = std::move(func);}
-void TcpServer::set_timer_out_callback(std::function<void(SpConnection)> func) {_M_timer_out_callback = std::move(func);}
+void TcpServer::set_epoll_timeout_callback(EpollTimeoutCallback func) 
+    {_M_epoll_timeout_callback = std::move(func);}
+
+void TcpServer::set_timer_out_callback(TimeroutCallback func) 
+    {_M_timer_out_callback = std::move(func);}
+
 
 TcpServer::~TcpServer() { }

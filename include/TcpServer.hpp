@@ -9,120 +9,51 @@
 #include "Connection.hpp"
 #include "ThreadPool.hpp"
 
-/**
- *  
- * 封装监听Socket的创建和事件循环
- * 
- */
+
+/// @brief Tcp服务类
 class TcpServer
 {
+
+    using CreateConnCallback = std::function<void(SpConnection)>;
+    using DealMsgCallback = std::function<void(SpConnection, std::string&)>;
+    using SendCompleteCallback = std::function<void(SpConnection)>;
+    using TimeroutCallback = std::function<void(SpConnection)>;
+    using CloseCallback = std::function<void(SpConnection)>;
+    using EpollTimeoutCallback = std::function<void(EventLoop*)>;
+    using ErrorCallback = std::function<void(SpConnection)>;
+
 public:
 
-    /**
-     * 
-     * @describe: 构造函数, 用来初始化Socket
-     * @param:    要绑定的ip和端口和线程池的大小
-     * 
-     */
+    /// @brief 初始化Tcp服务器
+    /// @param ip 绑定地址
+    /// @param port 绑定ip
+    /// @param thread_nums IO线程数
     TcpServer(const std::string& ip, const uint16_t port, size_t thread_nums);
 
 
-    /**
-     * 
-     * @describe: 转调用了成员变量_M_loop的run方法
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 启动与停止Tcp服务器
     void start();
-
-
-    /**
-     * 
-     * @describe: 停止运行服务器
-     * @param:    void
-     * @return:   void
-     * 
-     */
     void stop();
 
 
-    /**
-     * 
-     * @describe: 处理客户端报文请求时, Connection回调的函数
-     * @param:    SpConnection, std::string&
-     * @return:   void
-     * 
-     */
-    void deal_message(SpConnection conn, std::string& message);
-
-
-    /**
-     * 
-     * @describe: 封装处理新的连接请求的代码
-     * @param:    std::unique_ptr<Socket>
-     * @return:   void
-     * 
-     */
+    /// @brief 各种被调函数
     void create_connection(std::unique_ptr<Socket> clnt_sock);
-
-
-    /**
-     * 
-     * @describe: Tcp连接断开后, Connection回调的函数
-     * @param:    void
-     * @return:   void
-     */
+    void deal_message(SpConnection conn, std::string& message);
+    void send_complete(SpConnection conn);
+    void timer_out(SpConnection conn);
     void close_connection(SpConnection conn);
-
-
-    /**
-     * 
-     * @describe: Tcp连接出错后, Connection回调的函数
-     * @param:    void
-     * @return:   void
-     */
+    void epoll_timeout(EventLoop* loop);
     void error_connection(SpConnection conn);
 
 
-    /**
-     * 
-     * @describe: 数据发送完成后, 在Connection类中回调此函数
-     * @param:    void
-     * @return:   void
-     * 
-     */
-    void send_complete(SpConnection conn);
-
-
-    /**
-     * 
-     * @describe: epoll_wait超时后, 在EventLoop中回调此函数
-     * @param:    EventLoop*
-     * @return:   void
-     * 
-     */
-    void epoll_timeout(EventLoop* loop);
-
-
-    /**
-     * 
-     * @describe: 删除conns中的Connection对象, 在EventLoop::handle_timerfd中回调
-     * @param:    SpConnection
-     * @return:   void
-     * 
-     */
-    void timer_out(SpConnection conn);
-
-
     // 以下为设置回调函数的函数
-    void set_deal_message_callback(std::function<void(SpConnection,std::string&)> func);
-    void set_create_connection_callback(std::function<void(SpConnection)> func);
-    void set_close_connection_callback(std::function<void(SpConnection)> func);
-    void set_error_connection_callback(std::function<void(SpConnection)> func);
-    void set_send_complete_callback(std::function<void(SpConnection)> func);
-    void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
-    void set_timer_out_callback(std::function<void(SpConnection)> func);
+    void set_create_connection_callback(CreateConnCallback func);
+    void set_deal_message_callback(DealMsgCallback func);
+    void set_send_complete_callback(SendCompleteCallback func);
+    void set_timer_out_callback(TimeroutCallback func);
+    void set_close_connection_callback(CloseCallback func);
+    void set_epoll_timeout_callback(EpollTimeoutCallback func);
+    void set_error_connection_callback(ErrorCallback func);
 
     ~TcpServer();
 
@@ -141,24 +72,24 @@ private:
 
     std::mutex _M_mutex; // 用于对map容器的操作上锁
 
-    // 回调EchoServer::handle_deal_message
-    std::function<void(SpConnection, std::string&)> _M_deal_message_callback;
-
     // 回调EchoServer::handle_create_connection
-    std::function<void(SpConnection)> _M_create_connection_callback;
+    CreateConnCallback _M_create_connection_callback;
 
-    // 回调EchoServer::HandleClose
-    std::function<void(SpConnection)> _M_close_connection_callback;
-
-    // 回调EchoServer::HandleError
-    std::function<void(SpConnection)> _M_error_connection_callback;
+    // 回调EchoServer::handle_deal_message
+    DealMsgCallback _M_deal_message_callback;
 
     // 回调EchoServer::HandleSendComplete
-    std::function<void(SpConnection)> _M_send_complete_callback;
+    SendCompleteCallback _M_send_complete_callback;
+
+    // 回调EchoServer::HandleTimerOut
+    TimeroutCallback _M_timer_out_callback;
+
+    // 回调EchoServer::HandleClose
+    CloseCallback _M_close_connection_callback;
 
     // 回调EchoServer::HandleTimeOut
-    std::function<void(EventLoop*)>  _M_epoll_timeout_callback;
-    
-    // 回调EchoServer::HandleTimerOut
-    std::function<void(SpConnection)> _M_timer_out_callback;
+    EpollTimeoutCallback  _M_epoll_timeout_callback;
+
+    // 回调EchoServer::HandleError
+    ErrorCallback _M_error_connection_callback;
 };
