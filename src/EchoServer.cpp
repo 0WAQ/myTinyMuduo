@@ -24,7 +24,8 @@ EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_
     _M_tcp_server.set_epoll_timeout_callback(std::bind(&EchoServer::handle_epoll_timeout, this,
                                             std::placeholders::_1));
 
-    _M_tcp_server.set_timer_out_callback(std::bind(&EchoServer::handle_timer_out, this, std::placeholders::_1));
+    _M_tcp_server.set_timer_out_callback(std::bind(&EchoServer::handle_timer_out, this, 
+                                            std::placeholders::_1));
 }
 
 void EchoServer::start() {

@@ -4,34 +4,25 @@
 #include "TcpServer.hpp"
 #include "ThreadPool.hpp"
 
-/**
- * 
- * 回显服务器
- * 支持回显业务
- * 
- */
+
+/// @brief 业务服务器: Echo
 class EchoServer
 {
 public:
 
-    /**
-     * 
-     * @describe: 用于初始化_M_tcp_server
-     * @param:    const std::string&, uint16_t, size_t, size_t
-     * 
-     */
+    /// @brief 初始化Echo
+    /// @param ip 
+    /// @param port 
+    /// @param loop_thread_num  IO线程数
+    /// @param work_thread_um   WORK线程数
     EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_num = 3, size_t work_thread_um = 5);
 
 
-    /**
-     * 
-     * @describe: 发生对应的事件后, TcpServer调用这些函数
-     * @param:    void
-     * @return:   void
-     * 
-     */
+    /// @brief 启动与停止
     void start();
     void stop();
+
+    /// @brief 业务处理的被调函数
     void handle_deal_message(SpConnection conn, std::string& message);
     void handle_create_connection(SpConnection conn);
     void handle_close_connection(SpConnection conn);
@@ -40,13 +31,7 @@ public:
     void handle_epoll_timeout(EventLoop* loop);
     void handle_timer_out(SpConnection conn);
 
-    /**
-     * 
-     * @describe: 业务处理函数
-     * @param:    SpConnection, std::string&
-     * @return:   void
-     * 
-     */
+    /// @brief 中间层, 以便将发送交给IO线程完成
     void handle_deal_message_a(SpConnection conn, std::string& message);
 
 
