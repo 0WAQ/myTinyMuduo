@@ -25,8 +25,8 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port)
 }
 
 // 创建连接的回调函数, 调用TcpServer中的create_connection
-void Acceptor::set_create_connection_callback(std::function<void(std::unique_ptr<Socket>)> func) {
-    create_connection_callback = std::move(func);
+void Acceptor::set_create_connection_callback(CreateConnCallback func) {
+    _M_create_connection_callback = std::move(func);
 } 
 
 // 读事件的被调函数, 代表有新连接
@@ -37,7 +37,7 @@ void Acceptor::new_connection()
     clnt_sock_ptr->set_ip_port(clnt_addr.get_ip(), clnt_addr.get_port());
 
     // 通过回调函数将创建好的clnt_sock传递给TcpServer, 让TcpServer创建Connection对象
-    create_connection_callback(std::move(clnt_sock_ptr));
+    _M_create_connection_callback(std::move(clnt_sock_ptr));
 }
 
 Acceptor::~Acceptor() { }

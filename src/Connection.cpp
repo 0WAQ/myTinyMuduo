@@ -6,11 +6,11 @@ Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock)
           _M_is_diconnected(false)
 {
     
-    // 设置Connection的回调函数
+    // 设置Connection被channel回调的四种函数
     _M_channel_ptr->set_read_callback(std::bind(&Connection::read_events, this));
     _M_channel_ptr->set_write_callback(std::bind(&Connection::write_events, this));
     _M_channel_ptr->set_close_callback(std::bind(&Connection::close_events, this));
-    _M_channel_ptr->set_error_callback(std::bind(&Connection::read_events, this));
+    _M_channel_ptr->set_error_callback(std::bind(&Connection::error_events, this));
 
     // 设置为边缘触发
     _M_channel_ptr->set_ET();
@@ -148,10 +148,10 @@ void Connection::send_a(std::shared_ptr<std::string> message)
 
 
 // 读,写,关闭,错误 四个设置回调函数
-void Connection::set_deal_message_callback(std::function<void(sp_Connection, std::string&)> func) {_M_deal_message_callback = std::move(func);}
-void Connection::set_send_complete_callback(std::function<void(sp_Connection)> func) {_M_send_complete_callback = std::move(func);}
-void Connection::set_close_callback(std::function<void(sp_Connection)> func) {_M_close_callback = std::move(func);}
-void Connection::set_error_callback(std::function<void(sp_Connection)> func) {_M_error_callback = std::move(func);}
+void Connection::set_deal_message_callback(DealMsgCallback func) {_M_deal_message_callback = std::move(func);}
+void Connection::set_send_complete_callback(SendCompleteCallback func) {_M_send_complete_callback = std::move(func);}
+void Connection::set_close_callback(CloseCallback func) {_M_close_callback = std::move(func);}
+void Connection::set_error_callback(ErrorCallback func) {_M_error_callback = std::move(func);}
 
 
 

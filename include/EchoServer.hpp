@@ -32,22 +32,22 @@ public:
      */
     void start();
     void stop();
-    void handle_deal_message(sp_Connection conn, std::string& message);
-    void handle_create_connection(sp_Connection conn);
-    void handle_close_connection(sp_Connection conn);
-    void handle_error_connection(sp_Connection conn);
-    void handle_send_complete(sp_Connection conn);
+    void handle_deal_message(SpConnection conn, std::string& message);
+    void handle_create_connection(SpConnection conn);
+    void handle_close_connection(SpConnection conn);
+    void handle_error_connection(SpConnection conn);
+    void handle_send_complete(SpConnection conn);
     void handle_epoll_timeout(EventLoop* loop);
-    void handle_timer_out(sp_Connection conn);
+    void handle_timer_out(SpConnection conn);
 
     /**
      * 
      * @describe: 业务处理函数
-     * @param:    sp_Connection, std::string&
+     * @param:    SpConnection, std::string&
      * @return:   void
      * 
      */
-    void handle_deal_message_a(sp_Connection conn, std::string& message);
+    void handle_deal_message_a(SpConnection conn, std::string& message);
 
 
     ~EchoServer();

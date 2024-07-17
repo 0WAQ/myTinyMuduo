@@ -17,7 +17,7 @@
 class Channel;
 class Epoll;
 class Connection;
-using sp_Connection = std::shared_ptr<Connection>;
+using SpConnection = std::shared_ptr<Connection>;
 
 /**
  *  事件循环类
@@ -25,6 +25,12 @@ using sp_Connection = std::shared_ptr<Connection>;
  */
 class EventLoop
 {
+public:
+
+    using EpollTimeoutCallback = std::function<void(EventLoop*)>;
+    using TimeroutCallback = std::function<void(SpConnection)>;
+    using WorkThreadCallback = std::function<void()>;
+
 public:
 
 
@@ -42,7 +48,7 @@ public:
 
     /// @brief 用来存放工作线程的任务
     /// @param task 任务
-    void push(std::function<void()> task);
+    void push(WorkThreadCallback task);
 
 
     /// @brief 唤醒事件循环
@@ -77,13 +83,13 @@ public:
 
     /// @brief 将Connection对象加入到map容器
     /// @param conn 
-    void insert(sp_Connection conn);
+    void insert(SpConnection conn);
 
 
     /// @brief 设置回调函数
     /// @param func 函数对象
-    void set_epoll_timeout_callback(std::function<void(EventLoop*)> func);
-    void set_timer_out_callback(std::function<void(sp_Connection)> func);
+    void set_epoll_timeout_callback(EpollTimeoutCallback func);
+    void set_timer_out_callback(TimeroutCallback func);
 
 
     ~EventLoop();
@@ -115,11 +121,11 @@ private:
     std::atomic_bool _M_stop = false; // 停止事件循环, true为停止
 
     // 存放运行在该事件循环上的所有Connection对象
-    std::map<int, sp_Connection> _M_conns;
+    std::map<int, SpConnection> _M_conns;
 
     // 当epoll_wait()超时时, 回调TcpServer::epoll_timeout()
-    std::function<void(EventLoop*)> _M_epoll_wait_timeout_callback;
+    EpollTimeoutCallback _M_epoll_wait_timeout_callback;
 
     // 当定时器超时时, 回调TcpServer::remove_conn()
-    std::function<void(sp_Connection)> _M_timer_out_callback;
+    TimeroutCallback _M_timer_out_callback;
 };

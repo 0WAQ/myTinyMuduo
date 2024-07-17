@@ -136,7 +136,7 @@ void EventLoop::handle_timerfd()
 
 bool EventLoop::is_loop_thread() { return _M_tid == syscall(SYS_gettid);}
 
-void EventLoop::push(std::function<void()> task) 
+void EventLoop::push(WorkThreadCallback task) 
 {
     {   
         std::lock_guard<std::mutex> lock(_M_mutex);
@@ -161,11 +161,11 @@ void EventLoop::remove(Channel* ch) { _M_ep_ptr->remove(ch);}
 
 
 // 将Connection放入map容器, 用来指示WORK线程将Connection的IO任务交给哪个IO线程
-void EventLoop::insert(sp_Connection conn) { _M_conns[conn->get_fd()] = conn;}
+void EventLoop::insert(SpConnection conn) { _M_conns[conn->get_fd()] = conn;}
 
 
 // 两个超时 设置回调函数
-void EventLoop::set_epoll_timeout_callback(std::function<void(EventLoop*)> func) {_M_epoll_wait_timeout_callback = std::move(func);}
-void EventLoop::set_timer_out_callback(std::function<void(sp_Connection)> func) {_M_timer_out_callback = std::move(func);}
+void EventLoop::set_epoll_timeout_callback(EpollTimeoutCallback func) {_M_epoll_wait_timeout_callback = std::move(func);}
+void EventLoop::set_timer_out_callback(TimeroutCallback func) {_M_timer_out_callback = std::move(func);}
 
 EventLoop::~EventLoop() { }

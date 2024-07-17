@@ -15,7 +15,7 @@
 class EventLoop;
 class Channel;
 class Connection;
-using Connection_ptr = std::shared_ptr<Connection>;
+using SpConnection = std::shared_ptr<Connection>;
 
 
 /**
@@ -24,6 +24,13 @@ using Connection_ptr = std::shared_ptr<Connection>;
  */
 class Connection : public std::enable_shared_from_this<Connection>
 {
+public:
+
+    using CloseCallback = std::function<void(SpConnection)>;
+    using ErrorCallback = std::function<void(SpConnection)>;
+    using DealMsgCallback = std::function<void(SpConnection, std::string&)>;
+    using SendCompleteCallback = std::function<void(SpConnection)>;
+
 public:
 
 
@@ -60,10 +67,10 @@ public:
     
     /// @brief 设置回调函数, 分别在四种事件处理后调用
     /// @param func 函数对象
-    void set_deal_message_callback(std::function<void(Connection_ptr, std::string&)> func);
-    void set_send_complete_callback(std::function<void(Connection_ptr)> func);
-    void set_close_callback(std::function<void(Connection_ptr)> func);
-    void set_error_callback(std::function<void(Connection_ptr)> func);
+    void set_deal_message_callback(DealMsgCallback func);
+    void set_send_complete_callback(SendCompleteCallback func);
+    void set_close_callback(CloseCallback func);
+    void set_error_callback(ErrorCallback func);
 
 
     /// @brief 获取连接fd
@@ -103,14 +110,14 @@ private:
     TimeStamp _M_ts; 
 
     // 关闭连接的回调函数, 将回调TcpServer::close_connection
-    std::function<void(Connection_ptr)> _M_close_callback;
+    CloseCallback _M_close_callback;
 
     // 连接出错的回调函数, 将回调TcpServer::error_connection
-    std::function<void(Connection_ptr)> _M_error_callback;
+    ErrorCallback _M_error_callback;
 
     // 处理客户端报文请求时, 将回调TcpServer::deal_message
-    std::function<void(Connection_ptr, std::string&)> _M_deal_message_callback;
+    DealMsgCallback _M_deal_message_callback;
 
     // 数据发送完成后, 将回调TcpServer::send_complete
-    std::function<void(Connection_ptr)> _M_send_complete_callback;
+    SendCompleteCallback _M_send_complete_callback;
 };

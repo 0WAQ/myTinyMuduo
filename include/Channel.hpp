@@ -17,6 +17,13 @@ class Channel
 {
 public:
 
+    using ReadCallback = std::function<void()>;
+    using WriteCallback = std::function<void()>;
+    using CloseCallback = std::function<void()>;
+    using ErrorCallback = std::function<void()>;
+
+public:
+
 
     /// @brief 将fd与事件循环绑定
     /// @param loop_ptr 事件循环
@@ -74,10 +81,10 @@ public:
 
     /// @brief 设置回调函数
     /// @param func 函数对象
-    void set_read_callback(std::function<void()> func);  // 读事件
-    void set_write_callback(std::function<void()> func); // 写事件
-    void set_close_callback(std::function<void()> func); // 关闭连接
-    void set_error_callback(std::function<void()> func); // 错误事件
+    void set_read_callback(ReadCallback func);  // 读事件
+    void set_write_callback(WriteCallback func); // 写事件
+    void set_close_callback(CloseCallback func); // 关闭连接
+    void set_error_callback(ErrorCallback func); // 错误事件
 
     ~Channel();
 
@@ -89,14 +96,14 @@ private:
     uint32_t _M_happened_events = 0;
 
     // 读事件的回调函数, 将回调Acceptor::new_connection或者new_message
-    std::function<void()> _M_read_callback; 
+    ReadCallback _M_read_callback; 
 
     // 写事件的回调函数, 将回调Connection::send
-    std::function<void()> _M_write_callback;
+    WriteCallback _M_write_callback;
 
     // 连接关闭的回调函数, 将回调Connection::close_callback
-    std::function<void()> _M_close_callback; 
+    CloseCallback _M_close_callback; 
 
     // 连接出错的回调函数, 将回调Connection::error_callback
-    std::function<void()> _M_error_callback; 
+    ErrorCallback _M_error_callback; 
 };

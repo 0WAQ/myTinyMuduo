@@ -39,7 +39,7 @@ void EchoServer::stop()
     _M_tcp_server.stop();
 }
 
-void EchoServer::handle_deal_message_a(sp_Connection conn, std::string& message)
+void EchoServer::handle_deal_message_a(SpConnection conn, std::string& message)
 {   
     // 若没有工作线程, 再调用回去, 由IO线程处理
     if(_M_pool.size() == 0) 
@@ -54,7 +54,7 @@ void EchoServer::handle_deal_message_a(sp_Connection conn, std::string& message)
 
 }
 
-void EchoServer::handle_deal_message(sp_Connection conn, std::string& message)
+void EchoServer::handle_deal_message(SpConnection conn, std::string& message)
 {
     // 将数据经过计算后             
     message = "reply: " + message;
@@ -63,28 +63,28 @@ void EchoServer::handle_deal_message(sp_Connection conn, std::string& message)
     conn->send(message.data(), message.size());
 }
 
-void EchoServer::handle_create_connection(sp_Connection conn)
+void EchoServer::handle_create_connection(SpConnection conn)
 {
     printf("%s: new connection(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(), 
                 conn->get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_close_connection(sp_Connection conn) 
+void EchoServer::handle_close_connection(SpConnection conn) 
 {
     printf("%s: close connection(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(), 
                 conn->get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_error_connection(sp_Connection conn) 
+void EchoServer::handle_error_connection(SpConnection conn) 
 {
     printf("%s: error connection(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(),
                 conn->get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_send_complete(sp_Connection conn) 
+void EchoServer::handle_send_complete(SpConnection conn) 
 {
     // printf("%s: send complete(ip=%s, fd=%d).\n", 
     //             TimeStamp::now().to_string().c_str(),
@@ -97,7 +97,7 @@ void EchoServer::handle_epoll_timeout(EventLoop* loop)
                 TimeStamp::now().to_string().c_str());
 }
 
-void EchoServer::handle_timer_out(sp_Connection conn)
+void EchoServer::handle_timer_out(SpConnection conn)
 {
     printf("%s: timer_out(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(),

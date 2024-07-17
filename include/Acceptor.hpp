@@ -12,6 +12,10 @@ class Acceptor
 {
 public:
 
+    using CreateConnCallback = std::function<void(std::unique_ptr<Socket>)>;
+
+public:
+
     /// @brief 初始化loop与服务端监听地址
     /// @param loop 事件循环
     /// @param ip   ip地址
@@ -21,7 +25,7 @@ public:
 
     /// @brief 设置回调函数
     /// @param func 函数对象
-    void set_create_connection_callback(std::function<void(std::unique_ptr<Socket>)> func);
+    void set_create_connection_callback(CreateConnCallback func);
 
 
     /// @brief 读事件被调函数, 在channel中被回调
@@ -38,5 +42,5 @@ private:
     Channel _M_acceptor_channel;
 
     // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
-    std::function<void(std::unique_ptr<Socket>)> create_connection_callback;
+    CreateConnCallback _M_create_connection_callback;
 };

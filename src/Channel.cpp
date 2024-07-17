@@ -8,21 +8,17 @@ Channel::~Channel() { }
 void Channel::handle()
 {
     if(_M_happened_events & EPOLLRDHUP) // 连接中断事件
-    { 
         _M_close_callback();
-    }
+    
     else if(_M_happened_events & (EPOLLIN | EPOLLPRI)) // 读事件
-    {
         _M_read_callback();
-    }
+    
     else if(_M_happened_events & EPOLLOUT) // 写事件
-    {
         _M_write_callback();
-    }
+    
     else 
-    {
         _M_error_callback(); // 错误
-    }
+    
 }
 
 // 取消对该fd的监视
@@ -51,7 +47,7 @@ void Channel::unset_write_events() { _M_monitored_events &= ~EPOLLOUT; updata;}
 void Channel::unset_all_events() {   _M_monitored_events = 0;          updata;}
 
 // 读,写,关闭,错误 四个设置回调函数
-void Channel::set_read_callback (std::function<void()> func) {_M_read_callback  = std::move(func);}
-void Channel::set_write_callback(std::function<void()> func) {_M_write_callback = std::move(func);}
-void Channel::set_close_callback(std::function<void()> func) {_M_close_callback = std::move(func);}
-void Channel::set_error_callback(std::function<void()> func) {_M_error_callback = std::move(func);}
+void Channel::set_read_callback (ReadCallback func) {_M_read_callback  = std::move(func);}
+void Channel::set_write_callback(WriteCallback func) {_M_write_callback = std::move(func);}
+void Channel::set_close_callback(CloseCallback func) {_M_close_callback = std::move(func);}
+void Channel::set_error_callback(ErrorCallback func) {_M_error_callback = std::move(func);}
