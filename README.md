@@ -4,7 +4,7 @@
 
 ## 目录结构
 
-```bash
+```shell
 myTinyMuduo/
 |
 |-- base/
