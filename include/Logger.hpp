@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <mutex>
+#include <memory>
 #include <stdarg.h> // vastart va_end
 #include "Buffer.hpp"
 #include "TimeStamp.hpp"
@@ -11,8 +12,8 @@
 // 定义日志级别
 enum LogLevel
 {
-    INFO,       // 普通信息
     DEBUG,      // 调试信息
+    INFO,       // 普通信息
     WARN,       // 警告信息
     ERROR       // 报错
 };
@@ -31,16 +32,23 @@ public:
 
     /// @brief 设置日志等级
     /// @param level 
-    void set_log_level(LogLevel level);
+    void set_level(LogLevel level);
+
+
+    /// @brief 获取当前日志等级
+    /// @return 
+    LogLevel get_level();
 
 
     /// @brief 添加日志等级头到缓冲区
-    void append_level_title();
+    /// @param level
+    void append_level_title(LogLevel level);
 
 
     /// @brief 将日志信息写入缓冲区的任务添加至LOG线程池
+    /// @param level
     /// @param format
-    void write(const char* format, ...);
+    void write(LogLevel level, const char* format, ...);
 
 
     /// @brief 把日志信息写入缓冲区
@@ -64,7 +72,7 @@ private:
 
     // 线程池
     size_t _M_thread_num;
-    ThreadPool* _M_pool;
+    std::unique_ptr<ThreadPool> _M_pool;
 
     // 锁
     std::mutex _M_mutex;
@@ -75,12 +83,14 @@ private:
 #define LOG_BASE(level, format, ...)                    \
     do {                                                \
         Logger* log = Logger::get_instance();           \
-        log->set_log_level(level);                      \
-        log->write(format, ##__VA_ARGS__);              \
+        if(log->get_level() <= level) {                 \
+        std::cout << log->get_level() << ' ' << level << std::endl;\
+            log->write(level, format, ##__VA_ARGS__);   \
+        }                                               \
     } while(0)
 
-#define LOG_INFO(format, ...)  LOG_BASE(INFO,  format, ##__VA_ARGS__)
 #define LOG_DEBUG(format, ...) LOG_BASE(DEBUG, format, ##__VA_ARGS__)
+#define LOG_INFO(format, ...)  LOG_BASE(INFO,  format, ##__VA_ARGS__)
 #define LOG_WARN(format, ...)  LOG_BASE(WARN,  format, ##__VA_ARGS__)
 #define LOG_ERROR(format, ...) LOG_BASE(ERROR, format, ##__VA_ARGS__)
 ////////////////////////////////////////////////////////////////////////////////////

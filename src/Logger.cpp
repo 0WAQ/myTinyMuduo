@@ -6,24 +6,29 @@ Logger::Logger() : _M_buffer(2), _M_thread_num(1), _M_pool(new ThreadPool("LOG",
 }
 
 Logger* Logger::get_instance() {
-    static Logger log;
+    static Logger log; // 懒汉模式, 在第一次调用时才创建对象
     return &log;
 }
 
-void Logger::set_log_level(LogLevel level) {
-    std::lock_guard<std::mutex> grd(_M_mutex);
+void Logger::set_level(LogLevel level) {
+    std::unique_lock<std::mutex> grd(_M_mutex);
     _M_level = level;
 }
 
-void Logger::append_level_title() 
+LogLevel Logger::get_level() {
+    std::unique_lock<std::mutex> grd(_M_mutex);
+    return _M_level;
+}
+
+void Logger::append_level_title(LogLevel level) 
 {
-    switch (_M_level) 
+    switch (level) 
     {
     case 0:
         _M_buffer.append("[INFO] : ", 9);
         break;
     case 1:
-        _M_buffer.append("[DEBUF]: ", 9);
+        _M_buffer.append("[DEBUG]: ", 9);
         break;
     case 2:
         _M_buffer.append("[WRAN] : ", 9);
@@ -37,33 +42,35 @@ void Logger::append_level_title()
     }
 }
 
-void Logger::write(const char* format, ...)
+void Logger::write(LogLevel level, const char* format, ...)
 {   
-    // 1.填充标题头
-    append_level_title();
-    
-
-    // 2.填充时间
-    std::string now = TimeStamp::now().to_string() + " ";
-    _M_buffer.append(now.data(), now.size());
-
-
-    // 3.填充参数列表
-    char buf[256] = {0};
     {
+        std::unique_lock<std::mutex> grd(_M_mutex);
+
         va_list args;
-        va_start(args, format);
-        vsnprintf(buf, sizeof(buf), format, args);
-        va_end(args);
-    }
-    _M_buffer.append_with_sep(buf, strlen(buf));
+        std::string msg;
+        std::string now = TimeStamp::now().to_string() + " ";
+
+        // 1.填充标题头
+        append_level_title(level);
+        
+
+        // 2.填充时间  
+        _M_buffer.append(now.data(), now.size());
 
 
-    // 4.将任务交给LOG线程
-    std::string msg;
-    _M_buffer.pick_datagram(msg);
-    {
-        std::lock_guard<std::mutex> grd(_M_mutex);
+        // 3.填充参数列表
+        char buf[256] = {0};
+        {    
+            va_start(args, format);
+            vsnprintf(buf, sizeof(buf), format, args);
+            va_end(args);
+        }
+        _M_buffer.append_with_sep(buf, strlen(buf));
+
+
+        // 4.将任务交给LOG线程
+        _M_buffer.pick_datagram(msg);
         _M_pool->push(std::bind(&Logger::write_async, this, msg));
     }
 }
@@ -71,7 +78,7 @@ void Logger::write(const char* format, ...)
 void Logger::write_async(std::string msg)
 {   
     {
-        std::lock_guard<std::mutex> grd(_M_mutex);
+        std::unique_lock<std::mutex> grd(_M_mutex);
         std::cout << msg << std::flush;
     }
 }
