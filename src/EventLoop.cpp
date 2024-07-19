@@ -5,6 +5,14 @@ int create_timerfd(time_t sec)
 {
     int tfd = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
     
+    if(tfd < 0) {
+        LOG_ERROR("%s:%s:%d timerfd create error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
+    }
+    else {
+        LOG_DEBUG("create a new timerfd.\n");
+    }
+
     itimerspec tm;
     memset(&tm, 0, sizeof(itimerspec));
     tm.it_value.tv_sec = sec;
@@ -15,13 +23,29 @@ int create_timerfd(time_t sec)
     return tfd;
 }
 
+int create_eventfd()
+{
+    int efd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    if(efd < 0) {
+        LOG_ERROR("%s:%s:%d eventfd create error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
+    }
+    else {
+        LOG_DEBUG("create a new eventfd.\n");
+    }
+
+    return efd;
+}
+
 EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) : 
         _M_ep_ptr(new Epoll),
         _M_timeval(timeval), _M_timeout(timeout),
-        _M_efd(eventfd(0, EFD_NONBLOCK)), _M_ech(new Channel(this, _M_efd)), 
+        _M_efd(create_eventfd()), _M_ech(new Channel(this, _M_efd)), 
         _M_tfd(create_timerfd(_M_timeval)), _M_tch(new Channel(this, _M_tfd)),
         _M_is_main_loop(main_loop)
 {
+    LOG_DEBUG("EventLoop created, thread is %d.\n", syscall(SYS_gettid));
+
     // 监听efd的读事件, 用于异步唤醒事件循环线程
     _M_ech->set_read_events();
     // 设置读事件发生后的回调函数
@@ -36,6 +60,8 @@ EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) :
 // 运行事件循环
 void EventLoop::loop()
 {
+    LOG_DEBUG("EventLoop start looping, thread is %d.\n", syscall(SYS_gettid));
+
     // 初始化tid
     _M_tid = syscall(SYS_gettid);
 
@@ -71,7 +97,7 @@ void EventLoop::stop()
 // eventfd的被调函数, 执行eventfd的任务, 用于处理WORK线程的任务
 void EventLoop::handle_eventfd()
 {
-    // printf("thread is %d, IO thread is waked up\n", syscall(SYS_gettid));
+    LOG_INFO("IO thread is waked up, thread is %d.\n", syscall(SYS_gettid));
 
     uint64_t val;
     read(_M_efd, &val, sizeof(val)); // 读出来, 否则在LT中会一直触发
@@ -151,7 +177,10 @@ void EventLoop::push(WorkThreadCallback task)
 void EventLoop::wakeup()
 {
     uint64_t val = 1;
-    write(_M_efd, &val, sizeof(val));
+    size_t len = write(_M_efd, &val, sizeof(val));
+    if(len != sizeof(val)) {
+        LOG_ERROR("EventLoop::wakeup writes %d, instead of 8.\n", len);
+    }
 }
 
 

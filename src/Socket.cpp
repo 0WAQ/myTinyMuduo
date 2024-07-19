@@ -48,6 +48,12 @@ int Socket::accept(InetAddress& clnt_addr)
     int clnt_fd = ::accept4(_M_fd, (sockaddr*)&clnt_addr1, &clnt_addr1_len, SOCK_NONBLOCK);
     clnt_addr.set_addr(clnt_addr1);
     
+    if(clnt_fd < 0) {
+        LOG_ERROR("%s:%s:%d accept error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
+        return -1;
+    }
+    
     return clnt_fd;
 }
 

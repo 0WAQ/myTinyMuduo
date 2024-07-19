@@ -94,7 +94,9 @@ void TcpServer::close_connection(SpConnection conn)
         _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
-    
+
+    LOG_DEBUG("TcpServer::close_connection: remove connection[fd = %d].\n", conn->get_fd());
+
 }
 
 void TcpServer::error_connection(SpConnection conn)
@@ -109,6 +111,9 @@ void TcpServer::error_connection(SpConnection conn)
         _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
+
+    LOG_DEBUG("TcpServer::error_connection: remove connection[fd = %d].\n", conn->get_fd());
+
 }
 
 void TcpServer::deal_message(SpConnection conn, std::string& message)
@@ -141,6 +146,9 @@ void TcpServer::timer_out(SpConnection conn)
         _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
+
+    LOG_DEBUG("TcpServer::timer_out: remove connection[fd = %d].\n", conn->get_fd());
+
 }
 
 // 读,写,关闭,错误 设置回调函数

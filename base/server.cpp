@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     Logger* log = Logger::get_instance();
     log->set_level(LogLevel::DEBUG);
 
-    server = new EchoServer(argv[1], atoi(argv[2]), 1, 0);
+    server = new EchoServer(argv[1], atoi(argv[2]), 3, 2);
     server->start();
 
     return 0;
