@@ -62,7 +62,6 @@ private:
     do {                                                \
         Logger* log = Logger::get_instance();           \
         log->set_log_level(level);                      \
-        log->append_level_title();                      \
         log->write(format, ##__VA_ARGS__);              \
         log->flush();                                   \
     } while(0)

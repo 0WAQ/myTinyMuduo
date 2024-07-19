@@ -42,16 +42,16 @@ void Logger::append_level_title() {
 
 void Logger::write(const char* format, ...)
 {   
-    {
-        // 填充参数列表
-        va_list args;
-        va_start(args, format);
-        char buf[1024] = {0};
-        vsprintf(buf, format, args);
-        va_end(args);
+    append_level_title();
+    
+    // 填充参数列表
+    va_list args;
+    va_start(args, format);
+    char buf[1024] = {0};
+    vsprintf(buf, format, args);
+    va_end(args);
 
-        _M_buffer.append_with_sep(buf, strlen(buf));
-    }
+    _M_buffer.append_with_sep(buf, strlen(buf));
         
     
     //////

@@ -9,7 +9,7 @@ ThreadPool::ThreadPool(const std::string& type, size_t thread_num)
         // 利用lambda函数创建线程, 并添加到线程池中
         _M_threads.emplace_back(
             [this]() {
-                LOG_INFO("%s thread(%d) created.\n", 
+                LOG_DEBUG("%s thread(%d) created.\n", 
                     this->_M_thread_type.c_str(), syscall(SYS_gettid));
 
                 while(_M_stop == false) {
