@@ -84,7 +84,6 @@ private:
     do {                                                \
         Logger* log = Logger::get_instance();           \
         if(log->get_level() <= level) {                 \
-        std::cout << log->get_level() << ' ' << level << std::endl;\
             log->write(level, format, ##__VA_ARGS__);   \
         }                                               \
     } while(0)
