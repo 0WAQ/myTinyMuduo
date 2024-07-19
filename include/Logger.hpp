@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <string>
+#include <mutex>
 #include <stdarg.h> // vastart va_end
 #include "Buffer.hpp"
 #include "TimeStamp.hpp"
+#include "ThreadPool.hpp"
 
 // 定义日志级别
 enum LogLevel
@@ -14,6 +16,8 @@ enum LogLevel
     WARN,       // 警告信息
     ERROR       // 报错
 };
+
+class ThreadPool;
 
 /// @brief 日志类, 单例模式
 class Logger
@@ -34,14 +38,14 @@ public:
     void append_level_title();
 
 
-    /// @brief 将日志信息写入缓冲区
+    /// @brief 将日志信息写入缓冲区的任务添加至LOG线程池
     /// @param format
     void write(const char* format, ...);
 
 
-    /// @brief 刷新缓冲区
-    void flush();
-
+    /// @brief 把日志信息写入缓冲区
+    /// @param msg 
+    void write_async(std::string msg);
 
 private:
 
@@ -51,9 +55,19 @@ private:
 
 
 private:
+
+    // 日志等级
     LogLevel _M_level;
 
+    // 缓冲区
     Buffer _M_buffer;
+
+    // 线程池
+    size_t _M_thread_num;
+    ThreadPool* _M_pool;
+
+    // 锁
+    std::mutex _M_mutex;
 };
 
 
@@ -63,7 +77,6 @@ private:
         Logger* log = Logger::get_instance();           \
         log->set_log_level(level);                      \
         log->write(format, ##__VA_ARGS__);              \
-        log->flush();                                   \
     } while(0)
 
 #define LOG_INFO(format, ...)  LOG_BASE(INFO,  format, ##__VA_ARGS__)
