@@ -9,8 +9,8 @@ ThreadPool::ThreadPool(const std::string& type, size_t thread_num)
         // 利用lambda函数创建线程, 并添加到线程池中
         _M_threads.emplace_back(
             [this]() {
-                // 打印进程ID
-                printf("%s thread(%d) created.\n", this->_M_thread_type.c_str(), syscall(SYS_gettid));
+                LOG_DEBUG("%s thread(%d) created.\n", 
+                    this->_M_thread_type.c_str(), syscall(SYS_gettid));
 
                 while(_M_stop == false) {
                     std::function<void()> task;
@@ -70,8 +70,7 @@ void ThreadPool::stop()
     // 等待所有线程执行完毕后, 任务退出
     for(auto &th : _M_threads)
         th.join();
-
-    std::cout << _M_thread_type << "线程已停止" << std::endl;
+    
 }
 
 // 返回线程池中线程的总数量

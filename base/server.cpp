@@ -1,17 +1,16 @@
 #include <iostream>
 #include <signal.h>
 #include "../include/EchoServer.hpp"
+#include "../include/Logger.hpp"
 
 EchoServer* server;
 
 void stop(int sig)
 {
-    std::cout << "sig: " << sig << std::endl;
+    LOG_INFO("sig: %d\n", sig);
 
     // 调用EchoServer::stop函数停止服务
     server->stop();
-
-    std::cout << "echo-server已停止\n" << fflush;
 
     delete server;
     exit(0);
@@ -28,7 +27,10 @@ int main(int argc, char* argv[])
     signal(SIGTERM, stop);
     signal(SIGINT, stop);
 
-    server = new EchoServer(argv[1], atoi(argv[2]), 2, 3);
+    Logger* log = Logger::get_instance();
+    log->init(DEBUG, "log", ".log");
+
+    server = new EchoServer(argv[1], atoi(argv[2]), 3, 2);
     server->start();
 
     return 0;

@@ -25,23 +25,29 @@ TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_n
 
 // 启动服务器
 void TcpServer::start() 
-    { _M_main_loop->loop(); }
+{
+    LOG_INFO("TcpServer启动中...\n");
+
+    _M_main_loop->loop();
+}
 
 // 关闭服务器
 void TcpServer::stop() 
 {
     // 停止主事件循环
     _M_main_loop->stop();
-    std::cout << "主事件循环已停止." << std::endl;
+    LOG_INFO("主事件循环已停止.\n");
+    
 
     // 停止从事件循环
     for(int i = 0; i < _M_thread_num; i++) {
         _M_sub_loops[i]->stop();
     }
-    std::cout << "从事件循环已停止." << std::endl; 
+    LOG_INFO("从事件循环已停止.\n");
 
     // 停止IO线程
     _M_pool.stop();
+    LOG_INFO("TcpServer已停止.\n");
 }
 
 
@@ -88,7 +94,9 @@ void TcpServer::close_connection(SpConnection conn)
         _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
-    
+
+    LOG_DEBUG("TcpServer::close_connection: remove connection[fd = %d].\n", conn->get_fd());
+
 }
 
 void TcpServer::error_connection(SpConnection conn)
@@ -103,6 +111,9 @@ void TcpServer::error_connection(SpConnection conn)
         _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
+
+    LOG_DEBUG("TcpServer::error_connection: remove connection[fd = %d].\n", conn->get_fd());
+
 }
 
 void TcpServer::deal_message(SpConnection conn, std::string& message)
@@ -135,6 +146,9 @@ void TcpServer::timer_out(SpConnection conn)
         _M_connections_map.erase(conn->get_fd());
     }
     ///////////////////////////////////////////////////////////////
+
+    LOG_DEBUG("TcpServer::timer_out: remove connection[fd = %d].\n", conn->get_fd());
+
 }
 
 // 读,写,关闭,错误 设置回调函数

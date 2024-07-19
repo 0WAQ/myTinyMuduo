@@ -7,6 +7,8 @@ Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port)
     // 初始化serv_sock的地址
     InetAddress serv_addr(ip, port);
 
+    LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.get_fd());
+
     // 设置serv_sock的属性
     _M_serv_sock.set_keep_alive(1);
     _M_serv_sock.set_reuse_addr(1);

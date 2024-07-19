@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "Channel.hpp"
+#include "Logger.hpp"
 
 class Channel;
 

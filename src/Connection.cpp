@@ -12,6 +12,8 @@ Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock)
     _M_channel_ptr->set_close_callback(std::bind(&Connection::close_events, this));
     _M_channel_ptr->set_error_callback(std::bind(&Connection::error_events, this));
 
+    LOG_INFO("Connection is created[fd = %d].\n", this->get_fd());
+
     // 设置为边缘触发
     _M_channel_ptr->set_ET();
     // 监听读事件
