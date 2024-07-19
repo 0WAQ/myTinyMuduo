@@ -23,6 +23,7 @@ myTinyMuduo/
 | |-- Epoll.hpp
 | |-- EventLoop.hpp
 | |-- InetAddress.hpp
+| |-- Logger.hpp
 | |-- Socket.hpp
 | |-- TcpServer.hpp
 | |-- ThreadPool.hpp
@@ -37,6 +38,7 @@ myTinyMuduo/
 | |-- Epoll.cpp
 | |-- EventLoop.cpp
 | |-- InetAddress.cpp
+| |-- Logger.cpp
 | |-- Socket.cpp
 | |-- TcpServer.cpp
 | |-- ThreadPool.cpp
@@ -45,7 +47,9 @@ myTinyMuduo/
 |-- makefile
 |-- .gitignore
 ```
+
 ## 参考资料
     1. 陈硕的muduo库: https://github.com/chenshuo/muduo
-    2. 陈硕写的数据:《Linux多线程服务端编程: 使用muduo C++网络库》
-    3. 一个博客: https://www.cnblogs.com/S1mpleBug/p/16712003.html
+    2. TinyWebServer: https://github.com/qinguoyi/TinyWebServer
+    3. 博客: https://www.cnblogs.com/S1mpleBug/p/16712003.html
+    4. 书籍:《Linux多线程服务端编程: 使用muduo C++网络库》
