@@ -12,6 +12,7 @@
 #include <functional>
 #include <future>
 #include <atomic>
+#include "Logger.hpp"
 
 /// @brief 线程池类
 class ThreadPool

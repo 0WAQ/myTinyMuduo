@@ -6,8 +6,7 @@ int create_non_blocking_fd()
 {
     int listen_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, IPPROTO_TCP);
     if(listen_fd < 0) {
-        std::cerr << "socket() failed\n";
-        printf("%s:%s:%d listen socket create error:%d.\n", 
+        LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
         exit(-1);
     }
@@ -21,7 +20,8 @@ Socket::~Socket() { close(_M_fd);}
 void Socket::bind(const InetAddress& serv_addr)
 {
     if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
-        std::cerr << "bind() failed\n";
+        LOG_ERROR("%s:%s:%d bind error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
         close(_M_fd);
         exit(-1);
     }
@@ -33,7 +33,8 @@ void Socket::bind(const InetAddress& serv_addr)
 void Socket::listen(size_t max_connection)
 {
     if(::listen(_M_fd, max_connection) != 0) {
-        std::cerr << "listen() failed\n";
+        LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
         close(_M_fd);
         exit(-1);      
     }

@@ -58,7 +58,7 @@ void Logger::write(const char* format, ...)
 
     std::string ans;
     _M_buffer.pick_datagram(ans);
-    std::cout << ans << std::endl;
+    std::cout << ans;
 }
 
 void Logger::flush()

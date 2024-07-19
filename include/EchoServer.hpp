@@ -3,6 +3,7 @@
 #include "Connection.hpp"
 #include "TcpServer.hpp"
 #include "ThreadPool.hpp"
+#include "Logger.hpp"
 
 
 /// @brief 业务服务器: Echo

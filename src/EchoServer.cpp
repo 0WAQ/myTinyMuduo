@@ -28,7 +28,9 @@ EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_
                                             std::placeholders::_1));
 }
 
-void EchoServer::start() {
+void EchoServer::start() 
+{
+    LOG_INFO("EchoServer启动中...\n");
     _M_tcp_server.start();
 }
 
@@ -36,10 +38,10 @@ void EchoServer::stop()
 {
     _M_is_stop = true;
 
-    // 停止工作线程
     _M_pool.stop();
-
     _M_tcp_server.stop();
+
+    LOG_INFO("EchoServer已停止.\n");
 }
 
 void EchoServer::handle_deal_message_a(SpConnection conn, std::string& message)

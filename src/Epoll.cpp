@@ -3,7 +3,8 @@
 Epoll::Epoll()
 {
     if((_M_epoll_fd = epoll_create(1)) == -1) {
-        printf("epoll_create() failed(%d).\n", errno);
+        LOG_ERROR("%s:%s:%d epoll_create() failed: %d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
         exit(-1);
     }
 }
@@ -19,7 +20,8 @@ void Epoll::updata_channel(Channel* ch)
     {
         // 若被监听, 则修改events
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_MOD, ch->get_fd(), &ev) == -1) {
-            std::cerr << "epoll_ctl() modify failed.\n";
+            LOG_ERROR("%s:%s:%d epoll_ctl() modify failed: %d.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno);
             exit(-1);
         }
     }
@@ -27,7 +29,8 @@ void Epoll::updata_channel(Channel* ch)
     {
         // 否则, 新增该fd至epfd
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_ADD, ch->get_fd(), &ev) == -1) {
-            std::cerr << "epoll_ctl() add failed.\n";
+            LOG_ERROR("%s:%s:%d epoll_ctl() add failed: %d.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno);
             exit(-1);
         }
         ch->set_in_epoll();
@@ -40,7 +43,8 @@ void Epoll::remove(Channel* ch)
     if(ch->in_epoll()) 
     {
         if(epoll_ctl(_M_epoll_fd, EPOLL_CTL_DEL, ch->get_fd(), 0) == -1) {
-            std::cerr << "epoll_ctl() remove failed.\n";
+            LOG_ERROR("%s:%s:%d epoll_ctl() remove failed: %d.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno);
             exit(-1);
         }
     }
@@ -56,7 +60,8 @@ std::vector<Channel*> Epoll::wait(int time_out)
 
     if(num_fds < 0) 
     { 
-        std::cerr << "epoll_wait() failed\n";
+        LOG_ERROR("%s:%s:%d epoll_wait() failed: %d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
         exit(-1);
     }
     else if(num_fds == 0) { 
