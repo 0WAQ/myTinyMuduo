@@ -52,24 +52,24 @@ LogLevel Logger::get_level() {
     return _M_level;
 }
 
-void Logger::append_level_title(LogLevel level) 
+void Logger::append_level_title(LogLevel level, std::string& msg) 
 {
     switch (level) 
     {
     case 0:
-        _M_buffer.append("[INFO] : ", 9);
+        msg.append("[DEBUG]: ");
         break;
     case 1:
-        _M_buffer.append("[DEBUG]: ", 9);
+        msg.append("[DEBUG]: ");
         break;
     case 2:
-        _M_buffer.append("[WRAN] : ", 9);
+        msg.append("[WRAN] : ");
         break;
     case 3:
-        _M_buffer.append("[ERROR]: ", 9);
+        msg.append("[ERROR]: ");
         break;
     default:
-        _M_buffer.append("[INFO] : ", 9);
+        msg.append("[INFO] : ");
         break;
     }
 }
@@ -111,13 +111,14 @@ void Logger::write(LogLevel level, const char* format, ...)
     {
         std::unique_lock<std::mutex> grd(_M_mutex);
 
+        // 待填充的信息
+        std::string msg;
+
         // 1.填充标题头
-        append_level_title(level);
+        append_level_title(level, msg);
         
-
         // 2.填充时间  
-        _M_buffer.append(now.data(), now.size());
-
+        msg.append(now);
 
         // 3.填充参数列表
         char buf[256] = {0};
@@ -126,9 +127,12 @@ void Logger::write(LogLevel level, const char* format, ...)
             vsnprintf(buf, sizeof(buf), format, args);
             va_end(args);
         }
-        _M_buffer.append(buf, strlen(buf));
+        msg.append(buf, strlen(buf));
 
-        // 4.将任务交给LOG线程
+        // 4.将填充好的消息加到缓冲区
+        _M_buffer.append(msg);
+
+        // 5.取出消息, 将任务交给LOG线程
         _M_buffer.pick_datagram(msg);
         _M_pool->push(std::bind(&Logger::write_async, this, msg));
     }

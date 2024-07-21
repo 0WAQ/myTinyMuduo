@@ -51,7 +51,8 @@ public:
 
     /// @brief 添加日志等级头到缓冲区
     /// @param level
-    void append_level_title(LogLevel level);
+    /// @param msg
+    void append_level_title(LogLevel level, std::string& msg);
 
 
     /// @brief 将日志信息写入缓冲区的任务添加至LOG线程池
