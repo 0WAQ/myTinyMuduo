@@ -29,25 +29,27 @@ void Connection::read_events()
     // 只用边缘触发, 需要确保将发送过来的数据读取完毕
     while(true) // 非阻塞IO
     {
-        // 初始化buf为0
-        bzero(&buf, sizeof(buf));
+        int save_error = 0;
 
-        ssize_t nlen = read(get_fd(), buf, sizeof(buf));
+        // 将数据直接读取到输入缓冲区
+        ssize_t nlen = _M_input_buffer.read_fd(get_fd(), &save_error);
 
         // 数据读取成功
         if(nlen > 0) 
         {
-            _M_input_buffer.append(buf, nlen); // 将数据添加到用户缓冲区中
+            continue;
         }
         // 读取时被中断
         else if(nlen == -1 && errno == EINTR) 
         {
+            LOG_ERROR("%s:%s:%d read_fd error:%d.\n", 
+                __FILE__, __FUNCTION__, __LINE__, save_error);
             continue;
         }
         // 非阻塞读的行为, 全部的数据已读取完毕(即目前的Socket缓冲区中没有数据)
         else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
         {
-            // 每次读完后, 将数据以报文为单位循环发送出去
+            // 读取完成后, 
             while(true)
             {
                 // 取出一个报文
@@ -57,6 +59,8 @@ void Connection::read_events()
 
                 // 更新时间戳
                 _M_ts = TimeStamp();
+
+                LOG_DEBUG("new message[fd=%d]: %s\n", get_fd() ,message.c_str());
 
                 _M_deal_message_callback(shared_from_this(), message);
             }
@@ -74,19 +78,22 @@ void Connection::read_events()
 
 void Connection::write_events()
 {
+    int save_error = 0;
     // 当可写后, 尝试把用户缓冲区的数据全部发送出去
-    int len = ::send(get_fd(), _M_output_buffer.data(), _M_output_buffer.size(), 0);
+    ssize_t nlen = _M_output_buffer.write_fd(get_fd(), &save_error);
     // 因为操作系统的原因(tcp滑动窗口), 数据不一定能全部接收, 剩下的数据等待下一次写事件触发
 
-    // 将成功发送的数据从用户缓冲区中删除掉
-    if(len > 0) {
-        _M_output_buffer.erase(0, len);
+    if(nlen < 0) {
+        LOG_ERROR("%s:%s:%d write_fd error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, save_error);
     }
-    
-    // 若缓冲区中没有数据了, 表示数据已成功发送, 不再关注写事件
-    if(_M_output_buffer.size() == 0) {
-        _M_channel_ptr->unset_write_events();
-        _M_send_complete_callback(shared_from_this());
+    else // 数据发送成功
+    {
+        // 若发送后payload为0, 表示数据全部发送, 不再关注写事件
+        if(_M_output_buffer.readable() == 0) {
+            _M_channel_ptr->unset_write_events();
+            _M_send_complete_callback(shared_from_this());
+        }
     }
 }
 
@@ -138,10 +145,11 @@ void Connection::send(const char* data, size_t size)
     }
 }
 
+// TODO:
 void Connection::send_a(std::shared_ptr<std::string> message)
 {
-    // 先将数据发送到用户缓冲区中
-    _M_output_buffer.append_with_sep(message->data(), message->size());
+    // 将数据发送到用户缓冲区中
+    _M_output_buffer.append(*message);
 
     // 注册写事件, 用来判断内核缓冲区是否可写. 若可写, Channel会回调write_events函数
     _M_channel_ptr->set_write_events();
