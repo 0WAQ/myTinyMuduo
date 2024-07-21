@@ -19,14 +19,14 @@ public:
 
 
     /// @brief 将字符串追加到缓冲区, 带有分割符
-    /// @param msg 
-    void append(const std::string& msg);
+    void append(const char* data, std::size_t size);
+    void append(const std::string& msg) { append(msg.data(), msg.size()); }
 
 
     /// @brief 将数据追加至缓冲区
     /// @param data 数据首地址
     /// @param size 数据大小
-    void append(const char* data, size_t size);
+    void append_a(const char* data, std::size_t size);
     
 
     /// @brief 从buf中取出一个报文
@@ -69,10 +69,11 @@ public:
 
 
     /// @brief 直接操作内核缓冲区和用户缓冲区
-    /// @param fd 
+    /// @param fd sockfd
+    /// @param save_errno 保存的errno, 以便传递给外界 
     /// @return 
-    std::size_t read_fd(int fd);
-    std::size_t write_fd(int fd);
+    std::size_t read_fd(int fd, int* save_errno);
+    std::size_t write_fd(int fd, int* save_errno);
 
 
 private:

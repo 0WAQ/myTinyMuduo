@@ -7,30 +7,29 @@ Buffer::Buffer(uint16_t sep, std::size_t prependable_size, std::size_t writable_
             _M_buf(_M_initial_prependable + _M_initial_writable)
 { }
 
-void Buffer::append(const std::string& msg)
+void Buffer::append(const char* data, std::size_t size)
 {
     switch (_M_sep)
     {
         case 0: // 无分割符
         {
-            append(msg.data(), msg.size());
+            append_a(data, size);
             break;
         }
         case 1: // 固定长度4字节做报文头
         {
             // 先将数据的大小送入缓冲区
-            size_t len = msg.size();
-            append((char*)&len, 4);    
+            append_a((char*)&size, 4);    
             // 再将数据本身送入缓冲区
-            append(msg.data(), msg.size());
+            append_a(data, size);
             break;
         }
         case 2: // 报文尾部加"\r\n\r\n"
         {
             // 先将数据放入缓冲区
-            append(msg.data(), msg.size());
+            append_a(data, size);
             // 再放入分割符
-            append("\r\n\r\n", 4);
+            append_a("\r\n\r\n", 4);
 
             break;
         }
@@ -38,7 +37,7 @@ void Buffer::append(const std::string& msg)
 
 }
 
-void Buffer::append(const char* data, std::size_t size)
+void Buffer::append_a(const char* data, std::size_t size)
 {
     assert(data != nullptr);
     ensure_writable(size);
@@ -48,6 +47,7 @@ void Buffer::append(const char* data, std::size_t size)
 
 std::string Buffer::erase(std::size_t size)
 {
+    // TODO:
     if(size > readable()) {
         std::cout << "删除失败" << std::endl; 
         return {};
@@ -151,12 +151,53 @@ void Buffer::resize(std::size_t len)
     }
 }
 
-std::size_t Buffer::read_fd(int fd)
+std::size_t Buffer::read_fd(int fd, int* save_errno)
 {
+    char buf[65536] = {0};
 
+    struct iovec iov[2];
+    const std::size_t write_bytes = writable();
+
+    // 利用readv分散读, 会优先将缓冲区写满, 剩余的会写到buf中
+    iov[0].iov_base = begin() + _M_write_idx;
+    iov[0].iov_len = write_bytes;
+
+    iov[1].iov_base = buf;
+    iov[1].iov_len = sizeof(buf);
+
+    ssize_t nlen = readv(fd, iov, 2);
+    // error
+    if(nlen < 0) {
+        *save_errno = errno;
+    }
+    // 只会读到缓冲区中
+    else if(nlen <= write_bytes) 
+    {
+        _M_write_idx += nlen;
+    }
+    // 还会读到buf中
+    else 
+    {
+        _M_write_idx = _M_buf.size();
+        // 将buf中的数据追加至缓冲区中(会触发resize)
+        append(buf, nlen - write_bytes);
+    }
+    return nlen;
 }
 
-std::size_t Buffer::write_fd(int fd)
+std::size_t Buffer::write_fd(int fd, int* save_errno)
 {
-    
+    // 将缓冲区的payload全部发送出去
+    std::size_t read_size = readable();
+    ssize_t len = write(fd, begin() + _M_read_idx, read_size);
+
+    if(len < 0) {
+        *save_errno = errno;
+    } 
+    // 调整索引
+    else {
+        _M_read_idx += len;
+    }
+
+    return len;
 }

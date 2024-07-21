@@ -23,7 +23,6 @@ void Logger::init(LogLevel level, std::string path, std::string suffix)
 
     {
         std::unique_lock<std::mutex> grd(_M_mutex);
-        _M_buffer.clear();
 
         if(_M_fp) {
             fclose(_M_fp);
@@ -127,8 +126,7 @@ void Logger::write(LogLevel level, const char* format, ...)
             vsnprintf(buf, sizeof(buf), format, args);
             va_end(args);
         }
-        _M_buffer.append_with_sep(buf, strlen(buf));
-
+        _M_buffer.append(buf, strlen(buf));
 
         // 4.将任务交给LOG线程
         _M_buffer.pick_datagram(msg);
