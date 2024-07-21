@@ -37,7 +37,6 @@ void Connection::read_events()
         // 数据读取成功
         if(nlen > 0) 
         {
-            // TODO:
             continue;
         }
         // 读取时被中断
@@ -60,6 +59,8 @@ void Connection::read_events()
 
                 // 更新时间戳
                 _M_ts = TimeStamp();
+
+                LOG_DEBUG("new message[fd=%d]: %s\n", get_fd() ,message.c_str());
 
                 _M_deal_message_callback(shared_from_this(), message);
             }

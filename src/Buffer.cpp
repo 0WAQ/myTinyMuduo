@@ -47,9 +47,9 @@ void Buffer::append_a(const char* data, std::size_t size)
 
 std::string Buffer::erase(std::size_t size)
 {
-    // TODO:
+    // 不会有这种情况出现
     if(size > readable()) {
-        std::cout << "删除失败" << std::endl; 
+        
         return {};
     }
 
