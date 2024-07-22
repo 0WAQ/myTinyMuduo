@@ -36,6 +36,11 @@ public:
     int accept(InetAddress& clnt_addr);
 
 
+    // TODO:
+    /// @brief 设置半关闭
+    void shutdown_write();
+
+
     /// @brief socket属性
     /// @param opt 1-启用, 不启用-0
     void set_reuse_addr(int opt);   // 地址重用

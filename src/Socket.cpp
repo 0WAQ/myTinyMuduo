@@ -69,6 +69,13 @@ int Socket::         get_fd()   const { return _M_fd;}
 std::string Socket:: get_ip()   const { return _M_ip;}
 uint16_t Socket::    get_port() const { return _M_port;}
 
+void Socket::shutdown_write() {
+    if(::shutdown(_M_fd, SHUT_WR) < 0) {
+        LOG_ERROR("%s:%s:%d shutdown write error:%d.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno);
+    }
+}
+
 // 设置fd属性的函数
 void Socket::set_keep_alive(int on) {setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on));}
 void Socket::set_reuse_addr(int on) {setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));}
