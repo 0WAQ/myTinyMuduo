@@ -41,6 +41,11 @@ public:
     EventLoop(bool main_loop, time_t timeval = 30, time_t timeout = 80);
 
 
+    /// @brief 运行与停止事件循环
+    void loop();
+    void stop();
+
+
     /// @brief 判断当前线程是否为事件循环线程
     /// @return ture-是, false-不是
     bool is_loop_thread();
@@ -61,14 +66,6 @@ public:
 
     /// @brief 用于处理定时器发生后的待调函数
     void handle_timerfd();
-
-
-    /// @brief 运行事件循环
-    void loop();
-
-
-    /// @brief 停止事件循环
-    void stop();
 
 
     /// @brief 转调用Epoll中的updata_channel

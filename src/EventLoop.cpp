@@ -123,7 +123,6 @@ void EventLoop::handle_eventfd()
 
     }
     ///////////////////////////////////////////////////
-
 }
 
 // timerfd的被调函数, 执行timerfd的任务, 用于清理空闲Connection
