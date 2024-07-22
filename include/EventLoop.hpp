@@ -76,7 +76,7 @@ public:
     void updata_channel(Channel* ch);
 
 
-    /// @brief 转调用Epoll中的remove
+    /// @brief 转调用Epoll中的remove_channel
     /// @param ch
     void remove_channel(Channel* ch);
 

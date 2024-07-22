@@ -37,7 +37,7 @@ void Epoll::updata_channel(Channel* ch)
     }
 }
 
-void Epoll::remove(Channel* ch)
+void Epoll::remove_channel(Channel* ch)
 {
     // 若channel已经被监听, 那么删除
     if(ch->in_epoll()) 

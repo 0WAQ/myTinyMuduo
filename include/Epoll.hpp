@@ -31,7 +31,7 @@ public:
 
     /// @brief 取消监听ch的事件
     /// @param ch 
-    void remove(Channel* ch);
+    void remove_channel(Channel* ch);
 
 
     /// @brief 调用epoll_wait, 返回发生事件的合集
