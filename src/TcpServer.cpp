@@ -80,6 +80,8 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
 
     if(_M_create_connection_callback)
         _M_create_connection_callback(conn);
+    
+    LOG_DEBUG("TcpServer::create_connection[fd=%d]\n", conn->get_fd());
 }
 
 void TcpServer::close_connection(SpConnection conn)
@@ -120,18 +122,24 @@ void TcpServer::deal_message(SpConnection conn, std::string& message)
 {
     if(_M_deal_message_callback)
         _M_deal_message_callback(conn, message);
+
+    LOG_DEBUG("TcpServer::deal_message[fd=%d], message: %s\n", conn->get_fd(), message.c_str());
 }
 
 void TcpServer::send_complete(SpConnection conn)
 {
     if(_M_send_complete_callback)
         _M_send_complete_callback(conn);
+    
+    LOG_DEBUG("TcpServer::send_complete[fd=%d]\n", conn->get_fd());
 }
 
 void TcpServer::epoll_timeout(EventLoop* loop)
 {
     if(_M_epoll_timeout_callback)
         _M_epoll_timeout_callback(loop);
+
+    LOG_DEBUG("TcpServer::epoll_timeout, thread id = %d\n", syscall(SYS_gettid));
 }
 
 void TcpServer::timer_out(SpConnection conn)

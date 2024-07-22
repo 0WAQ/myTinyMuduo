@@ -37,6 +37,8 @@ void Connection::read_events()
         // 数据读取成功
         if(nlen > 0) 
         {
+            LOG_DEBUG("Connection::read_events[fd=%d], read %ld bytes to input_buffer\n", 
+                    this->get_fd(), nlen);
             continue;
         }
         // 读取时被中断
@@ -54,13 +56,14 @@ void Connection::read_events()
             {
                 // 取出一个报文
                 std::string message;
-                if(!_M_input_buffer.pick_datagram(message))
+                if(!_M_input_buffer.pick_datagram(message)) {
+                    LOG_DEBUG("Connection::read_eventes[fd=%d], can't pick a datagram\n", 
+                            this->get_fd());
                     break;
+                }
 
                 // 更新时间戳
                 _M_ts = TimeStamp();
-
-                LOG_DEBUG("new message[fd=%d]: %s\n", get_fd() ,message.c_str());
 
                 _M_deal_message_callback(shared_from_this(), message);
             }
