@@ -30,7 +30,7 @@ void Channel::handle()
 void Channel::remove()
 {
     unset_all_events();         // 先取消全部的事件
-    _M_loop_ptr->remove(this); // 从红黑树上删除fd
+    _M_loop_ptr->remove_channel(this); // 从红黑树上删除fd
 }
 
 /// 获取于设置内部成员变量

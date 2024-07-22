@@ -78,7 +78,7 @@ public:
 
     /// @brief 转调用Epoll中的remove
     /// @param ch
-    void remove(Channel* ch);
+    void remove_channel(Channel* ch);
 
 
     /// @brief 将Connection对象加入到map容器

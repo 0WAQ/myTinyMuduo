@@ -186,7 +186,7 @@ void EventLoop::wakeup()
 
 // 转调用Epoll中对应的函数
 void EventLoop::updata_channel(Channel* ch) {_M_ep_ptr->updata_channel(ch); }
-void EventLoop::remove(Channel* ch) { _M_ep_ptr->remove(ch);}
+void EventLoop::remove_channel(Channel* ch) { _M_ep_ptr->remove(ch);}
 
 
 // 将Connection放入map容器, 用来指示WORK线程将Connection的IO任务交给哪个IO线程
