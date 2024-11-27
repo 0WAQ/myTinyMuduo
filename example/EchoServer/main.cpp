@@ -1,7 +1,6 @@
 #include <iostream>
 #include <signal.h>
-#include "../include/EchoServer.hpp"
-#include "../include/Logger.hpp"
+#include "EchoServer.hpp"
 
 EchoServer* server;
 

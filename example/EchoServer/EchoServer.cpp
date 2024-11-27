@@ -1,4 +1,4 @@
-#include "../include/EchoServer.hpp"
+#include "EchoServer.hpp"
 
 EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_num, size_t work_thread_num) 
         : _M_tcp_server(ip, port, loop_thread_num), _M_thread_num(work_thread_num), 
