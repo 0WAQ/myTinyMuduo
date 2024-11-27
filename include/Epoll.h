@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * Epoll头文件
+ * 
+ */
+#ifndef EPOLL_H
+#define EPOLL_H
 
 #include <iostream>
 #include <cstdlib>
@@ -8,7 +14,6 @@
 #include <sys/epoll.h>
 #include <vector>
 #include <unistd.h>
-
 #include "Channel.h"
 #include "Logger.h"
 
@@ -53,3 +58,5 @@ private:
     // 发生事件的合集
     epoll_event _M_events_arr[_M_max_events];
 };
+
+#endif // EPOLL_H

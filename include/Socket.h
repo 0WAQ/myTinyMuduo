@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * Socket头文件
+ * 
+ */
+#ifndef SOCKET_H
+#define SOCKET_H
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -6,7 +12,6 @@
 #include <string>
 #include <cerrno>
 #include <unistd.h>
-
 #include "InetAddress.h"
 #include "Logger.h"
 
@@ -55,3 +60,5 @@ private:
     std::string _M_ip;
     uint16_t _M_port;
 };
+
+#endif // SOCKET_H

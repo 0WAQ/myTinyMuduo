@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * TcpServer头文件
+ * 
+ */
+#ifndef TCPSERVER_H
+#define TCPSERVER_H
 
 #include <map>
 #include <mutex>
@@ -91,3 +97,5 @@ private:
     // 回调EchoServer::HandleError
     ErrorCallback _M_error_connection_callback;
 };
+
+#endif // TCPSERVER_H

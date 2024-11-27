@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * TimeStamp头文件
+ * 
+ */
+#ifndef TIMESTAMP_H
+#define TIMESTAMP_H
 
 #include <iostream>
 #include <string>
@@ -45,3 +51,5 @@ private:
     // 从1970起
     TimePoint _M_sec;
 };
+
+#endif // TIMESTAMP_H

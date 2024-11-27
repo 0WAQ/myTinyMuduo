@@ -1,4 +1,11 @@
-#pragma once
+/**
+ * 
+ * EventLoop头文件
+ * 
+ */
+#ifndef EVENTLOOP_H
+#define EVENTLOOP_H
+
 #include <unistd.h>
 #include <syscall.h>
 #include <memory>
@@ -123,3 +130,5 @@ private:
     // 当定时器超时时, 回调TcpServer::remove_conn()
     TimeroutCallback _M_timer_out_callback;
 };
+
+#endif // EVENTLOOP_H

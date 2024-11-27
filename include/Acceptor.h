@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * Acceptor头文件
+ * 
+ */
+#ifndef ACCEPTOR_H
+#define ACCEPTOR_H
 
 #include <memory>
 #include "Socket.h"
@@ -42,3 +48,5 @@ private:
     // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
     CreateConnCallback _M_create_connection_callback;
 };
+
+#endif // ACCEPTOR_H

@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * Buffer头文件
+ * 
+ */
+#ifndef BUFFER_H
+#define BUFFER_H
 
 #include <iostream>
 #include <string>
@@ -95,3 +101,5 @@ private:
     const uint16_t _M_sep;
     
 };
+
+#endif // BUFFER_H

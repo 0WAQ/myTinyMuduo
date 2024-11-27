@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * InetAddress头文件
+ * 
+ */
+#ifndef INETADDRESS_H
+#define INETADDRESS_H
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -37,3 +43,5 @@ public:
 private:
     sockaddr_in _M_addr;
 };
+
+#endif // INETADDRESS_H

@@ -1,4 +1,10 @@
-#pragma once
+/**
+ * 
+ * Logger头文件
+ * 
+ */
+#ifndef LOGGER_H
+#define LOGGER_H
 
 #include <iostream>
 #include <string>
@@ -144,3 +150,5 @@ private:
 #define LOG_WARN(format, ...)  LOG_BASE(WARN,  format, ##__VA_ARGS__)
 #define LOG_ERROR(format, ...) LOG_BASE(ERROR, format, ##__VA_ARGS__)
 ////////////////////////////////////////////////////////////////////////////////////
+
+#endif // LOGGER_H

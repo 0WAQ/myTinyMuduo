@@ -1,4 +1,4 @@
-#include "../include/Logger.h"
+#include "Logger.h"
 
 Logger::Logger() : 
     _M_buffer(2), _M_fp(nullptr),

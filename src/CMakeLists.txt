@@ -7,6 +7,9 @@ file(GLOB C_LIST "*.cpp")
 # 构建静态库
 add_library(${PROJECT_NAME} STATIC ${C_LIST})
 
+# 项目的头文件搜索路径
+include_directories(${PROJECT_SOURCE_DIR}/../include)
+
 # 设置静态库的搜索路径, 属性为PUBLIC
 target_include_directories(${PROJECT_NAME} PUBLIC
                            ${PROJECT_SOURCE_DIR}/../include

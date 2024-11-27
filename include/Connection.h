@@ -1,11 +1,16 @@
-#pragma once
+/**
+ * 
+ * Connection头文件
+ * 
+ */
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #include <functional>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <memory>
 #include <atomic>
-
 #include "Socket.h"
 #include "EventLoop.h"
 #include "Channel.h"
@@ -118,3 +123,5 @@ private:
     // 数据发送完成后, 将回调TcpServer::send_complete
     SendCompleteCallback _M_send_complete_callback;
 };
+
+#endif // CONNECTION_H

@@ -1,4 +1,11 @@
-#pragma once
+/**
+ * 
+ * ThreadPool头文件
+ * 
+ */
+#ifndef THREADPOOL_H
+#define THREADPOOL_H
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -60,3 +67,5 @@ private:
     // 线程种类
     std::string _M_thread_type; // 取值为IO, WORK
 };
+
+#endif // THREADPOOL_H

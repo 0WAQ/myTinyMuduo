@@ -1,7 +1,13 @@
-#pragma once
+/**
+ * 
+ * Channel头文件
+ * 
+ */
+#ifndef CHANNEL_H
+#define CHANNEL_H
+
 #include <sys/epoll.h>
 #include <functional>
-
 #include "EventLoop.h"
 #include "Socket.h"
 
@@ -99,3 +105,5 @@ private:
     // 连接出错的回调函数, 将回调Connection::error_callback
     ErrorCallback _M_error_callback; 
 };
+
+#endif // CHANNEL_H
