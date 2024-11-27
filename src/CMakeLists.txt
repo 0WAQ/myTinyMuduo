@@ -2,10 +2,10 @@
 project(mymuduo)
 
 # 获取文件列表
-file(GLOB C_LIST "*.cpp")
+file(GLOB CPP_LIST "*.cpp")
 
 # 构建静态库
-add_library(${PROJECT_NAME} STATIC ${C_LIST})
+add_library(${PROJECT_NAME} STATIC ${CPP_LIST})
 
 # 项目的头文件搜索路径
 include_directories(${PROJECT_SOURCE_DIR}/../include)
