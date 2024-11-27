@@ -7,9 +7,9 @@
 #include <stdarg.h> // vastart va_end
 #include <sys/stat.h> // mkdir
 #include <cassert>
-#include "Buffer.hpp"
-#include "TimeStamp.hpp"
-#include "ThreadPool.hpp"
+#include "Buffer.h"
+#include "TimeStamp.h"
+#include "ThreadPool.h"
 
 // 定义日志级别
 enum LogLevel

@@ -1,4 +1,4 @@
-#include "../include/TimeStamp.hpp"
+#include "../include/TimeStamp.h"
 
 TimeStamp::TimeStamp() : _M_sec(std::chrono::system_clock::now()) { }
 TimeStamp::TimeStamp(TimePoint sec) : _M_sec(sec) { }

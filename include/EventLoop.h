@@ -10,9 +10,9 @@
 #include <atomic>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 #include <sys/timerfd.h> // 定时器
-#include "Epoll.hpp"
-#include "Connection.hpp"
-#include "TimeStamp.hpp"
+#include "Epoll.h"
+#include "Connection.h"
+#include "TimeStamp.h"
 
 class Channel;
 class Epoll;

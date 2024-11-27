@@ -1,4 +1,4 @@
-#include "../include/Epoll.hpp"
+#include "../include/Epoll.h"
 
 Epoll::Epoll()
 {

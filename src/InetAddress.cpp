@@ -1,4 +1,4 @@
-#include "../include/InetAddress.hpp"
+#include "../include/InetAddress.h"
 
 InetAddress::InetAddress() { }
 

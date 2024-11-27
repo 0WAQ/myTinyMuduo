@@ -9,8 +9,8 @@
 #include <vector>
 #include <unistd.h>
 
-#include "Channel.hpp"
-#include "Logger.hpp"
+#include "Channel.h"
+#include "Logger.h"
 
 class Channel;
 

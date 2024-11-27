@@ -1,9 +1,16 @@
-#pragma once
-#include "EventLoop.hpp"
-#include "Connection.hpp"
-#include "TcpServer.hpp"
-#include "ThreadPool.hpp"
-#include "Logger.hpp"
+/**
+ * 
+ * 简易的EchoServer实现
+ * 
+ */
+#ifndef ECHOSERVER_H
+#define ECHOSERVER_H
+
+#include "EventLoop.h"
+#include "Connection.h"
+#include "TcpServer.h"
+#include "ThreadPool.h"
+#include "Logger.h"
 
 
 /// @brief 业务服务器: Echo
@@ -48,3 +55,5 @@ private:
 
     bool _M_is_stop = false;
 };
+
+#endif // ECHOSERVER_H

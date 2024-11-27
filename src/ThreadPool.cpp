@@ -1,4 +1,4 @@
-#include "../include/ThreadPool.hpp"
+#include "../include/ThreadPool.h"
 
 ThreadPool::ThreadPool(const std::string& type, size_t thread_num) 
                     : _M_thread_type(type), _M_stop(false)

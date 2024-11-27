@@ -2,8 +2,8 @@
 #include <sys/epoll.h>
 #include <functional>
 
-#include "EventLoop.hpp"
-#include "Socket.hpp"
+#include "EventLoop.h"
+#include "Socket.h"
 
 class Socket;
 class EventLoop;

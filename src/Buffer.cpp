@@ -1,4 +1,4 @@
-#include "../include/Buffer.hpp"
+#include "../include/Buffer.h"
 
 Buffer::Buffer(uint16_t sep, std::size_t prependable_size, std::size_t writable_size) : 
             _M_sep(sep), 

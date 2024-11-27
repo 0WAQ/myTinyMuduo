@@ -6,11 +6,11 @@
 #include <memory>
 #include <atomic>
 
-#include "Socket.hpp"
-#include "EventLoop.hpp"
-#include "Channel.hpp"
-#include "Buffer.hpp"
-#include "TimeStamp.hpp"
+#include "Socket.h"
+#include "EventLoop.h"
+#include "Channel.h"
+#include "Buffer.h"
+#include "TimeStamp.h"
 
 class EventLoop;
 class Channel;

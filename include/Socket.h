@@ -7,8 +7,8 @@
 #include <cerrno>
 #include <unistd.h>
 
-#include "InetAddress.hpp"
-#include "Logger.hpp"
+#include "InetAddress.h"
+#include "Logger.h"
 
 int create_non_blocking_fd();
 

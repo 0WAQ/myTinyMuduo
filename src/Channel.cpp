@@ -1,5 +1,5 @@
-#include "../include/Channel.hpp"
-#include "../include/Connection.hpp"
+#include "../include/Channel.h"
+#include "../include/Connection.h"
 
 Channel::Channel(EventLoop* loop_ptr, int fd) : 
         _M_loop_ptr(loop_ptr), _M_fd(fd) 

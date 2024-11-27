@@ -1,4 +1,4 @@
-#include "../include/Connection.hpp"
+#include "../include/Connection.h"
 
 Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock) 
         : _M_loop_ptr(loop), _M_sock_ptr(std::move(sock)), 

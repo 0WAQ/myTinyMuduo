@@ -15,19 +15,19 @@ myTinyMuduo/
 |-- img/ # 自述文件依赖的图片
 |
 |-- include/
-| |-- Acceptor.hpp
-| |-- Buffer.hpp
-| |-- Channel.hpp
-| |-- Connection.hpp
-| |-- EchoServer.hpp    # 实现的简易Echo服务器, 用来测试网络库
-| |-- Epoll.hpp
-| |-- EventLoop.hpp
-| |-- InetAddress.hpp
-| |-- Logger.hpp
-| |-- Socket.hpp
-| |-- TcpServer.hpp
-| |-- ThreadPool.hpp
-| |-- TimeStamp.hpp
+| |-- Acceptor.h
+| |-- Buffer.h
+| |-- Channel.h
+| |-- Connection.h
+| |-- EchoServer.h    # 实现的简易Echo服务器, 用来测试网络库
+| |-- Epoll.h
+| |-- EventLoop.h
+| |-- InetAddress.h
+| |-- Logger.h
+| |-- Socket.h
+| |-- TcpServer.h
+| |-- ThreadPool.h
+| |-- TimeStamp.h
 |
 |-- src/
 | |-- Acceptor.cpp
