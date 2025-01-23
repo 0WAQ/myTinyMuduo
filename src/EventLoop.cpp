@@ -100,7 +100,7 @@ void EventLoop::handle_eventfd()
     LOG_INFO("IO thread is waked up, thread is %d.\n", syscall(SYS_gettid));
 
     uint64_t val;
-    read(_M_efd, &val, sizeof(val)); // 读出来, 否则在LT中会一直触发
+    ssize_t len = read(_M_efd, &val, sizeof(val)); // 读出来, 否则在LT中会一直触发
 
     // 开始执行任务
     std::function<void()> task;
