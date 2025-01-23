@@ -17,9 +17,9 @@ void stop(int sig)
 
 int main(int argc, char* argv[])
 {
-    if(argc != 3) {
-        std::cout << "Usage: ./tcp_epoll <ip> <port>\n";
-        std::cout << "Example: ./tcp_epoll 127.0.0.1 5678\n";
+    if(argc != 4) {
+        std::cout << "Usage: ./tcp_epoll <ip> <port> <log_dir>\n";
+        std::cout << "Example: ./tcp_epoll 127.0.0.1 5678 ../../log\n";
         return -1;
     }
 
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     signal(SIGINT, stop);
 
     Logger* log = Logger::get_instance();
-    log->init(DEBUG, "log", ".log");
+    log->init(DEBUG, argv[3], ".log");
 
     server = new EchoServer(argv[1], atoi(argv[2]), 3, 2);
     server->start();
