@@ -5,9 +5,8 @@ Logger::Logger() :
     _M_thread_num(1), _M_pool(new ThreadPool("LOG", 1))
 { }
 
-void Logger::init(LogLevel level, std::string path, std::string suffix)
+void Logger::init(std::string path, std::string suffix)
 {
-    _M_is_open = true;
     _M_dir_name = path;
     _M_suffix_name = suffix;
 
@@ -37,24 +36,14 @@ void Logger::init(LogLevel level, std::string path, std::string suffix)
     }
 }
 
-Logger* Logger::get_instance() {
-    static Logger log; // 懒汉模式, 在第一次调用时才创建对象
-    return &log;
-}
-
 void Logger::set_level(LogLevel level) {
     std::unique_lock<std::mutex> grd(_M_mutex);
     _M_level = level;
 }
 
-LogLevel Logger::get_level() {
-    std::unique_lock<std::mutex> grd(_M_mutex);
-    return _M_level;
-}
-
-void Logger::append_level_title(LogLevel level, std::string& msg) 
+void Logger::append_level_title(std::string& msg) 
 {
-    switch (level) 
+    switch (_M_level) 
     {
     case 0:
         msg.append("[DEBUG]: ");
@@ -68,25 +57,22 @@ void Logger::append_level_title(LogLevel level, std::string& msg)
     case 3:
         msg.append("[ERROR]: ");
         break;
+    case 4:
+        msg.append("[FATAL]: ");
+        break;
     default:
         msg.append("[INFO] : ");
         break;
     }
 }
 
-void Logger::write(LogLevel level, const char* format, ...)
+void Logger::write(const char* format, ...)
 {   
-    va_list args;
-    std::string msg;
-    std::string now = TimeStamp::now().to_string() + " ";
-
-    // 根据每天的日期, 获取文件名
-    std::string date = now.substr(0, now.find(' ', 0));
-
-    // 当日志日期改变 或者 行数为0时, 创建新文件夹
-    if(_M_today != date || _M_line_cnt == _M_max_lines)
-    {
-        
+    // 根据当天日期创建文件
+    std::string now = TimeStamp::now().to_string() + " ";   // 获取当前时间
+    std::string date = now.substr(0, now.find(' ', 0)); // 根据每天的日期, 获取文件名
+    if(_M_today != date || _M_line_cnt == _M_max_lines) // 当日志日期改变 或者 行数为0时, 创建新文件夹
+    { 
         std::string full_name;
 
         // 新的一天
@@ -107,7 +93,7 @@ void Logger::write(LogLevel level, const char* format, ...)
         assert(_M_fp != nullptr);
     }
 
-
+    // 填充日志信息
     {
         std::unique_lock<std::mutex> grd(_M_mutex);
 
@@ -115,14 +101,15 @@ void Logger::write(LogLevel level, const char* format, ...)
         std::string msg;
 
         // 1.填充标题头
-        append_level_title(level, msg);
+        append_level_title(msg);
         
         // 2.填充时间  
         msg.append(now);
 
         // 3.填充参数列表
-        char buf[256] = {0};
-        {    
+        char buf[512] = {0};
+        {
+            va_list args;   // 可变参列表
             va_start(args, format);
             vsnprintf(buf, sizeof(buf), format, args);
             va_end(args);
