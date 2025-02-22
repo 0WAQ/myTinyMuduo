@@ -28,7 +28,6 @@ enum LogLevel
     INFO,       // 普通信息
     WARN,       // 警告信息
     ERROR,      // 报错
-    FATAL       // core信息
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,8 +35,9 @@ enum LogLevel
 #define LOG_BASE(level, format, ...)                            \
     do {                                                        \
         Logger* log = Logger::get_instance();                   \
-        log->set_level(level);                                  \
-        log->write(format, ##__VA_ARGS__);               \
+        if(log->is_open() && log->get_level() <= level) {       \
+            log->write(level, format, ##__VA_ARGS__);           \
+        }                                                       \
     } while(0)
 
 
@@ -50,7 +50,6 @@ enum LogLevel
 #define LOG_INFO(format, ...)  LOG_BASE(INFO,  format, ##__VA_ARGS__)
 #define LOG_WARN(format, ...)  LOG_BASE(WARN,  format, ##__VA_ARGS__)
 #define LOG_ERROR(format, ...) LOG_BASE(ERROR, format, ##__VA_ARGS__)
-#define LOG_FATAL(format, ...) LOG_BASE(FATAL, format, ##__VA_ARGS__)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +74,7 @@ public:
      * @param path 日志文件的路径, 如 /path/to/logfile
      * @param suffix 日志文件的后缀名
      */
-    void init(std::string path, std::string suffix);
+    void init(LogLevel level, std::string path, std::string suffix);
 
     /**
      * @brief 设置日志等级
@@ -83,19 +82,29 @@ public:
     void set_level(LogLevel level);
 
     /**
+     * @brief 获取日志等级
+     */
+    LogLevel get_level();
+    
+    /**
+     * @brief 判断日志文件是否打开
+     */
+    bool is_open();
+
+    /**
      * @brief 添加日志等级头到缓冲区
      */
-    void append_level_title(std::string& msg);
+    void append_level_title(LogLevel level, std::string& msg);
 
     /**
      * @brief 将日志消息交给异步线程去写入
      */
-    void write(const char* format, ...);
+    void write(LogLevel level, const char* format, ...);
 
     /**
      * @brief 把日志信息写入缓冲区
      */
-    void write_async(std::string msg);
+    void write_async(std::string& msg);
 
 
 private:
@@ -135,6 +144,9 @@ private:
 
         // 日志文件指针
         FILE* _M_fp;
+
+        // 文件是否打开, 主要是用于防止线程池任务在log->init前打印
+        bool _M_is_open = false;
 
         // 记录日志文件最大行数
         const size_t _M_max_lines = LOG_MAX_LINES;

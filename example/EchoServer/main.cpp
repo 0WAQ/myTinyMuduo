@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     signal(SIGINT, stop);
 
     Logger* log = Logger::get_instance();
-    log->init(argv[3], ".log");
+    log->init(DEBUG, argv[3], ".log");
 
     server = new EchoServer(argv[1], atoi(argv[2]), 3, 2);
     server->start();
