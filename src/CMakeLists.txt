@@ -16,3 +16,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC -lpthread)
 target_include_directories(${PROJECT_NAME} PUBLIC
                            ${PROJECT_SOURCE_DIR}/../include
 )
+
+add_custom_command(TARGET ${PROJECT_NAME}
+                    POST_BUILD
+
+                    COMMAND cp -r ${PROJECT_BINARY_DIR}/libmymuduo.so ${PROJECT_SOURCE_DIR}/../lib/
+)

@@ -2,4 +2,5 @@
 !.vscode/launch.json
 build/
 log/
-*.sh
+lib/
+bin/
