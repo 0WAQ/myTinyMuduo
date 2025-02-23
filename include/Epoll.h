@@ -6,7 +6,6 @@
 #ifndef EPOLL_H
 #define EPOLL_H
 
-#include <iostream>
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
@@ -31,7 +30,7 @@ public:
 
     /// @brief 调用epoll_ctl, 修改ch监听事件
     /// @param ch 
-    void updata_channel(Channel* ch);
+    void update_channel(Channel* ch);
 
 
     /// @brief 取消监听ch的事件

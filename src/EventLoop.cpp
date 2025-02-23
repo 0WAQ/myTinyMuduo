@@ -78,8 +78,9 @@ void EventLoop::loop()
         }
         else 
         {
-            for(auto& ch :_M_channels) 
-                ch->handle();
+            for(auto& ch :_M_channels) {
+                ch->handle(TimeStamp::now());
+            }
         }
     }
 }
@@ -184,7 +185,7 @@ void EventLoop::wakeup()
 
 
 // 转调用Epoll中对应的函数
-void EventLoop::updata_channel(Channel* ch) { _M_ep_ptr->updata_channel(ch); }
+void EventLoop::update_channel(Channel* ch) { _M_ep_ptr->update_channel(ch); }
 void EventLoop::remove_channel(Channel* ch) { _M_ep_ptr->remove_channel(ch); }
 
 

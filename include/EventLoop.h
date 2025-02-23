@@ -29,6 +29,7 @@ using SpConnection = std::shared_ptr<Connection>;
 /**
  *  事件循环类
  *  封装了事件循环的过程, 内含一个Epoll对象
+ *  主要包含了两个模块 Channel 和 Poller(epoll的抽象)
  */
 class EventLoop
 {
@@ -77,7 +78,7 @@ public:
 
     /// @brief 转调用Epoll中的updata_channel
     /// @param ch
-    void updata_channel(Channel* ch);
+    void update_channel(Channel* ch);
 
 
     /// @brief 转调用Epoll中的remove_channel

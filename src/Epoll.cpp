@@ -9,7 +9,7 @@ Epoll::Epoll()
     }
 }
 
-void Epoll::updata_channel(Channel* ch)
+void Epoll::update_channel(Channel* ch)
 {
     epoll_event ev;
     ev.data.ptr = ch;
