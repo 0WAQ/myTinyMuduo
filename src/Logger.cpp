@@ -139,9 +139,7 @@ void Logger::write_async(std::string& msg)
     {
         std::unique_lock<std::mutex> grd(_M_mutex);
         fputs(msg.c_str(), _M_fp);
-        fputs(msg.c_str(), stdout);
         fflush(_M_fp);
-        fflush(stdout);
     }
 }
 

@@ -8,6 +8,8 @@
 
 #include <functional>
 #include <memory>
+#include <sys/epoll.h>
+
 #include "noncopyable.h"
 #include "EventLoop.h"
 #include "Socket.h"

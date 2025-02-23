@@ -1,25 +1,23 @@
-/**
- * 
- * 
- * 
- */
 #ifndef POLLER_H
 #define POLLER_H
 
 #include <vector>
 #include <unordered_map>
-#include "Channel.h"
-#include "EventLoop.h"
+
 #include "TimeStamp.h"
 #include "noncopyable.h"
+
+class Channel;
+class EventLoop;
 
 /**
  * 多路事件分发器: IO复用模块
  */
 class Poller : noncopyable
 {
-public:
     using ChannelList = std::vector<Channel*>;
+
+public:
 
     Poller(EventLoop *loop);
 
@@ -34,11 +32,12 @@ public:
     bool has_channel(Channel *ch) const;
     
 
-    virtual ~Poller() = default;
-    virtual TimeStamp poll(int timeout, ChannelList *activeChannels) = 0;
+    virtual TimeStamp poll(ChannelList *channels, int timeout = -1) = 0;
     virtual void update_channel(Channel *ch) = 0;
-    virtual void remove_channel(Channel *ch) = 0;    
+    virtual void remove_channel(Channel *ch) = 0;
 
+    virtual ~Poller() = default;
+    
 protected:
     using ChannelMap = std::unordered_map<int, Channel*>;    // key: sockfd
 

@@ -17,12 +17,14 @@
 #include <atomic>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 #include <sys/timerfd.h> // 定时器
-#include "Epoll.h"
+
+#include "Poller.h"
+#include "EPollPoller.h"
 #include "Connection.h"
 #include "TimeStamp.h"
 
 class Channel;
-class Epoll;
+class EPollPoller;
 class Connection;
 using SpConnection = std::shared_ptr<Connection>;
 
@@ -38,6 +40,8 @@ public:
     using EpollTimeoutCallback = std::function<void(EventLoop*)>;
     using TimeroutCallback = std::function<void(SpConnection)>;
     using WorkThreadCallback = std::function<void()>;
+
+    using ChannelList = std::vector<Channel*>;
 
 public:
 
@@ -99,9 +103,9 @@ public:
 private:
 
     pid_t _M_tid;
-    std::unique_ptr<Epoll> _M_ep_ptr;
+    std::unique_ptr<EPollPoller> _M_poller;
 
-    std::vector<Channel*> _M_channels;
+    ChannelList _M_channels;
 
     // IO线程的任务队列, 用来存放工作线程的任务
     std::queue<std::function<void()>> _M_task_queue;

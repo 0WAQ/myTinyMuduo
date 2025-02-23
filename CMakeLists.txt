@@ -7,7 +7,7 @@ project(myTinyMuduo)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 # cpp编译器与编译选项
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g")
 set(CMAKE_CXX_STANDARD 17)
 
 # 添加子项目

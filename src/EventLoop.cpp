@@ -38,7 +38,7 @@ int create_eventfd()
 }
 
 EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) : 
-        _M_ep_ptr(new Epoll),
+        _M_poller((EPollPoller*)Poller::new_default_poller(this)),
         _M_timeval(timeval), _M_timeout(timeout),
         _M_efd(create_eventfd()), _M_ech(new Channel(this, _M_efd)), 
         _M_tfd(create_timerfd(_M_timeval)), _M_tch(new Channel(this, _M_tfd)),
@@ -68,7 +68,7 @@ void EventLoop::loop()
     while(!_M_stop)
     {
         _M_channels.clear();
-        _M_channels = _M_ep_ptr->wait();
+        TimeStamp now = _M_poller->poll(&_M_channels);
         
         // 若channels为空, 则说明超时, 通知TcpServer
         if(_M_channels.empty()) 
@@ -185,8 +185,8 @@ void EventLoop::wakeup()
 
 
 // 转调用Epoll中对应的函数
-void EventLoop::update_channel(Channel* ch) { _M_ep_ptr->update_channel(ch); }
-void EventLoop::remove_channel(Channel* ch) { _M_ep_ptr->remove_channel(ch); }
+void EventLoop::update_channel(Channel* ch) { _M_poller->update_channel(ch); }
+void EventLoop::remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
 
 
 // 将Connection放入map容器, 用来指示WORK线程将Connection的IO任务交给哪个IO线程
