@@ -19,7 +19,7 @@ class Channel;
 class EventLoop;
 
 /**
- * @brief 封装Epoll
+ * @brief 封装EPollPoller
  */
 class EPollPoller : public Poller
 {
@@ -33,10 +33,10 @@ public:
     EPollPoller(EventLoop *loop);
 
     /**
-     * @brief 调用epoll_wait, 返回发生事件的合集
-     * @return 发生的事件合集
+     * @brief 分发事件, 调用epoll_wait, 返回发生事件的合集
+     * @param channels 发生的事件合集
      */
-    TimeStamp poll(ChannelList *channels, int timeout = -1) override;
+    TimeStamp poll(ChannelList *activeChannels, int timeout = -1) override;
 
     /**
      * @brief 调用epoll_ctl, 修改ch监听事件
@@ -57,19 +57,19 @@ private:
      */
     void fill_active_channels(int numEvents, ChannelList *activeChannels) const;
     
+    /**
+     * @brief update_channel与remove_channle的底层操作
+     */
     void update(int op, Channel *ch);
 
 private:
     using EventList = std::vector<epoll_event>;
 
-    // 发生事件的最大数量
-    static const int _M_max_events = 16;
+    static const int _M_max_events = 16;    // 发生事件的最大数量
+    
+    int _M_epoll_fd = -1;       // epollfd
 
-    // epfd
-    int _M_epoll_fd = -1;
-
-    // 发生事件的合集
-    EventList _M_events_arr;
+    EventList _M_events_arr;    // 发生事件的合集
 };
 
 #endif // EPOLLPOLLER_H

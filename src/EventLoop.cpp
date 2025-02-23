@@ -71,7 +71,7 @@ void EventLoop::loop()
         TimeStamp now = _M_poller->poll(&_M_channels);
         
         // 若channels为空, 则说明超时, 通知TcpServer
-        if(_M_channels.empty()) 
+        if(_M_channels.empty())
         {
             if(_M_epoll_wait_timeout_callback)
                 _M_epoll_wait_timeout_callback(this);

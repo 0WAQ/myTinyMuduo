@@ -41,7 +41,7 @@ public:
 protected:
     using ChannelMap = std::unordered_map<int, Channel*>;    // key: sockfd
 
-    ChannelMap _M_channels;
+    ChannelMap _M_channel_map;
 
 private:
 

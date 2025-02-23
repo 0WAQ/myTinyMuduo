@@ -7,7 +7,7 @@ Channel::Channel(EventLoop* loop_ptr, int fd) :
         _M_fd(fd),
         _M_monitored_events(0),
         _M_happened_events(0),
-        _M_index(-1),
+        _M_status(kNew),
         _M_tied(false)
 { }
 

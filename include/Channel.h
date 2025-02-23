@@ -19,6 +19,12 @@ class Socket;
 class EventLoop;
 class TimeStamp;
 
+enum channelStatus {
+    kNew = -1,          // channel从未被注册过
+    kAdded = 1,         // channel已注册, 已监听
+    kDeleted = 2        // channel已注册, 未监听
+};
+
 /**
  * 封装了sockfd感兴趣的event, 还绑定了poller返回的具体事节
  */
@@ -95,8 +101,8 @@ public:
      */
     void tie(const std::shared_ptr<void>&);
 
-    int  get_index() { return _M_index; }
-    void set_index(int idx) { _M_index = idx; }
+    channelStatus  get_status() { return _M_status; }
+    void set_status(channelStatus status) { _M_status = status; }
 
     int get_fd();
     EventLoop* owner_loop() { return _M_loop_ptr; }
@@ -116,7 +122,7 @@ private:
     bool _M_in_epoll = false;
     uint32_t _M_monitored_events = 0;
     uint32_t _M_happened_events = 0;
-    uint32_t _M_index;                  // TODO:
+    channelStatus _M_status;           // channel在Poller中的状态(未添加, 已添加, 已删除)
 
     // TODO: 与shared_from_this?
     std::weak_ptr<void> _M_tie;         // 
