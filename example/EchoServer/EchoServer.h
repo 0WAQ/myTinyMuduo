@@ -36,7 +36,6 @@ public:
     void handle_close_connection(SpConnection conn);
     void handle_error_connection(SpConnection conn);
     void handle_send_complete(SpConnection conn);
-    void handle_epoll_timeout(EventLoop* loop);
     void handle_timer_out(SpConnection conn);
 
     /// @brief 中间层, 以便将发送交给IO线程完成

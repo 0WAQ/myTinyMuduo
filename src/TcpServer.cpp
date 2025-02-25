@@ -1,21 +1,17 @@
 #include "TcpServer.h"
 
-TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t thread_num) 
-    : _M_thread_num(thread_num), _M_main_loop(new EventLoop(true)), 
-      _M_acceptor(_M_main_loop.get(), ip, port), _M_pool("IO", _M_thread_num)
+TcpServer::TcpServer(const std::string& ip, const uint16_t port, size_t IO_thread_num) 
+    : _M_IO_thread_num(IO_thread_num), _M_main_loop(new EventLoop(true)), 
+      _M_acceptor(_M_main_loop.get(), ip, port), _M_pool("IO", _M_IO_thread_num)
 {
-    
-    // _M_main_loop->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
-    
+
     _M_acceptor.set_create_connection_callback(
         std::bind(&TcpServer::create_connection, this, std::placeholders::_1));
 
     // 创建从事件循环
-    for(int i = 0; i < _M_thread_num; i++) 
+    for(int i = 0; i < _M_IO_thread_num; i++) 
     {
         _M_sub_loops.emplace_back(new EventLoop(false, 5, 10)); // 将从事件放入sub_loops中
-        // 设置epoll_wait超时回调函数
-        _M_sub_loops[i]->set_epoll_timeout_callback(std::bind(&TcpServer::epoll_timeout, this, std::placeholders::_1));
         // 设置定时器超时回调函数, 用于清理空闲超时Connection
         _M_sub_loops[i]->set_timer_out_callback(std::bind(&TcpServer::timer_out, this, std::placeholders::_1));
         // 将EventLoop的loop函数作为任务添加给线程池
@@ -35,13 +31,13 @@ void TcpServer::start()
 void TcpServer::stop() 
 {
     // 停止主事件循环
-    _M_main_loop->stop();
+    _M_main_loop->quit();
     LOG_INFO("主事件循环已停止.\n");
     
 
     // 停止从事件循环
-    for(int i = 0; i < _M_thread_num; i++) {
-        _M_sub_loops[i]->stop();
+    for(int i = 0; i < _M_IO_thread_num; i++) {
+        _M_sub_loops[i]->quit();
     }
     LOG_INFO("从事件循环已停止.\n");
 
@@ -58,7 +54,7 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
     int fd = clnt_sock->get_fd();
     // 创建Connection对象, 并将其指定给线程池中的loop  
     SpConnection conn(new Connection(
-        _M_sub_loops[fd % _M_thread_num].get(), std::move(clnt_sock)));
+        _M_sub_loops[fd % _M_IO_thread_num].get(), std::move(clnt_sock)));
     
     conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
     conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
@@ -76,7 +72,7 @@ void TcpServer::create_connection(std::unique_ptr<Socket> clnt_sock)
     ///////////////////////////////////////////////////////////////
 
     // 将conn存放到EventLoop的map容器中, 用于处理定时器事件
-    _M_sub_loops[fd % _M_thread_num]->insert(conn);
+    _M_sub_loops[fd % _M_IO_thread_num]->insert(conn);
 
     if(_M_create_connection_callback)
         _M_create_connection_callback(conn);
@@ -134,14 +130,6 @@ void TcpServer::send_complete(SpConnection conn)
     LOG_DEBUG("TcpServer::send_complete[fd=%d]\n", conn->get_fd());
 }
 
-void TcpServer::epoll_timeout(EventLoop* loop)
-{
-    if(_M_epoll_timeout_callback)
-        _M_epoll_timeout_callback(loop);
-
-    LOG_DEBUG("TcpServer::epoll_timeout, thread id = %d\n", syscall(SYS_gettid));
-}
-
 void TcpServer::timer_out(SpConnection conn)
 {
     if(_M_timer_out_callback)
@@ -177,10 +165,6 @@ void TcpServer::set_error_connection_callback(ErrorCallback func)
 void TcpServer::set_send_complete_callback(SendCompleteCallback func) 
     {_M_send_complete_callback = std::move(func);}
 
-
-// 两个超时 设置回调函数
-void TcpServer::set_epoll_timeout_callback(EpollTimeoutCallback func) 
-    {_M_epoll_timeout_callback = std::move(func);}
 
 void TcpServer::set_timer_out_callback(TimeroutCallback func) 
     {_M_timer_out_callback = std::move(func);}

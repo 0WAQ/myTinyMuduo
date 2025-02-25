@@ -5,17 +5,21 @@ namespace CurrentThread
 {
     extern __thread int t_cached_tid;
 
+namespace __detail
+{
     /**
      * @brief 缓存当前线程的tid
      */
     void cache_tid();
-    
+
+} // namespace __detail
+
     /**
      * @brief 获取当前线程的tid
      */
-    inline int get_tid() {
+    inline int tid() {
         if(__builtin_expect(t_cached_tid == 0, 0)) {
-            cache_tid();
+            __detail::cache_tid();
         }
         return t_cached_tid;
     }

@@ -23,7 +23,6 @@ void Socket::bind(const InetAddress& serv_addr)
         LOG_ERROR("%s:%s:%d bind error:%d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
         close(_M_fd);
-        exit(-1);
     }
 
     _M_ip = serv_addr.get_ip();
@@ -35,8 +34,7 @@ void Socket::listen(size_t max_connection)
     if(::listen(_M_fd, max_connection) != 0) {
         LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
-        close(_M_fd);
-        exit(-1);      
+        close(_M_fd);     
     }
 }
 

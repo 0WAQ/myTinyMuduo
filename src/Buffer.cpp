@@ -153,7 +153,7 @@ void Buffer::resize(std::size_t len)
 
 std::size_t Buffer::read_fd(int fd, int* save_errno)
 {
-    char buf[65536] = {0};
+    char buf[65536] = {0};  // 临时缓冲区
 
     struct iovec iov[2];
     const std::size_t write_bytes = writable();

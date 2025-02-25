@@ -29,7 +29,7 @@ void Connection::read_events()
 {
     char buf[1024];
 
-    // 只用边缘触发, 需要确保将发送过来的数据读取完毕
+    // 若边缘触发, 需要确保将发送过来的数据读取完毕, TODO: ET => LT
     while(true) // 非阻塞IO
     {
         int save_error = 0;
@@ -47,7 +47,7 @@ void Connection::read_events()
         // 读取时被中断
         else if(nlen == -1 && errno == EINTR) 
         {
-            LOG_ERROR("%s:%s:%d read_fd error:%d.\n", 
+            LOG_WARN("%s:%s:%d read_fd:%d was interrupted.\n", 
                 __FILE__, __FUNCTION__, __LINE__, save_error);
             continue;
         }
@@ -60,7 +60,7 @@ void Connection::read_events()
                 // 取出一个报文
                 std::string message;
                 if(!_M_input_buffer.pick_datagram(message)) {
-                    LOG_DEBUG("Connection::read_eventes[fd=%d], can't pick a datagram\n", 
+                    LOG_WARN("Connection::read_eventes[fd=%d], can't pick a datagram\n", 
                             this->get_fd());
                     break;
                 }
@@ -133,7 +133,7 @@ void Connection::send(const char* data, size_t size)
 {  
     // 若连接已经断开
     if(_M_is_diconnected) {
-        std::cout << "连接提前断开, send()直接返回." << std::endl;
+        LOG_DEBUG("Connection %p had been disconnected.\n");
         return;
     }
 
@@ -147,7 +147,7 @@ void Connection::send(const char* data, size_t size)
     else // 若是工作线程, 交由IO线程执行
     {
         // 添加到loop的任务队列中
-        _M_loop_ptr->push(std::bind(&Connection::send_a, this, message));
+        _M_loop_ptr->queue_in_loop(std::bind(&Connection::send_a, this, message));
     }
 }
 

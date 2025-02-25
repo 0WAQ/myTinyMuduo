@@ -27,9 +27,6 @@ EchoServer::EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_
     _M_tcp_server.set_send_complete_callback(std::bind(&EchoServer::handle_send_complete, this,
                                             std::placeholders::_1));
 
-    _M_tcp_server.set_epoll_timeout_callback(std::bind(&EchoServer::handle_epoll_timeout, this,
-                                            std::placeholders::_1));
-
     _M_tcp_server.set_timer_out_callback(std::bind(&EchoServer::handle_timer_out, this, 
                                             std::placeholders::_1));
 }
@@ -100,12 +97,6 @@ void EchoServer::handle_send_complete(SpConnection conn)
     // printf("%s: send complete(ip=%s, fd=%d).\n", 
     //             TimeStamp::now().to_string().c_str(),
     //             conn->get_ip().c_str(), conn->get_fd());
-}
-
-void EchoServer::handle_epoll_timeout(EventLoop* loop) 
-{
-    printf("%s: epoll_wait() timeout.\n",
-                TimeStamp::now().to_string().c_str());
 }
 
 void EchoServer::handle_timer_out(SpConnection conn)

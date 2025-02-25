@@ -39,8 +39,6 @@ public:
 
     /**
      * @brief 将fd与事件循环绑定
-     * @param loop_ptr 事件循环
-     * @param fd fd
      */
     Channel(EventLoop* loop_ptr, int fd);
 
@@ -77,7 +75,6 @@ public:
 
     /**
      * @brief 设置, 获取事件
-     * @param events 
      */
     void set_happened_events(uint32_t events);
     uint32_t get_happened_events();
@@ -85,7 +82,6 @@ public:
 
     /**
      * @brief 设置回调函数
-     * @param cb 函数对象
      */
     void set_read_callback(ReadCallback cb);   // 读事件
     void set_write_callback(EventCallbacl cb); // 写事件

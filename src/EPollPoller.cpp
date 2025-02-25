@@ -11,7 +11,6 @@ EPollPoller::EPollPoller(EventLoop* loop) :
     if(_M_epoll_fd < 0) {
         LOG_ERROR("%s:%s:%d epoll_create() failed: %d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
-        exit(-1);
     }
 }
 
@@ -43,7 +42,6 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
             errno = savedErrno;
             LOG_ERROR("%s:%s():%d epoll_wait() failed: %d.\n", 
                 __FILE__, __FUNCTION__, __LINE__, errno);
-            exit(-1);
         }
     }
     else {
@@ -128,13 +126,11 @@ void EPollPoller::update(int op, Channel* ch)
         case EPOLL_CTL_ADD:
             LOG_ERROR("%s:%s:%d epoll_ctl() add failed: %d.\n", 
                     __FILE__, __FUNCTION__, __LINE__, errno);
-            exit(-1);
             break;
 
         case EPOLL_CTL_MOD:
             LOG_ERROR("%s:%s:%d epoll_ctl() modify failed: %d.\n", 
                     __FILE__, __FUNCTION__, __LINE__, errno);
-            exit(-1);
             break;
         
         case EPOLL_CTL_DEL:

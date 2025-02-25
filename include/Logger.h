@@ -49,7 +49,7 @@ enum LogLevel
 
 #define LOG_INFO(format, ...)  LOG_BASE(INFO,  format, ##__VA_ARGS__)
 #define LOG_WARN(format, ...)  LOG_BASE(WARN,  format, ##__VA_ARGS__)
-#define LOG_ERROR(format, ...) LOG_BASE(ERROR, format, ##__VA_ARGS__)
+#define LOG_ERROR(format, ...) do { LOG_BASE(ERROR, format, ##__VA_ARGS__); exit(-1); } while(0)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
