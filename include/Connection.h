@@ -42,7 +42,7 @@ public:
     /// @brief 将sock绑定到事件循环
     /// @param loop 事件循环
     /// @param sock sock
-    Connection(EventLoop* loop, std::unique_ptr<Socket> sock);
+    Connection(EventLoop* loop, std::unique_ptr<Socket> sock, bool is_ET = false);
     
 
     /// @brief 四种事件
@@ -96,6 +96,8 @@ private:
 
     // 从事件循环
     EventLoop* _M_loop_ptr;
+
+    bool _M_is_ET;
 
     // Socket及其信息
     std::unique_ptr<Socket> _M_sock_ptr;

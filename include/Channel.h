@@ -70,9 +70,10 @@ public:
     bool in_epoll();
 
     /**
-     * @brief 设置边缘触发
+     * @brief 设置或者取消边缘触发
      */
     void set_ET();
+    void unset_ET();
 
     /**
      * @brief 设置, 获取事件

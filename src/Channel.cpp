@@ -28,31 +28,41 @@ void Channel::handle(TimeStamp receiveTime)
 
 void Channel::handle_event_with_guard(TimeStamp receiveTime)
 {
-    LOG_INFO("channel handle happened events: %d\n", _M_happened_events);
-
     // 连接中断事件
-    if(_M_happened_events & EPOLLRDHUP) {
+    if(_M_happened_events & EPOLLRDHUP)
+    {
+        LOG_DEBUG("channel handle happened close events");
+
         if(_M_close_callback) {
             _M_close_callback();
         }
     }
 
     // 读事件
-    if(_M_happened_events & _M_read_events) {
+    if(_M_happened_events & _M_read_events)
+    {
+        LOG_DEBUG("channel handle happened read events");
+
         if(_M_read_callback) {
             _M_read_callback(receiveTime);
         }
     }
 
     // 写事件
-    if(_M_happened_events & _M_write_events) {
+    if(_M_happened_events & _M_write_events)
+    {
+        LOG_DEBUG("channel handle happened write events");
+
         if(_M_write_callback) {
             _M_write_callback();
         }
     }
 
     // 错误
-    if(_M_happened_events & EPOLLERR) {
+    if(_M_happened_events & EPOLLERR)
+    {
+        LOG_DEBUG("channel handle happened error events");
+
         if(_M_error_callback) {
             _M_error_callback(); 
         }
@@ -84,7 +94,8 @@ void Channel::tie(const std::shared_ptr<void>& obj) {
 }
 
 // 设置边缘触发
-void Channel::set_ET() { _M_monitored_events |= EPOLLET;}
+void Channel::set_ET()   { _M_monitored_events |= EPOLLET; }
+void Channel::unset_ET() { _M_monitored_events &= ~EPOLLET; }
 
 // 设置监听事件
 void Channel::set_read_events() {    _M_monitored_events |= _M_read_events;   update(); }

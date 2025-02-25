@@ -17,34 +17,40 @@ EPollPoller::EPollPoller(EventLoop* loop) :
 
 TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
 {
-    int numEvents = ::epoll_wait(_M_epoll_fd, &*_M_events_arr.begin(),
-                                    static_cast<int>(_M_events_arr.size()), timeout);
-    int saveErrno = errno;
+    LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
+
+    TimeStamp now{};
+    int savedErrno = errno;  // errno为全局
+    int numEvents = ::epoll_wait(_M_epoll_fd, _M_events_arr.data(),
+                                    static_cast<int>(_M_events_arr.size()), timeout);    
 
     if(numEvents > 0) 
     {
-        LOG_INFO("%d events happened.\n", numEvents);
+        LOG_DEBUG("%d events happened.\n", numEvents);
         
         // 通过epoll_event中的data获取channel指针(在add channel时设置)
         fill_active_channels(numEvents, activeChannels);
 
+        // 实际返回的numEvents和能够容纳的事件数相同, 那么扩容为原来的2倍
+        // 采用的是LT模式, 即使该次容量不够导致没有上报, 之后也会调用
         if(numEvents == _M_events_arr.size() * 2) {
             _M_events_arr.resize(_M_events_arr.size() * 2);
         }
     }
     else if(numEvents < 0)
     {
-        if(saveErrno != EINTR) {
+        if(savedErrno != EINTR) {
+            errno = savedErrno;
             LOG_ERROR("%s:%s():%d epoll_wait() failed: %d.\n", 
                 __FILE__, __FUNCTION__, __LINE__, errno);
             exit(-1);
         }
     }
     else {
-        LOG_DEBUG("%s timeout! \n", __FUNCTION__);
+        LOG_DEBUG("%s timeout!\n", __FUNCTION__);
     }
 
-    return TimeStamp::now();
+    return now;
 }
 
 void EPollPoller::fill_active_channels(int numEvents, ChannelList *activeChannels) const
@@ -61,7 +67,7 @@ void EPollPoller::update_channel(Channel* ch)
 {    
     channelStatus status = ch->get_status();
 
-    LOG_INFO("fd=%d events=%d status=%d\n", ch->get_fd(), ch->get_happened_events(), status);
+    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->get_fd(), ch->get_happened_events(), status);
 
     if(status == kNew || status == kDeleted) // 未注册或者已注册未监听
     {
@@ -93,9 +99,13 @@ void EPollPoller::update_channel(Channel* ch)
 }
 
 void EPollPoller::remove_channel(Channel* ch)
-{ 
+{
+    channelStatus status = ch->get_status();
+
+    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->get_fd(), ch->get_happened_events(), status);
+
     // 若channel已经被监听, 那么删除
-    if(ch->get_status() == kAdded) {
+    if(status == kAdded) {
         update(EPOLL_CTL_DEL, ch);
     }
 

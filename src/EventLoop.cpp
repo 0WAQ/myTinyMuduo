@@ -1,4 +1,5 @@
 #include "EventLoop.h"
+#include "CurrentThread.h"
 
 // 用于创建timerfd
 int create_timerfd(time_t sec)
@@ -63,7 +64,7 @@ void EventLoop::loop()
     LOG_DEBUG("EventLoop start looping, thread is %d.\n", syscall(SYS_gettid));
 
     // 初始化tid
-    _M_tid = syscall(SYS_gettid);
+    _M_tid = CurrentThread::get_tid(); // syscall(SYS_gettid);
 
     while(!_M_stop)
     {
@@ -160,7 +161,7 @@ void EventLoop::handle_timerfd()
 }
 
 
-bool EventLoop::is_loop_thread() { return _M_tid == syscall(SYS_gettid);}
+bool EventLoop::is_loop_thread() { return _M_tid == CurrentThread::get_tid(); }
 
 void EventLoop::push(WorkThreadCallback task) 
 {

@@ -1,7 +1,7 @@
 #include "Connection.h"
 
-Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock) 
-        : _M_loop_ptr(loop), _M_sock_ptr(std::move(sock)), 
+Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock, bool is_ET) 
+        : _M_loop_ptr(loop), _M_sock_ptr(std::move(sock)), _M_is_ET(is_ET),
           _M_channel_ptr(new Channel(_M_loop_ptr, _M_sock_ptr->get_fd())), 
           _M_is_diconnected(false)
 {
@@ -15,7 +15,10 @@ Connection::Connection(EventLoop* loop, std::unique_ptr<Socket> sock)
     LOG_INFO("Connection is created[fd = %d].\n", this->get_fd());
 
     // 设置为边缘触发
-    _M_channel_ptr->set_ET();
+    if(_M_is_ET) {
+        _M_channel_ptr->set_ET();
+    }
+
     // 监听读事件
     _M_channel_ptr->set_read_events();
 }
