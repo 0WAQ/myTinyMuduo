@@ -12,53 +12,42 @@
 #include <string>
 #include <cerrno>
 #include <unistd.h>
-#include "InetAddress.h"
-#include "Logger.h"
+#include "noncopyable.h"
 
-int create_non_blocking_fd();
+class InetAddress;
 
 /**
  *  封装socket
  */
-class Socket
+class Socket : noncopyable
 {
 public:
 
-    Socket(int fd);
+    explicit Socket(int fd) : _M_fd(fd) { }
 
-    /// @brief get fd,ip,port
-    /// @return 
-    int get_fd() const;
-    std::string get_ip() const;
-    uint16_t get_port() const;
-
-    void set_ip_port(const std::string& ip, uint16_t port);
-
-
-    /// @brief 封住三个函数
     void bind(const InetAddress& serv_addr);
-    void listen(size_t max_connection = 128);
+    void listen(size_t max_connection = 1024);
     int accept(InetAddress& clnt_addr);
 
+    /**
+     * @brief 设置半关闭
+     */
+    void shutdown_write();// TODO:
 
-    // TODO:
-    /// @brief 设置半关闭
-    void shutdown_write();
+    /**
+     * @brief socket属性
+     */
+    void set_reuse_addr(bool on);   // 地址重用
+    void set_reuse_port(bool on);   // 端口重用
+    void set_tcp_nodelay(bool on);  // 不启用naggle算法
+    void set_keep_alive(bool on);   // 保持连接
 
+    int get_fd() const { return _M_fd; }
 
-    /// @brief socket属性
-    /// @param opt 1-启用, 不启用-0
-    void set_reuse_addr(int opt);   // 地址重用
-    void set_reuse_port(int opt);   // 端口重用
-    void set_tcp_nodelay(int opt);  // 不启用naggle算法
-    void set_keep_alive(int opt);   // 保持连接
-
-    ~Socket();
+    ~Socket() { close(_M_fd); }
 
 private:
     const int _M_fd;
-    std::string _M_ip;
-    uint16_t _M_port;
 };
 
 #endif // SOCKET_H

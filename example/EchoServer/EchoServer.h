@@ -19,11 +19,9 @@ class EchoServer
 public:
 
     /// @brief 初始化Echo
-    /// @param ip 
-    /// @param port 
     /// @param loop_thread_num  IO线程数
     /// @param work_thread_um   WORK线程数
-    EchoServer(const std::string& ip, uint16_t port, size_t loop_thread_num = 3, size_t work_thread_um = 5);
+    EchoServer(EventLoop *main_loop, InetAddress addr, size_t loop_thread_num = 3, size_t work_thread_um = 5);
 
 
     /// @brief 启动与停止

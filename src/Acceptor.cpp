@@ -1,43 +1,73 @@
 #include "Acceptor.h"
+#include "InetAddress.h"
+#include "Logger.h"
 
-Acceptor::Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port) 
-    : _M_loop_ptr(loop), _M_serv_sock(create_non_blocking_fd())
-    , _M_acceptor_channel(_M_loop_ptr, _M_serv_sock.get_fd())
+namespace __detail
 {
-    // 初始化serv_sock的地址
-    InetAddress serv_addr(ip, port);
+    /**
+     * @brief 创建非阻塞的sockfd
+     */
+    int create_non_blocking_fd()
+    {
+        int listen_fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+        if(listen_fd < 0) {
+            LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno);
+        }
+        return listen_fd;
+    }
 
+} // namespace __detail
+
+Acceptor::Acceptor(EventLoop* loop, InetAddress &serv_addr, bool reuseport) :
+    _M_loop(loop), _M_serv_sock(__detail::create_non_blocking_fd()), _M_listenning(false),
+    _M_acceptor_channel(_M_loop, _M_serv_sock.get_fd())
+{
     LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.get_fd());
 
     // 设置serv_sock的属性
-    _M_serv_sock.set_keep_alive(1);
-    _M_serv_sock.set_reuse_addr(1);
-    _M_serv_sock.set_reuse_port(1);
-    _M_serv_sock.set_tcp_nodelay(1);
+    _M_serv_sock.set_keep_alive(true);
+    _M_serv_sock.set_reuse_addr(true);
+    _M_serv_sock.set_reuse_port(true);
+    _M_serv_sock.set_tcp_nodelay(true);
 
     // 绑定且监听
     _M_serv_sock.bind(serv_addr);
-    _M_serv_sock.listen();
 
-    // 监听读事件
-    _M_acceptor_channel.set_read_events();
     // 设置acceptor_channel_ptr的执行函数为new_connection
     _M_acceptor_channel.set_read_callback(std::bind(&Acceptor::new_connection, this));
 
 }
 
-// 创建连接的回调函数, 调用TcpServer中的create_connection
-void Acceptor::set_create_connection_callback(CreateConnCallback func) {
-    _M_create_connection_callback = std::move(func);
-} 
+Acceptor::~Acceptor() {
+    _M_acceptor_channel.unset_all_events();
+    _M_acceptor_channel.remove();
+}
 
-// 读事件的被调函数, 代表有新连接
+void Acceptor::listen() {
+    _M_listenning = true;
+    _M_serv_sock.listen();
+    _M_acceptor_channel.set_read_events();
+}
+
+// 读事件的被调函数, 代表有新连接 TODO: 修改Socket
 void Acceptor::new_connection()
 {
     InetAddress clnt_addr;
-    std::unique_ptr<Socket> clnt_sock_ptr(new Socket(_M_serv_sock.accept(clnt_addr)));
-    clnt_sock_ptr->set_ip_port(clnt_addr.get_ip(), clnt_addr.get_port());
+
+    int clnt_fd = _M_serv_sock.accept(clnt_addr);
+    if(clnt_fd < 0) {
+        LOG_ERROR("%s:%s:%d accpet error %d.\n", __FILE__, __FUNCTION__, __LINE__, errno);
+        if(errno == EMFILE) {
+            LOG_ERROR("%s:%s:%d clnt_fd reached limit!\n", __FILE__, __FUNCTION__, __LINE__);
+        }
+    }
 
     // 通过回调函数将创建好的clnt_sock传递给TcpServer, 让TcpServer创建Connection对象
-    _M_create_connection_callback(std::move(clnt_sock_ptr));
+    if(_M_new_connection_callback) {
+        _M_new_connection_callback(clnt_fd, clnt_addr);
+    }
+    else {
+        ::close(clnt_fd);
+    }
 }

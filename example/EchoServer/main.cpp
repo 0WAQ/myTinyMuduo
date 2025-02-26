@@ -1,6 +1,7 @@
 #include <iostream>
 #include <signal.h>
 #include "EchoServer.h"
+#include "InetAddress.h"
 
 EchoServer* server;
 
@@ -29,7 +30,9 @@ int main(int argc, char* argv[])
     Logger* log = Logger::get_instance();
     log->init(DEBUG, argv[3], ".log");
 
-    server = new EchoServer(argv[1], atoi(argv[2]), 3, 2);
+    EventLoop loop(true);
+    InetAddress addr(argv[1], atoi(argv[2]));
+    server = new EchoServer(&loop, addr, 0, 0);
     server->start();
 
     return 0;

@@ -8,45 +8,49 @@
 
 #include <memory>
 #include "Socket.h"
-#include "InetAddress.h"
 #include "Channel.h"
-#include "EventLoop.h"
-#include "Connection.h"
+#include "noncopyable.h"
 
+class EventLoop;
 
-class Acceptor
+class Acceptor : noncopyable
 {
 public:
 
-    using CreateConnCallback = std::function<void(std::unique_ptr<Socket>)>;
+    using CreateConnCallback = std::function<void(int, InetAddress&)>;
 
 public:
 
-    /// @brief 初始化loop与服务端监听地址
-    /// @param loop 事件循环
-    /// @param ip   ip地址
-    /// @param port 监听端口
-    Acceptor(EventLoop* loop, const std::string& ip, const uint16_t port);
+    /**
+     * @param loop 主事件循环
+     */
+    Acceptor(EventLoop* loop, InetAddress &serv_addr, bool reuseport);
 
+    ~Acceptor();
 
-    /// @brief 设置回调函数
-    /// @param func 函数对象
-    void set_create_connection_callback(CreateConnCallback func);
+    /**
+     * @brief
+     */
+    void listen();
 
-
-    /// @brief 读事件被调函数, 在channel中被回调
     void new_connection();
 
+    bool listenning() const { return _M_listenning; }
+
+    void set_new_connection_callback(CreateConnCallback func) {
+        _M_new_connection_callback = std::move(func);
+    }
 
 private:
 
-    // 修改声明的顺序, 应该与初始化顺序一致
-    EventLoop* _M_loop_ptr;
+    EventLoop* _M_loop;
     Socket _M_serv_sock;
     Channel _M_acceptor_channel;
 
+    bool _M_listenning;
+
     // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
-    CreateConnCallback _M_create_connection_callback;
+    CreateConnCallback _M_new_connection_callback;
 };
 
 #endif // ACCEPTOR_H
