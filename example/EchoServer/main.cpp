@@ -1,16 +1,12 @@
 #include <iostream>
 #include <signal.h>
 #include "EchoServer.h"
-#include "InetAddress.h"
 
 EchoServer* server;
 
 void stop(int sig)
 {
     LOG_INFO("sig: %d\n", sig);
-
-    // 调用EchoServer::stop函数停止服务
-    server->stop();
 
     delete server;
     exit(0);
@@ -32,8 +28,11 @@ int main(int argc, char* argv[])
 
     EventLoop loop(true);
     InetAddress addr(argv[1], atoi(argv[2]));
-    server = new EchoServer(&loop, addr, 0, 0);
+    std::string name{"EchoServer-01"};
+
+    server = new EchoServer(&loop, addr, name);
     server->start();
+    loop.loop();
 
     return 0;
 }

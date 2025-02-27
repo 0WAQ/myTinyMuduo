@@ -6,53 +6,61 @@
 #ifndef ECHOSERVER_H
 #define ECHOSERVER_H
 
-#include "EventLoop.h"
-#include "TcpConnection.h"
-#include "TcpServer.h"
-#include "ThreadPool.h"
-#include "Logger.h"
+#include <TcpServer.h>
 
-
-/// @brief 业务服务器: Echo
+/**
+ * @brief 业务服务器: Echo
+ */
 class EchoServer
 {
 public:
 
     using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
 
-    /// @brief 初始化Echo
-    /// @param loop_thread_num  IO线程数
-    /// @param work_thread_um   WORK线程数
-    EchoServer(EventLoop *main_loop, InetAddress addr, size_t loop_thread_num = 3, size_t work_thread_um = 5);
+    /**
+     * @brief 初始化EchoServer
+     */
+    EchoServer(EventLoop *loop, const InetAddress &addr, const std::string &name) :
+            loop_(loop), server_(loop, addr, name)
+    {
+        server_.set_connection_callback(std::bind(&EchoServer::onConnection, this, std::placeholders::_1));
+        server_.set_message_callback(std::bind(&EchoServer::onMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        
+        server_.set_thread_num(3);
+    }
 
+    void start() {
+        server_.start();
+    }
 
-    /// @brief 启动与停止
-    void start();
-    void stop();
+    void onConnection(const TcpConnectionPtr &conn)
+    {
+        if(conn->connected())
+        {
+            LOG_INFO("conn UP : %s", conn->peer_address().get_ip_port().c_str());
+        }
+        else
+        {
+            LOG_INFO("conn DOWN : %s", conn->peer_address().get_ip_port().c_str());
+        }
+    }
 
-    /// @brief 业务处理的被调函数
-    void handle_deal_message(TcpConnectionPtr conn, std::string& message);
-    void handle_create_connection(TcpConnectionPtr conn);
-    void handle_close_connection(TcpConnectionPtr conn);
-    void handle_error_connection(TcpConnectionPtr conn);
-    void handle_send_complete(TcpConnectionPtr conn);
-    void handle_timer_out(TcpConnectionPtr conn);
-
-    /// @brief 中间层, 以便将发送交给IO线程完成
-    void handle_deal_message_a(TcpConnectionPtr conn, std::string& message);
-
-
-    ~EchoServer();
+    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp time)
+    {
+        std::string msg;
+        if(buf->pick_datagram(msg)) {
+            conn->send(msg);
+        }
+        else {
+            LOG_WARN("pick_datagram() return false.\n");
+        }
+        conn->shutdown();
+    }
 
 private:
 
-    // 增加线程池, 用来存放工作线程
-    size_t _M_thread_num;
-    ThreadPool _M_pool;
-
-    TcpServer _M_tcp_server;
-
-    bool _M_is_stop = false;
+    EventLoop *loop_;
+    TcpServer server_;
 };
 
 #endif // ECHOSERVER_H
