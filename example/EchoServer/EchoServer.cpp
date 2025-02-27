@@ -35,7 +35,7 @@ EchoServer::EchoServer(EventLoop *main_loop, InetAddress addr, size_t loop_threa
 void EchoServer::start() 
 {
     LOG_INFO("EchoServer启动中...\n");
-    _M_tcp_server.set_thread_num(2);
+    _M_tcp_server.set_thread_num(1);
     _M_tcp_server.start();
 }
 

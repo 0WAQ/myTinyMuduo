@@ -29,7 +29,7 @@ void Channel::handle(TimeStamp receiveTime)
 void Channel::handle_event_with_guard(TimeStamp receiveTime)
 {
     // 连接中断事件
-    if(_M_happened_events & EPOLLRDHUP)
+    if(_M_happened_events & EPOLLRDHUP) // 检测半关闭事件
     {
         LOG_DEBUG("channel handle happened close events");
 

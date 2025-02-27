@@ -30,65 +30,66 @@ TcpServer::TcpServer(EventLoop *main_loop, InetAddress &serv_addr,
                 std::placeholders::_1, std::placeholders::_2));
 }
 
-TcpServer::~TcpServer() { }
+TcpServer::~TcpServer()
+{
+    for(auto& item : _M_connections) {
+        TcpConnectionPtr conn(item.second);
+        item.second.reset();
+        conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
+    }
+}
 
 // 启动服务器
 void TcpServer::start() 
 {
-    LOG_INFO("TcpServer启动中...\n");
-
     // 防止被多次启动
     if(_M_started++ == 0) {
 
-        // 从事件循环
+        // 启动从EventLoop线程
         _M_loop_threads->start(_M_thread_init_callback);
         
-        // 主事件循环
+        // 启动主EventLoop
         _M_main_loop->run_in_loop(std::bind(&Acceptor::listen, _M_acceptor.get()));
     }
 }
 
-
-// 以下是被调函数
 void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 {
-    EventLoop *curr = _M_loop_threads->get_next_loop();
+    // 填充TcpConnection名称
     char buf[64] = {0};
     snprintf(buf, sizeof(buf), "-%s#%d", _M_ip_port.c_str(), ++_M_next);
     std::string connName = _M_name + buf;
-
+    
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
-                _M_name.c_str(), connName.c_str(), clnt_addr.get_ip_port().c_str());
+        _M_name.c_str(), connName.c_str(), clnt_addr.get_ip_port().c_str());
+
+    // 分配connection
+    EventLoop *nextLoop = _M_loop_threads->get_next_loop();
+    InetAddress local_addr(InetAddress::get_local_addr(clntfd));
+    TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr));
+    _M_connections[connName] = conn;
+
+    // 设置回调函数
+    conn->set_connection_callback(_M_connection_callback);
+    conn->set_message_callback(_M_message_callback);
+    conn->set_write_complete_callback(_M_write_complete_callback);
+    conn->set_close_callback(std::bind(&TcpServer::remove_connection, this, std::placeholders::_1));
+
+    // 让对应的loop建立连接
+    nextLoop->queue_in_loop(std::bind(&TcpConnection::established, conn));
+}
+
+void TcpServer::remove_connection(const TcpConnectionPtr &conn)
+{
+    conn->loop()->run_in_loop(std::bind(&TcpServer::remove_connection_in_loop, this, conn));
+}
+
+void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
+{
+    LOG_INFO("TcpServer::remove_connection_in_loop [%s] - connection %s.\n",
+                _M_name.c_str(), conn->name().c_str());
     
-    InetAddress local_addr;
-    
-    
-    TcpConnectionPtr conn(new TcpConnection(curr, connName, clntfd, local_addr, clnt_addr));
-    _M_connection_map[connName] = conn;
-        
-    // conn->set_close_callback(std::bind(&TcpServer::close_connection, this, std::placeholders::_1));
-    // conn->set_error_callback(std::bind(&TcpServer::error_connection, this, std::placeholders::_1));
-    // conn->set_send_complete_callback(std::bind(&TcpServer::send_complete, this, std::placeholders::_1));
-    // conn->set_deal_message_callback(std::bind(&TcpServer::deal_message, this, 
-    //                                                 std::placeholders::_1, std::placeholders::_2));
-
-    ///////////////////////////////////////////////////////////////
-    // {
-    //     std::lock_guard<std::mutex> lock(_M_mutex);
-
-    //     // 将conn存放到TcpServer的map容器中, 用于在连接中断时释放连接
-    //     _M_connection_map[conn->get_fd()] = conn;
-    // }
-    ///////////////////////////////////////////////////////////////
-
-    // curr->run_in_loop(std::bind(&TcpConnection::))
-
-    // // 将conn存放到EventLoop的map容器中, 用于处理定时器事件
-    // _M_sub_loops[fd % _M_IO_thread_num]->insert(conn);
-
-    // if(_M_connection_callback) {
-    //     _M_connection_callback(conn);
-    // }
-    
-    LOG_DEBUG("TcpServer::create_connection[fd=%d]\n", conn->get_fd());
+    _M_connections.erase(conn->name());
+    EventLoop *loop = conn->loop();
+    loop->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
 }

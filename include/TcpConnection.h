@@ -56,27 +56,7 @@ public:
      * @brief 关闭连接
      */
     void shutdown();
-
-    /**
-     * @brief 设置回调函数, 分别在四种事件处理后调用
-     */
-    void set_message_callback(MessageCallback func) {
-        _M_message_callback = std::move(func);
-    }
-    void set_write_complete_callback(WriteCompleteCallback func) {
-        _M_write_complete_callback = std::move(func);
-    }
-    void set_close_callback(CloseCallback func) {
-        _M_close_callback = std::move(func);
-    }
-
-    int get_fd() const { return _M_sock->get_fd(); }
-    const std::string& name() const { return _M_name; }
-    const InetAddress& local_address() { return _M_local_addr; }
-    const InetAddress& peer_address() { return _M_peer_addr; }
-    EventLoop* loop() const { return _M_loop; }
-    bool connected() const { return _M_state == kConnected; }
-
+    
     /**
      * @brief 建立连接
      */
@@ -86,6 +66,25 @@ public:
      * @brief 销毁连接
      */
     void destroyed();
+
+    /**
+     * @brief 用户可以设置的回调函数
+     */
+    void set_connection_callback(ConnectionCallback func) { _M_connection_callback = std::move(func); }
+    void set_message_callback(MessageCallback func) { _M_message_callback = std::move(func); }
+    void set_write_complete_callback(WriteCompleteCallback func) { _M_write_complete_callback = std::move(func); }
+    void set_close_callback(CloseCallback func) { _M_close_callback = std::move(func); }
+    void set_high_water_mark_callback(HighWaterMarkCallback func, size_t high_water_mark) {
+        _M_high_water_mark = high_water_mark;
+        _M_high_water_mark_callback = std::move(func);
+    }
+
+    int get_fd() const { return _M_sock->get_fd(); }
+    const std::string& name() const { return _M_name; }
+    const InetAddress& local_address() { return _M_local_addr; }
+    const InetAddress& peer_address() { return _M_peer_addr; }
+    EventLoop* loop() const { return _M_loop; }
+    bool connected() const { return _M_state == kConnected; }
 
 private:
 
@@ -106,12 +105,12 @@ private:
 
 private:
 
-        enum State {
-            kDisConnected,
-            kConnecting,
-            kConnected,
-            kDisConnecting
-        };
+    enum State {
+        kDisConnected,
+        kConnecting,
+        kConnected,
+        kDisConnecting
+    };
 
         std::atomic<int> _M_state;
         bool _M_reading;

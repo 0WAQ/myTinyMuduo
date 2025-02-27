@@ -94,8 +94,10 @@ void Logger::write(LogLevel level, const char* format, ...)
         }
 
         std::unique_lock<std::mutex> grd(_M_mutex);
-        fflush(_M_fp);
-        fclose(_M_fp);
+        if(_M_fp) {
+            fflush(_M_fp);
+            fclose(_M_fp);
+        }
         _M_fp = fopen(full_name.c_str(), "a");
         assert(_M_fp != nullptr);
     }

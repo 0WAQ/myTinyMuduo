@@ -73,8 +73,6 @@ void TcpConnection::destroyed()
     {
         _M_state = kDisConnected;
     
-        _M_channel->unset_all_events();
-    
         if(_M_close_callback) {
             _M_close_callback(shared_from_this());
         }
@@ -312,7 +310,7 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
 
 void TcpConnection::shutdown()
 {
-    if(_M_state = kConnected)
+    if(_M_state == kConnected)
     {
         _M_state = kDisConnecting;
         _M_loop->run_in_loop(std::bind(&TcpConnection::shutdown_in_loop, this));

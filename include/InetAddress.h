@@ -22,7 +22,17 @@ public:
     explicit InetAddress(const std::string& ip = {}, uint16_t port = 0);
     explicit InetAddress(const sockaddr_in addr) : _M_addr(addr) { }
 
+    /**
+     * @brief 获取本地地址信息
+     */
+    static sockaddr_in get_local_addr(int sockfd);
 
+    /**
+     * @brief 获取对端地址信息
+     */
+    static sockaddr_in get_peer_addr(int sockfd);
+
+    
     std::string get_ip() const { return ::inet_ntoa(_M_addr.sin_addr); }
     uint16_t get_port() const { return ntohs(_M_addr.sin_port); }
     std::string get_ip_port() const { return get_ip() + ":" + std::to_string(get_port()); }
