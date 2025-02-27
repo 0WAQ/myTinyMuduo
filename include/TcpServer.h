@@ -50,7 +50,7 @@ public:
      * @param name 服务器名称
      * @param option kNoReusePort -- 不复用端口, kReusePort -- 端口复用
      */
-    TcpServer(EventLoop *main_loop, InetAddress &serv_addr,
+    TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
               const std::string &name, Option option = kNoReusePort);
 
     ~TcpServer();

@@ -24,7 +24,7 @@ public:
     /**
      * @param loop 主事件循环
      */
-    Acceptor(EventLoop* loop, InetAddress &serv_addr, bool reuseport);
+    Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport);
 
     ~Acceptor();
 

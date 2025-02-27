@@ -15,7 +15,7 @@ namespace __detail
 
 } // namespace __detail
 
-TcpServer::TcpServer(EventLoop *main_loop, InetAddress &serv_addr,
+TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
                      const std::string &name, Option option) :
         _M_main_loop(__detail::check_loop_not_null(main_loop)),
         _M_ip_port(serv_addr.get_ip_port()),

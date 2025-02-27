@@ -19,7 +19,7 @@ namespace __detail
 
 } // namespace __detail
 
-Acceptor::Acceptor(EventLoop* loop, InetAddress &serv_addr, bool reuseport) :
+Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport) :
     _M_loop(loop), _M_serv_sock(__detail::create_non_blocking_fd()), _M_listenning(false),
     _M_acceptor_channel(_M_loop, _M_serv_sock.get_fd())
 {
