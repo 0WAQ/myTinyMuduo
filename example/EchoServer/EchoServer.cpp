@@ -35,6 +35,7 @@ EchoServer::EchoServer(EventLoop *main_loop, InetAddress addr, size_t loop_threa
 void EchoServer::start() 
 {
     LOG_INFO("EchoServer启动中...\n");
+    _M_tcp_server.set_thread_num(2);
     _M_tcp_server.start();
 }
 
@@ -43,12 +44,11 @@ void EchoServer::stop()
     _M_is_stop = true;
 
     _M_pool.stop();
-    _M_tcp_server.stop();
 
-    LOG_INFO("EchoServer已停止.\n");
+    // TODO: 暂停TcpServer
 }
 
-void EchoServer::handle_deal_message_a(SpConnection conn, std::string& message)
+void EchoServer::handle_deal_message_a(TcpConnectionPtr conn, std::string& message)
 {   
     // 若没有工作线程, 再调用回去, 由IO线程处理
     if(_M_pool.size() == 0) 
@@ -63,44 +63,44 @@ void EchoServer::handle_deal_message_a(SpConnection conn, std::string& message)
 
 }
 
-void EchoServer::handle_deal_message(SpConnection conn, std::string& message)
+void EchoServer::handle_deal_message(TcpConnectionPtr conn, std::string& message)
 {
     // 将数据经过计算后             
     message = "reply: " + message;
 
     // 将报文发送出去
-    conn->send(message.data(), message.size());
+    conn->send(message);
 }
 
-void EchoServer::handle_create_connection(SpConnection conn)
+void EchoServer::handle_create_connection(TcpConnectionPtr conn)
 {
     printf("%s: new connection(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(), 
                 conn->peer_address().get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_close_connection(SpConnection conn) 
+void EchoServer::handle_close_connection(TcpConnectionPtr conn) 
 {
     printf("%s: close connection(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(), 
                 conn->peer_address().get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_error_connection(SpConnection conn) 
+void EchoServer::handle_error_connection(TcpConnectionPtr conn) 
 {
     printf("%s: error connection(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(),
                 conn->peer_address().get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_send_complete(SpConnection conn) 
+void EchoServer::handle_send_complete(TcpConnectionPtr conn) 
 {
     // printf("%s: send complete(ip=%s, fd=%d).\n", 
     //             TimeStamp::now().to_string().c_str(),
     //             conn->peer_address().get_ip().c_str(), conn->get_fd());
 }
 
-void EchoServer::handle_timer_out(SpConnection conn)
+void EchoServer::handle_timer_out(TcpConnectionPtr conn)
 {
     printf("%s: timer_out(ip=%s, fd=%d).\n", 
                 TimeStamp::now().to_string().c_str(),

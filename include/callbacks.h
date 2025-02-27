@@ -7,13 +7,17 @@
 #include "TimeStamp.h"
 
 class Buffer;
-class Connection;
+class TcpConnection;
 
-using ConnectionPtr = std::shared_ptr<Connection>;
-using ConnectionCallback = std::function<void(const ConnectionPtr&)>;
-using CloseCallback = std::function<void(const ConnectionPtr&)>;
-using WriteCompleteCallback = std::function<void(const ConnectionPtr&)>;
+using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+
+using ConnectionCallback = std::function<void(const TcpConnectionPtr&)>;
+using CloseCallback = std::function<void(const TcpConnectionPtr&)>;
+using WriteCompleteCallback = std::function<void(const TcpConnectionPtr&)>;
+using MessageCallback = std::function<void(const TcpConnectionPtr&, Buffer*, TimeStamp)>;
+
 using TimerOutCallback = std::function<void()>; // TODO:
-using MessageCallback = std::function<void(const ConnectionPtr&, Buffer*, TimeStamp)>;
+using HighWaterMarkCallback = std::function<void(const TcpConnectionPtr&, size_t)>;
+
 
 #endif // CALLBACKS_H

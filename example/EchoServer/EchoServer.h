@@ -7,7 +7,7 @@
 #define ECHOSERVER_H
 
 #include "EventLoop.h"
-#include "Connection.h"
+#include "TcpConnection.h"
 #include "TcpServer.h"
 #include "ThreadPool.h"
 #include "Logger.h"
@@ -17,6 +17,8 @@
 class EchoServer
 {
 public:
+
+    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
 
     /// @brief 初始化Echo
     /// @param loop_thread_num  IO线程数
@@ -29,15 +31,15 @@ public:
     void stop();
 
     /// @brief 业务处理的被调函数
-    void handle_deal_message(SpConnection conn, std::string& message);
-    void handle_create_connection(SpConnection conn);
-    void handle_close_connection(SpConnection conn);
-    void handle_error_connection(SpConnection conn);
-    void handle_send_complete(SpConnection conn);
-    void handle_timer_out(SpConnection conn);
+    void handle_deal_message(TcpConnectionPtr conn, std::string& message);
+    void handle_create_connection(TcpConnectionPtr conn);
+    void handle_close_connection(TcpConnectionPtr conn);
+    void handle_error_connection(TcpConnectionPtr conn);
+    void handle_send_complete(TcpConnectionPtr conn);
+    void handle_timer_out(TcpConnectionPtr conn);
 
     /// @brief 中间层, 以便将发送交给IO线程完成
-    void handle_deal_message_a(SpConnection conn, std::string& message);
+    void handle_deal_message_a(TcpConnectionPtr conn, std::string& message);
 
 
     ~EchoServer();

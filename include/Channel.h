@@ -90,7 +90,7 @@ public:
 
     bool is_none_events() { return _M_monitored_events == _M_none_events; }
     bool is_reading() { return _M_monitored_events == _M_read_events; }
-    bool is_writin() { return _M_monitored_events == _M_write_events; }
+    bool is_writing() { return _M_monitored_events == _M_write_events; }
 
     /**
      * @brief 防止channel被remove后, channel还在执行回调操作 TODO:

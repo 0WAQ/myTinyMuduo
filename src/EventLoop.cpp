@@ -1,5 +1,6 @@
 #include "EventLoop.h"
 #include "CurrentThread.h"
+#include "Logger.h"
 
 // 防止一个线程创建多个EventLoop, __thread: 表示thread local
 __thread EventLoop *t_loop_in_this_thread = nullptr;
@@ -52,12 +53,12 @@ EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) :
         _M_poller(Poller::new_default_poller(this)),
         
         _M_wakeup_fd(__detail::create_eventfd()), 
-        _M_wakeup_channel(new Channel(this, _M_wakeup_fd)), 
+        _M_wakeup_channel(new Channel(this, _M_wakeup_fd))
         
         // TODO: delete?
-        _M_tfd(__detail::create_timerfd(_M_timeval)), _M_tch(new Channel(this, _M_tfd)),
-        _M_is_main_loop(main_loop),
-        _M_timeval(timeval), _M_timeout(timeout)
+        // _M_tfd(__detail::create_timerfd(_M_timeval)), _M_tch(new Channel(this, _M_tfd)),
+        // _M_is_main_loop(main_loop),
+        // _M_timeval(timeval), _M_timeout(timeout)
 {
     LOG_DEBUG("EventLoop created %p in thread %d.\n", this, _M_tid);
 
@@ -74,9 +75,9 @@ EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) :
     _M_wakeup_channel->set_read_callback(std::bind(&EventLoop::handle_read, this));
 
     // 监听tfd的读事件, 用于清理空闲Connection
-    _M_tch->set_read_events();
+    // _M_tch->set_read_events();
     // 设置其回调函数
-    _M_tch->set_read_callback(std::bind(&EventLoop::handle_timer, this));
+    // _M_tch->set_read_callback(std::bind(&EventLoop::handle_timer, this));
 }
 
 EventLoop::~EventLoop()
@@ -140,6 +141,7 @@ void EventLoop::handle_read()
     }
 }
 
+/* TODO: add
 // timerfd的被调函数, 执行timerfd的任务, 用于清理空闲Connection
 void EventLoop::handle_timer()
 {
@@ -172,6 +174,7 @@ void EventLoop::handle_timer()
         }
     }
 }
+*/
 
 void EventLoop::do_pending_functors()
 {
@@ -237,7 +240,7 @@ void EventLoop::remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
 bool EventLoop::has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
 
 // 将Connection放入map容器, 用来指示WORK线程将Connection的IO任务交给哪个IO线程
-void EventLoop::insert(SpConnection conn) { _M_conns[conn->get_fd()] = conn; }
+void EventLoop::insert(TcpConnectionPtr conn) { _M_conns[conn->get_fd()] = conn; }
 
 
 void EventLoop::set_timer_out_callback(TimeroutCallback func) {_M_timer_out_callback = std::move(func);}

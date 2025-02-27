@@ -1,5 +1,5 @@
 #include "Channel.h"
-#include "Connection.h"
+#include "TcpConnection.h"
 #include "Logger.h"
 
 Channel::Channel(EventLoop* loop_ptr, int fd) : 

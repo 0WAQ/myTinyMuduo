@@ -6,90 +6,127 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
-#include <map>
+#include <unordered_map>
+#include <functional>
+#include <string>
+#include <vector>
+#include <atomic>
 #include <mutex>
-#include "Socket.h"
-#include "Channel.h"
 #include "EventLoop.h"
+#include "EventLoopThread.h"
+#include "EventLoopThreadPool.h"
+#include "TcpConnection.h"
 #include "Acceptor.h"
-#include "Connection.h"
+#include "TcpConnection.h"
+#include "InetAddress.h"
+#include "Logger.h"
 #include "ThreadPool.h"
+#include "callbacks.h"
+#include "noncopyable.h"
 
-
-/// @brief Tcp服务类
-class TcpServer
+/**
+ * @brief 对外的接口类
+ */
+class TcpServer : noncopyable
 {
+public:
 
-    using CreateConnCallback = std::function<void(SpConnection)>;
-    using DealMsgCallback = std::function<void(SpConnection, std::string&)>;
-    using SendCompleteCallback = std::function<void(SpConnection)>;
-    using TimeroutCallback = std::function<void(SpConnection)>;
-    using CloseCallback = std::function<void(SpConnection)>;
-    using ErrorCallback = std::function<void(SpConnection)>;
+    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+    using ThreadInitCallback = std::function<void(EventLoop*)>;
+    using DealMsgCallback = std::function<void(TcpConnectionPtr, std::string&)>;
+    using EventsCallback = std::function<void(TcpConnectionPtr)>;
+
+    enum Option {
+        kNoReusePort,
+        kReusePort,
+    };
 
 public:
 
-    /// @brief 初始化Tcp服务器
-    /// @param ip 绑定地址
-    /// @param port 绑定ip
-    /// @param thread_nums IO线程数
-    TcpServer(const std::string& ip, const uint16_t port, size_t thread_nums);
+    /**
+     * @brief 初始化Tcp服务器
+     * @param main_loop
+     * @param serv_addr
+     * @param name
+     * @param option
+     */
+    TcpServer(EventLoop *main_loop, InetAddress &serv_addr,
+              const std::string &name, Option option = kNoReusePort);
 
+    ~TcpServer();
 
-    /// @brief 启动与停止Tcp服务器
+    /**
+     * @brief 启动TcpServer, 不需要暂停, 会自动析构
+     */
     void start();
-    void stop();
 
+    void set_thread_num(int num_threads) {
+        _M_loop_threads->set_thread_num(num_threads);
+    }
 
-    /// @brief 各种被调函数
-    void create_connection(std::unique_ptr<Socket> clnt_sock);
-    void deal_message(SpConnection conn, std::string& message);
-    void send_complete(SpConnection conn);
-    void timer_out(SpConnection conn);
-    void close_connection(SpConnection conn);
-    void error_connection(SpConnection conn);
+    /**
+     * @brief 以下为设置回调函数的函数
+     */
+    void set_connection_callback(ConnectionCallback func) {
+        _M_connection_callback = std::move(func);
+    }
 
+    void set_thread_init_callback(ThreadInitCallback func) {
+        _M_thread_init_callback = std::move(func);
+    }
 
-    // 以下为设置回调函数的函数
-    void set_create_connection_callback(CreateConnCallback func);
-    void set_deal_message_callback(DealMsgCallback func);
-    void set_send_complete_callback(SendCompleteCallback func);
-    void set_timer_out_callback(TimeroutCallback func);
-    void set_close_connection_callback(CloseCallback func);
-    void set_error_connection_callback(ErrorCallback func);
+    void set_message_callback(MessageCallback func) {
+        _M_message_callback = std::move(func);
+    }
+
+    void set_write_complete_callback(WriteCompleteCallback func) {
+        _M_write_complete_callback = std::move(func);
+    }
 
 private:
 
-    // 交换顺序, 和初始化列表顺序一致
-    size_t _M_IO_thread_num;   // 线程池的大小, 即从事件循环的个数
-    ThreadPool _M_pool; // 线程池
+    using ConnectionMap = std::unordered_map<std::string, TcpConnectionPtr>;
 
-    // 一个TcpServer中可以有多个事件循环, 在多线程中体现
-    std::unique_ptr<EventLoop> _M_main_loop;         // 事件循环变量, 用start方法开始
-    std::vector<std::unique_ptr<EventLoop>> _M_sub_loops; // 从事件, 运行在线程池中
+private:
 
-    Acceptor _M_acceptor; // 用于创建监听sock
-    std::map<int, SpConnection> _M_connections_map;
+    /**
+     * 
+     */
+        void new_connection(int clntfd, const InetAddress &clnt_addr);
 
-    std::mutex _M_mutex; // 用于对map容器的操作上锁
+        void remove_connection(const TcpConnection &conn);
 
-    // 回调EchoServer::handle_create_connection
-    CreateConnCallback _M_create_connection_callback;
+        void remove_connection_in_loop(const TcpConnection &conn);
 
-    // 回调EchoServer::handle_deal_message
-    DealMsgCallback _M_deal_message_callback;
+    /**
+     * 
+     */
+        EventLoop *_M_main_loop;        // 事件循环变量, 用start方法开始
+        std::unique_ptr<Acceptor> _M_acceptor; // 用于创建监听sock
+        std::shared_ptr<EventLoopThreadPool> _M_loop_threads;
 
-    // 回调EchoServer::HandleSendComplete
-    SendCompleteCallback _M_send_complete_callback;
+        const std::string _M_ip_port;
+        const std::string _M_name;
 
-    // 回调EchoServer::HandleTimerOut
-    TimeroutCallback _M_timer_out_callback;
 
-    // 回调EchoServer::HandleClose
-    CloseCallback _M_close_connection_callback;
+        ConnectionMap _M_connection_map;
+        std::mutex _M_mutex; // 用于对map容器的操作上锁
 
-    // 回调EchoServer::HandleError
-    ErrorCallback _M_error_connection_callback;
+
+    /**
+     * 
+     */
+        std::atomic<int> _M_started;
+        int _M_next;
+
+    /**
+     * @brief 回调函数
+     */
+        ConnectionCallback _M_connection_callback;
+        MessageCallback _M_message_callback;
+        WriteCompleteCallback _M_write_complete_callback;
+        ThreadInitCallback _M_thread_init_callback;
+
 };
 
 #endif // TCPSERVER_H

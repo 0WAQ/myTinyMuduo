@@ -16,12 +16,12 @@
 #include <sys/timerfd.h> // 定时器
 
 #include "Poller.h"
-#include "Connection.h"
+#include "TcpConnection.h"
 #include "TimeStamp.h"
 #include "CurrentThread.h"
 #include "noncopyable.h"
 
-class Connection;
+class TcpConnection;
 
 /**
  *  事件循环类
@@ -34,11 +34,11 @@ public:
     
     // TODO:
 
-    using SpConnection = std::shared_ptr<Connection>;
+    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
     using ChannelList = std::vector<Channel*>;
     using Functor = std::function<void()>;
 
-    using TimeroutCallback = std::function<void(SpConnection)>;
+    using TimeroutCallback = std::function<void(TcpConnectionPtr)>;
 
 public:
 
@@ -106,7 +106,7 @@ public:
     /**
      * @brief 将Connection对象加入到map容器
      */
-    void insert(SpConnection conn);
+    void insert(TcpConnectionPtr conn);
 
     /**
      * @brief 设置回调函数
@@ -127,7 +127,7 @@ private:
     /**
      * @brief 用于处理定时器发生后的待调函数
      */
-    void handle_timer();
+    // void handle_timer();
 
     /**
      * @brief loop对应的线程被唤醒后, 执行task中的任务
@@ -186,7 +186,7 @@ private:
         bool _M_is_main_loop; // 用于判断当前线程为主线程还是从线程
 
         // 存放运行在该事件循环上的所有Connection对象
-        std::map<int, SpConnection> _M_conns;
+        std::map<int, TcpConnectionPtr> _M_conns;
         std::mutex _M_map_mutex; // 用于对map容器的操作上锁
 
         // 当定时器超时时, 回调TcpServer::remove_conn()

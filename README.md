@@ -18,7 +18,7 @@ myTinyMuduo/
 | |-- Acceptor.h
 | |-- Buffer.h
 | |-- Channel.h
-| |-- Connection.h
+| |-- TcpConnection.h
 | |-- EchoServer.h    # 实现的简易Echo服务器, 用来测试网络库
 | |-- EPollPoller.h
 | |-- EventLoop.h
@@ -33,7 +33,7 @@ myTinyMuduo/
 | |-- Acceptor.cpp
 | |-- Buffer.cpp
 | |-- Channel.cpp
-| |-- Connection.cpp
+| |-- TcpConnection.cpp
 | |-- EchoServer.cpp
 | |-- EPollPoller.cpp
 | |-- EventLoop.cpp
