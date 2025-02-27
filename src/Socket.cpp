@@ -48,17 +48,21 @@ void Socket::shutdown_write() {
 }
 
 void Socket::set_keep_alive(bool on) {
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on));
+    int opt = on ? 1 : 0;
+    ::setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(opt));
 }
 
 void Socket::set_reuse_addr(bool on) {
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+    int opt = on ? 1 : 0;
+    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(opt));
 }
 
 void Socket::set_reuse_port(bool on) {
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on));
+    int opt = on ? 1 : 0;
+    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(opt));
 }
 
 void Socket::set_tcp_nodelay(bool on) {
-    ::setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));
+    int opt = on ? 1 : 0;
+    ::setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(opt));
 }
