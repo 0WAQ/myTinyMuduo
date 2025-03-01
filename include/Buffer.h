@@ -96,13 +96,11 @@ public:
 
     /**
      * @brief 直接操作内核缓冲区和用户缓冲区
-     * @param fd sockfd
-     * @param save_errno 保存的errno, 以便传递给外界 
-     * @return 
      */
     std::size_t read_fd(int fd, int* save_errno);
     std::size_t write_fd(int fd, int* save_errno);
 
+    uint16_t sep() { return _M_sep; }
 
 private:
 

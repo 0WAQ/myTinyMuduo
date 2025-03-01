@@ -37,11 +37,11 @@ public:
     {
         if(conn->connected())
         {
-            LOG_INFO("conn UP : %s", conn->peer_address().get_ip_port().c_str());
+            LOG_INFO("conn UP : %s\n", conn->peer_address().get_ip_port().c_str());
         }
         else
         {
-            LOG_INFO("conn DOWN : %s", conn->peer_address().get_ip_port().c_str());
+            LOG_INFO("conn DOWN : %s\n", conn->peer_address().get_ip_port().c_str());
         }
     }
 
@@ -49,15 +49,38 @@ public:
     {
         std::string msg;
         if(buf->pick_datagram(msg)) {
+            add_sep(buf, msg);
             conn->send(msg);
         }
         else {
             LOG_WARN("pick_datagram() return false.\n");
         }
-        conn->shutdown();
+        // conn->shutdown();
     }
 
 private:
+
+    void add_sep(Buffer *buf, std::string &message)
+    {
+        switch (buf->sep())
+        {
+        case 0:
+            break;
+        
+        case 1:
+        {
+            int len = message.size();
+
+            char tmp[4]{0};
+            memcpy(tmp, &len, 4);
+            message.insert(0, tmp, 4);
+            break;
+        }
+        case 2:
+            message.append("\r\n\r\n");
+            break;
+        }   
+    }
 
     EventLoop *loop_;
     TcpServer server_;

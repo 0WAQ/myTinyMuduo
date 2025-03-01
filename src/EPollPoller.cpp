@@ -40,7 +40,7 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
     {
         if(savedErrno != EINTR) {
             errno = savedErrno;
-            LOG_ERROR("%s:%s():%d epoll_wait() failed: %d.\n", 
+            LOG_ERROR("%s:%s():%d epoll_wait() failed, errno:%d.\n", 
                 __FILE__, __FUNCTION__, __LINE__, errno);
         }
     }

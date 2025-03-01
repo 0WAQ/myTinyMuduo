@@ -31,7 +31,7 @@ void Channel::handle_event_with_guard(TimeStamp receiveTime)
     // 连接中断事件
     if(_M_happened_events & EPOLLRDHUP) // 检测半关闭事件
     {
-        LOG_DEBUG("channel handle happened close events");
+        LOG_DEBUG("channel handle happened close events\n");
 
         if(_M_close_callback) {
             _M_close_callback();
@@ -41,7 +41,7 @@ void Channel::handle_event_with_guard(TimeStamp receiveTime)
     // 读事件
     if(_M_happened_events & _M_read_events)
     {
-        LOG_DEBUG("channel handle happened read events");
+        LOG_DEBUG("channel handle happened read events\n");
 
         if(_M_read_callback) {
             _M_read_callback(receiveTime);
@@ -51,7 +51,7 @@ void Channel::handle_event_with_guard(TimeStamp receiveTime)
     // 写事件
     if(_M_happened_events & _M_write_events)
     {
-        LOG_DEBUG("channel handle happened write events");
+        LOG_DEBUG("channel handle happened write events\n");
 
         if(_M_write_callback) {
             _M_write_callback();
@@ -61,7 +61,7 @@ void Channel::handle_event_with_guard(TimeStamp receiveTime)
     // 错误
     if(_M_happened_events & EPOLLERR)
     {
-        LOG_DEBUG("channel handle happened error events");
+        LOG_DEBUG("channel handle happened error events\n");
 
         if(_M_error_callback) {
             _M_error_callback(); 

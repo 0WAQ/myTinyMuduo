@@ -230,7 +230,7 @@ void TcpConnection::handle_error()
 
 // 封装消息发送, 选择由IO线程执行
 void TcpConnection::send(const std::string& message)
-{  
+{
     if(_M_state == kConnected)
     {
         // 判断当前线程是否为IO线程
