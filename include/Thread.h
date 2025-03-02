@@ -42,13 +42,15 @@ private:
 
     void set_default_name();
 
+private:
+
     bool _M_started;
     bool _M_joined;
 
     pid_t _M_tid;
     std::shared_ptr<std::thread> _M_thread;
 
-    ThreadFunc _M_func;
+    ThreadFunc _M_func;     // 线程的执行函数
 
     std::string _M_name;
 

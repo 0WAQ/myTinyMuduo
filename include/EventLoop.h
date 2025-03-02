@@ -32,105 +32,66 @@ class EventLoop : noncopyable
 {
 public:
     
-    // TODO:
-
     using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
     using ChannelList = std::vector<Channel*>;
     using Functor = std::function<void()>;
 
-    using TimeroutCallback = std::function<void(TcpConnectionPtr)>;
-
 public:
 
-    /**
-     * @brief 初始化对象
-     * @param main_loop 主事件循环-true, 从事件循环-false TODO:
-     * @param timeval   服务器检测定时器事件的周期
-     * @param timeout   定时器超时时间
-     */
-    EventLoop(bool main_loop, time_t timeval = 30, time_t timeout = 80);
+    EventLoop();
 
     ~EventLoop();
 
     /**
-     * @brief 开启事件循环
+     * @brief 开启与退出事件循环
      */
     void loop();
-
-    /**
-     * @brief 退出事件循环
-     */
     void quit();
 
     /**
-     * @brief 判断当前线程是否为事件循环线程
+     * @brief 判断当前线程是否为subLoops
      */
-    inline bool is_loop_thread() { return _M_tid == CurrentThread::tid(); }
+    bool is_loop_thread() { return _M_tid == CurrentThread::tid(); }
 
     /**
      * 无论是run_in_loop还是queue_in_loop都要保证任务在IO线程中执行
+     * 要保证I/O相关操作在EventLoopThread内完成(线程安全与一致性)
+     *  1. 避免数据竞争: I/O操作通常涉及共享资源(fd, buffer, connection)
+     *  2. 保证事件处理的顺序: Reactor核心机制是事件驱动, 若其它线程直接操作I/O, 可能会破坏事件处理的顺序, 导致逻辑错误
+     *  3. 简化并发设计: 可以避免使用锁机制, 减少死锁和性能瓶颈的风险
      */
 
     /**
-     * @brief 直接在当前loop中执行任务
+     * @brief 直接执行; 若当前线程是EventLoop所属线程, 则会立即执行, 否则调用queue_in_loop
      */
     void run_in_loop(Functor task);
 
     /**
-     * @brief 将其放在loop的队列中, 唤醒对应线程去执行
+     * @brief 延迟执行; 将任务加入EventLoop所属线程的任务队列中, 并唤醒线程
      */
     void queue_in_loop(Functor task);
 
     /**
-     * @brief 将subLoop从pool中唤醒过来
+     * @brief 将subLoop从poll()中唤醒过来
      */
     void wakeup();
 
     /**
-     * @brief 转调用Epoll中的updata_channel
+     * @brief 转调用Poller中的相应函数
      */
-    void update_channel(Channel* ch);
-
-    /**
-     * @brief 转调用Epoll中的remove_channel
-     */
-    void remove_channel(Channel* ch);
-
-    /**
-     * @brief 当前loop中是否含有ch
-     */
-    bool has_channel(Channel* ch);
-
-
-    // TODO:
-    /**
-     * @brief 将Connection对象加入到map容器
-     */
-    void insert(TcpConnectionPtr conn);
-
-    /**
-     * @brief 设置回调函数
-     */
-    void set_timer_out_callback(TimeroutCallback func);
+    void update_channel(Channel* ch) { _M_poller->update_channel(ch); }
+    void remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
+    bool has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
 
 private:
 
     /**
-     * 内部接口
-     */
-
-    /**
-     * @brief 唤醒线程后执行的函数
+     * @brief EventLoop线程被唤醒后执行的回调函数
      */
     void handle_read();
 
     /**
-     * @brief 用于处理定时器发生后的待调函数
-     */
-    // void handle_timer();
-
-    /**
-     * @brief loop对应的线程被唤醒后, 执行task中的任务
+     * @brief 执行任务队列中的任务
      */
     void do_pending_functors();
 
@@ -149,7 +110,7 @@ private:
         // 与EventLoop绑定的线程tid
         const pid_t _M_tid;
         
-        // 当
+        // 用于唤醒subLoop
         int _M_wakeup_fd; // 用于唤醒事件循环的eventfd
         std::unique_ptr<Channel> _M_wakeup_channel; // 用于将eventfd加入到epoll
 
@@ -159,38 +120,20 @@ private:
         std::mutex _M_queue_mutex;   // 任务队列的互斥锁
 
     /**
-     * Poller相关
+     * Poller
      */
 
         // 该事件循环包含的Poller分发器
         std::unique_ptr<Poller> _M_poller;
         
-        // poll返回时的时间
+        // poll()返回时的时间
         TimeStamp _M_poller_return_time;
 
     /**
-     * Channel相关
+     * Channel
      */
 
         ChannelList _M_activeChannels;
-
-    /**
-     * 定时器相关 TODO:
-     */
-        int _M_tfd; // 用于清理空闲Connection的timerfd
-        std::unique_ptr<Channel> _M_tch; // 用于将timerfd加入到epoll
-
-        // 定时器的时间间隔和超时时间
-        time_t _M_timeval, _M_timeout;
-
-        bool _M_is_main_loop; // 用于判断当前线程为主线程还是从线程
-
-        // 存放运行在该事件循环上的所有Connection对象
-        std::map<int, TcpConnectionPtr> _M_conns;
-        std::mutex _M_map_mutex; // 用于对map容器的操作上锁
-
-        // 当定时器超时时, 回调TcpServer::remove_conn()
-        TimeroutCallback _M_timer_out_callback;
 
 };
 

@@ -14,7 +14,7 @@ Thread::Thread(ThreadFunc func, const std::string &name) :
 Thread::~Thread() {
     if(_M_started && !_M_joined) {
         _M_thread->detach();
-    }    
+    }
 }
 
 void Thread::start() {
@@ -23,13 +23,14 @@ void Thread::start() {
     sem_t sem;
     sem_init(&sem, 0, 0);
 
+    // 启动子线程
     _M_thread = std::shared_ptr<std::thread>(new std::thread([&](){
         _M_tid = CurrentThread::tid();
         sem_post(&sem);
         _M_func();
     }));
 
-    // 等待子线程的tid值
+    // 等待子线程获取tid
     sem_wait(&sem);
 }
 

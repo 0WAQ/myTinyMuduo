@@ -93,10 +93,9 @@ public:
     bool is_writing() { return _M_monitored_events == _M_write_events; }
 
     /**
-     * @brief 防止channel被remove后, channel还在执行回调操作 TODO:
-     * @param 
+     * @brief 将channel与obj绑定在一起, 在TcpConnection建立时绑定
      */
-    void tie(const std::shared_ptr<void>&);
+    void tie(const std::shared_ptr<void>& obj);
 
     channelStatus  get_status() { return _M_status; }
     void set_status(channelStatus status) { _M_status = status; }
@@ -121,8 +120,12 @@ private:
     uint32_t _M_happened_events = 0;
     channelStatus _M_status;           // channel在Poller中的状态(未添加, 已添加, 已删除)
 
-    // TODO: 与shared_from_this?
-    std::weak_ptr<void> _M_tie;         // 
+    /**
+     * 用于保存channel和其绑定对象的弱引用, 绑定对象通常是TcpConnection
+     *  1. 避免循环引用
+     *  2. 延长对象声明周期: 确保在channel的回调期间, TcpConnection对象不会被销毁
+     */
+    std::weak_ptr<void> _M_tie; // 调用成员方法lock()可以将对象提升为强引用
     bool _M_tied;
 
     // 读事件的回调函数, 将回调Acceptor::new_connection或者new_message

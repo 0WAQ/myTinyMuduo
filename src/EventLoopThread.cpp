@@ -4,7 +4,7 @@
 EventLoopThread::EventLoopThread(const ThreadInitCallback &cb, const std::string &name) :
                 _M_loop(nullptr), _M_exiting(false),
                 _M_thread(std::bind(&EventLoopThread::thread_func, this), name),
-                _M_mutex(), _M_cond(), _M_init_callback(cb)
+                _M_init_callback(cb)
 { }
 
 EventLoopThread::~EventLoopThread() {
@@ -24,7 +24,7 @@ EventLoop* EventLoopThread::start_loop() {
     {
         std::unique_lock<std::mutex> lock(_M_mutex);
 
-        // 等待线程获取loop, 该loop存储在线程的栈上
+        // 等待EventLoop线程获取loop对象, 该loop存储在线程的栈上
         while(!_M_loop) {
             _M_cond.wait(lock);
         }
@@ -34,7 +34,9 @@ EventLoop* EventLoopThread::start_loop() {
 }
 
 void EventLoopThread::thread_func() {
-    EventLoop loop(false);
+    
+    // 将EventLoop声明为栈对象, 这样在线程退出时, EventLoop会自动析构
+    EventLoop loop;
 
     if(_M_init_callback) {
         _M_init_callback(&loop);

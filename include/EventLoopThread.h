@@ -36,10 +36,17 @@ public:
 
 private:
 
+    /**
+     * @brief 线程的执行函数 
+     */
     void thread_func();
 
+private:
+
+    // EventLoop对应的线程结构
     Thread _M_thread;
 
+    // Thread的loop
     EventLoop *_M_loop;
 
     bool _M_exiting;

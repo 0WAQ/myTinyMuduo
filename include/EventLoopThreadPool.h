@@ -10,6 +10,9 @@
 class EventLoop;
 class EventLoopThread;
 
+/**
+ * @brief EventLoop线程池, 每个服务器都要有该对象
+ */
 class EventLoopThreadPool : noncopyable
 {
 public:
@@ -21,7 +24,7 @@ public:
     EventLoopThreadPool(EventLoop *main_loop, const std::string &name);
 
     /**
-     * @brief
+     * @brief 启动从EventLoop线程以及对应的事件循环
      */
     void start(const ThreadInitCallback &cb = ThreadInitCallback{});
 
@@ -35,12 +38,11 @@ public:
 
 private:
 
+    // 该类并不拥有main_loop, 是由上层传递而来
     EventLoop *_M_main_loop;
 
-    // EventLoop线程
+    // 从EventLoop线程与其对应的EventLoop对象
     std::vector<std::unique_ptr<EventLoopThread>> _M_threads;
-    
-    // EventLoop线程对应的loop
     std::vector<EventLoop*> _M_sub_loops;
 
     std::string _M_name;

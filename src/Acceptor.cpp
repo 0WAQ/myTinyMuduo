@@ -50,7 +50,7 @@ void Acceptor::listen() {
     _M_acceptor_channel.set_read_events();
 }
 
-// 读事件的被调函数, 代表有新连接 TODO: 修改Socket
+// 读事件的被调函数, 代表有新连接
 void Acceptor::new_connection()
 {
     InetAddress clnt_addr;

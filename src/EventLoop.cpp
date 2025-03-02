@@ -48,36 +48,29 @@ int create_timerfd(time_t sec)
 
 } // namespace __detail
 
-EventLoop::EventLoop(bool main_loop, time_t timeval, time_t timeout) : 
+EventLoop::EventLoop() : 
         _M_tid(CurrentThread::tid()),
         _M_poller(Poller::new_default_poller(this)),
-        
         _M_wakeup_fd(__detail::create_eventfd()), 
         _M_wakeup_channel(new Channel(this, _M_wakeup_fd))
-        
-        // TODO: delete?
-        // _M_tfd(__detail::create_timerfd(_M_timeval)), _M_tch(new Channel(this, _M_tfd)),
-        // _M_is_main_loop(main_loop),
-        // _M_timeval(timeval), _M_timeout(timeout)
 {
     LOG_DEBUG("EventLoop created %p in thread %d.\n", this, _M_tid);
 
-    if(t_loop_in_this_thread) {
-        LOG_ERROR("Another EventLoop %p exists in this thread %d\n", t_loop_in_this_thread, _M_tid);
+    /**
+     * one loop per thread:
+     * 检测当前线程是否已经创建了EventLoop对象
+     */
+    if(!t_loop_in_this_thread) {
+        t_loop_in_this_thread = this;
     }
     else {
-        t_loop_in_this_thread = this;
+        LOG_ERROR("Another EventLoop %p exists in this thread %d\n", t_loop_in_this_thread, _M_tid);
     }
 
     // 监听efd的读事件, 用于异步唤醒subloop线程
     _M_wakeup_channel->set_read_events();
     // 设置读事件发生后的回调函数
     _M_wakeup_channel->set_read_callback(std::bind(&EventLoop::handle_read, this));
-
-    // 监听tfd的读事件, 用于清理空闲Connection
-    // _M_tch->set_read_events();
-    // 设置其回调函数
-    // _M_tch->set_read_callback(std::bind(&EventLoop::handle_timer, this));
 }
 
 EventLoop::~EventLoop()
@@ -93,6 +86,9 @@ EventLoop::~EventLoop()
 void EventLoop::loop()
 {
     LOG_DEBUG("EventLoop %p start looping, thread is %d.\n", this, CurrentThread::tid());
+
+    assert(!_M_looping);
+    assert(is_loop_thread());
 
     _M_looping = true;
 
@@ -114,22 +110,16 @@ void EventLoop::loop()
     _M_looping = false;
 }
 
-/**
- * 1. 在loop自己的线程中调用了stop
- * 2. 在非loop线程中调用了stop, 如WORK线程(上层的业务可能会这样做)
- */
 void EventLoop::quit() 
 {
-    // 标志位
     _M_quit = true;
 
+    // 唤醒EventLoop线程, 让其处理任务队列中剩余的任务
     if(!is_loop_thread()) {
-        // 唤醒绑定loop的线程
         wakeup();
     }
 }
 
-// eventfd的被调函数, 执行eventfd的任务, 用于处理WORK线程的任务
 void EventLoop::handle_read()
 {
     LOG_INFO("IO thread is waked up, thread is %d.\n", syscall(SYS_gettid));
@@ -140,41 +130,6 @@ void EventLoop::handle_read()
         LOG_WARN("EventLoop::handle_eventfd() reads %d bytes instead of 8.\n", len);
     }
 }
-
-/* TODO: add
-// timerfd的被调函数, 执行timerfd的任务, 用于清理空闲Connection
-void EventLoop::handle_timer()
-{
-    // 重新计时, 用于每隔timeout秒, 就检测是否有空闲Connection
-    itimerspec tm;
-    memset(&tm, 0, sizeof(itimerspec));
-    tm.it_value.tv_sec = _M_timeval;
-    tm.it_value.tv_nsec = 0;
-
-    timerfd_settime(_M_tfd, 0, &tm, 0);
-
-    if(!_M_is_main_loop) // 若为从线程
-    {
-        for(auto it = _M_conns.begin(); it != _M_conns.end();) 
-        {
-            // 空闲Connection定义为: 当前事件距离上次发送消息的时间超过timeout秒
-            if(it->second->is_expired(_M_timeout)) 
-            {
-                // 将TcpServer中的map容器对应的conn删除
-                _M_timer_out_callback(it->second);
-
-                ///////////////////////////////////////////////////
-                std::lock_guard<std::mutex> lock(_M_map_mutex);
-                it = _M_conns.erase(it);
-                ///////////////////////////////////////////////////
-            }
-            else {
-                it++;
-            }
-        }
-    }
-}
-*/
 
 void EventLoop::do_pending_functors()
 {
@@ -217,10 +172,10 @@ void EventLoop::queue_in_loop(Functor task)
         _M_task_queue.emplace_back(task);
     }
 
-    // 唤醒loop对应的线程
-    // 或者 当前loop对应的线程正在执行回调, 为了防止线程之后被阻塞, 仍然唤醒
-    if(!is_loop_thread() || _M_calling_pending_functors) { // TODO: 
-        wakeup(); // 唤醒后, epoll会响应efd的读事件, 然后让其去执行handle_eventfd
+    // 1. 若当前不是EventLoop线程, 则唤醒对应的Loop线程
+    // 2. 若当前EventLoop线程, 但是其正在执行任务队列的任务, 那么防止线程之后被阻塞, 也应该wakeup
+    if(!is_loop_thread() || _M_calling_pending_functors) {
+        wakeup();
     }
 }
 
@@ -234,13 +189,3 @@ void EventLoop::wakeup()
         LOG_ERROR("EventLoop::wakeup() writes %d bytes instead of 8.\n", len);
     }
 }
-
-void EventLoop::update_channel(Channel* ch) { _M_poller->update_channel(ch); }
-void EventLoop::remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
-bool EventLoop::has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
-
-// 将Connection放入map容器, 用来指示WORK线程将Connection的IO任务交给哪个IO线程
-void EventLoop::insert(TcpConnectionPtr conn) { _M_conns[conn->get_fd()] = conn; }
-
-
-void EventLoop::set_timer_out_callback(TimeroutCallback func) {_M_timer_out_callback = std::move(func);}

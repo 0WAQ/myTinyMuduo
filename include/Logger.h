@@ -65,7 +65,7 @@ public:
      */
     static Logger* get_instance() {
         // 懒汉模式, 在第一次调用时才创建对象
-        static Logger instance;  // c++11以后, 使用局部变量懒汉不用加锁 TODO: ?
+        static Logger instance;  // c++11以后, 使用局部变量懒汉不用加锁
         return &instance;
     }
 

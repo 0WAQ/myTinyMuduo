@@ -32,7 +32,7 @@ public:
     /**
      * @brief 设置半关闭
      */
-    void shutdown_write();// TODO:
+    void shutdown_write();
 
     /**
      * @brief socket属性

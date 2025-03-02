@@ -91,14 +91,15 @@ private:
     /**
      * @brief 四种事件
      */
-    void handle_read(TimeStamp receieveTime);
+    void handle_read_ET(TimeStamp receieveTime);
+    void handle_read_LT(TimeStamp receieveTime);
     void handle_write();
     void handle_close();
     void handle_error();
 
-    void handle_read_ET(TimeStamp receieveTime);
-    void handle_read_LT(TimeStamp receieveTime);
-
+    /**
+     * @brief 
+     */
     void send_in_loop(const void* data, size_t len);
 
     void shutdown_in_loop();
@@ -120,8 +121,6 @@ private:
         EventLoop* _M_loop;
 
         std::string _M_name;
-
-        bool _M_is_ET;
 
     /**
      * 

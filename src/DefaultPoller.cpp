@@ -7,6 +7,9 @@
 #include "Poller.h"
 #include "EPollPoller.h"
 
+/**
+ * @brief 为与Poller抽象类解耦, 故单独放在一个文件中
+ */
 Poller* Poller::new_default_poller(EventLoop *loop)
 {
     if(::getenv("MUDUO_USE_POLL")) {

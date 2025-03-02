@@ -16,7 +16,7 @@ void Channel::handle(TimeStamp receiveTime)
 {
     std::shared_ptr<void> guard;
     if(_M_tied) {
-        guard = _M_tie.lock();
+        guard = _M_tie.lock();  // 获取对象的强引用, 确保TcpConnection对象在channel回调期间存活
         if(guard) {
             handle_event_with_guard(receiveTime);
         }
@@ -87,7 +87,6 @@ void Channel::set_happened_events(uint32_t events) { _M_happened_events = events
 uint32_t Channel::get_happened_events() { return _M_happened_events; }
 uint32_t Channel::get_monitored_events() { return _M_monitored_events; }
 
-// TODO: 什么时候调用
 void Channel::tie(const std::shared_ptr<void>& obj) {
     _M_tie = obj;
     _M_tied = true;

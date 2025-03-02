@@ -16,15 +16,13 @@ namespace __detail
 } // namespace __detail
 
 TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
-                     const std::string &name, Option option) :
+                     const std::string &name, Option option, bool is_ET) :
         _M_main_loop(__detail::check_loop_not_null(main_loop)),
         _M_ip_port(serv_addr.get_ip_port()),
         _M_name(name),
         _M_acceptor(new Acceptor(main_loop, serv_addr, option == kReusePort)),
         _M_loop_threads(new EventLoopThreadPool(main_loop, name)),
-        _M_connection_callback(),
-        _M_message_callback(),
-        _M_next(1), _M_started(0)
+        _M_next(1), _M_started(0), _M_is_ET(is_ET)
 {
     _M_acceptor->set_new_connection_callback(std::bind(&TcpServer::new_connection, this,
                 std::placeholders::_1, std::placeholders::_2));
@@ -63,11 +61,13 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
         _M_name.c_str(), connName.c_str(), clnt_addr.get_ip_port().c_str());
 
-    // 分配connection
-    EventLoop *nextLoop = _M_loop_threads->get_next_loop();
     InetAddress local_addr(InetAddress::get_local_addr(clntfd));
-    TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr));
-    _M_connections[connName] = conn;
+
+    // 分配TcpConnection给相应的loop
+    EventLoop *nextLoop = _M_loop_threads->get_next_loop();
+    TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
+    
+    _M_connections[connName] = conn;    // 用哈希表管理连接
 
     // 设置回调函数
     conn->set_connection_callback(_M_connection_callback);
@@ -90,6 +90,5 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
                 _M_name.c_str(), conn->name().c_str());
     
     _M_connections.erase(conn->name());
-    EventLoop *loop = conn->loop();
-    loop->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
+    conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
 }

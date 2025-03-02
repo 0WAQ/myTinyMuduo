@@ -18,12 +18,11 @@ namespace __detail
 } // namespace __detail
 
 TcpConnection::TcpConnection(EventLoop *loop, const std::string &name, int clntfd, 
-                        const InetAddress &localAddr, const InetAddress &clntAddr, bool _is_ET) :
+                        const InetAddress &localAddr, const InetAddress &clntAddr, bool is_ET) :
             _M_loop(__detail::check_loop_not_null(loop)),
             _M_name(name),
             _M_state(kConnecting),
             _M_reading(true),
-            _M_is_ET(false),
             _M_sock(new Socket(clntfd)),
             _M_channel(new Channel(loop, clntfd)),
             _M_local_addr(localAddr),
@@ -31,17 +30,18 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string &name, int clntf
             _M_high_water_mark(64*1024*1024)
 {
     // 设置Connection被channel回调的四种函数
-    _M_channel->set_read_callback(std::bind(&TcpConnection::handle_read, this, std::placeholders::_1));
     _M_channel->set_write_callback(std::bind(&TcpConnection::handle_write, this));
     _M_channel->set_close_callback(std::bind(&TcpConnection::handle_close, this));
     _M_channel->set_error_callback(std::bind(&TcpConnection::handle_error, this));
-
-    // 设置为边缘触发
-    if(_M_is_ET) {
+    if(is_ET) {
+        _M_channel->set_read_callback(std::bind(&TcpConnection::handle_read_ET, this, std::placeholders::_1));
         _M_channel->set_ET();
     }
-
-    // 保护机制
+    else {
+        _M_channel->set_read_callback(std::bind(&TcpConnection::handle_read_LT, this, std::placeholders::_1));
+    }
+    
+    // 保活机制
     _M_sock->set_keep_alive(true);
 
     // 监听读事件
@@ -59,7 +59,7 @@ void TcpConnection::established()
 {
     _M_state = kConnected;
 
-    _M_channel->tie(shared_from_this());
+    _M_channel->tie(shared_from_this()); // 将该Connection与Channel绑定
     _M_channel->set_read_events();
 
     if(_M_connection_callback) {
@@ -80,23 +80,11 @@ void TcpConnection::destroyed()
     _M_channel->remove();
 }
 
-void TcpConnection::handle_read(TimeStamp receieveTime)
-{
-    // 若边缘触发, 需要确保将发送过来的数据读取完毕, TODO: ET => LT
-    if(_M_is_ET) {
-        handle_read_ET(receieveTime);
-    }
-    else {
-        handle_read_LT(receieveTime);
-    }
-
-}
-
 void TcpConnection::handle_read_ET(TimeStamp receieveTime)
 {
     char buf[1024] = {0};
 
-    while(true) // 非阻塞IO
+    while(true) // 因为是ET模式, 所以要确保数据一次性读完
     {
         int save_error = 0;
 
@@ -120,22 +108,7 @@ void TcpConnection::handle_read_ET(TimeStamp receieveTime)
         // 非阻塞读的行为, 全部的数据已读取完毕(即目前的Socket缓冲区中没有数据)
         else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
         {
-            // 读取完成后, 
-            while(true)
-            {
-                // 取出一个报文
-                std::string message;
-                if(!_M_input_buffer.pick_datagram(message)) {
-                    LOG_WARN("TcpConnection::read_eventes[fd=%d], can't pick a datagram\n", 
-                            _M_channel->get_fd());
-                    break;
-                }
-
-                // TODO:
-                _M_message_callback(shared_from_this(), &_M_input_buffer, receieveTime);
-            }
-
-            break;
+            _M_message_callback(shared_from_this(), &_M_input_buffer, receieveTime);
         }
         // 连接断开
         else if(nlen == 0) 
@@ -251,7 +224,6 @@ void TcpConnection::send(const std::string& message)
 
 }
 
-// TODO:
 void TcpConnection::send_in_loop(const void *data, size_t len)
 {
     ssize_t nwrote = 0;
@@ -267,7 +239,9 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
     // 第一次发送数据, 或者缓冲区没有待发送数据
     if(!_M_channel->is_writing() && _M_output_buffer.readable() == 0)
     {
+        // 先将数据直接写入fd
         nwrote = ::write(_M_channel->get_fd(), data, len);
+
         if(nwrote > 0) {
             remaining = len - nwrote;
             
@@ -289,11 +263,13 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
         }
     }
 
-    // 数据没有全部发送出去, 剩余数据需保存在缓冲区中
+    // 将剩余数据保存到输出缓冲区中
     if(!fault_error && remaining > 0)
     {
         // 发送缓冲区中剩余的待发送数据的长度
         size_t oldLen = _M_output_buffer.readable();
+
+        // 原本没有超过水位, 这次超过水位
         if(oldLen + remaining >= _M_high_water_mark
             && oldLen < _M_high_water_mark
             && _M_high_water_mark_callback)

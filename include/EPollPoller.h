@@ -34,7 +34,7 @@ public:
 
     /**
      * @brief 分发事件, 调用epoll_wait, 返回发生事件的合集
-     * @param channels 发生的事件合集
+     * @param activeChannels 发生的事件合集
      */
     TimeStamp poll(ChannelList *activeChannels, int timeout = -1) override;
 

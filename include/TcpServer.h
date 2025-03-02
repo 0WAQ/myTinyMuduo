@@ -49,9 +49,10 @@ public:
      * @param serv_addr 服务端地址信息
      * @param name 服务器名称
      * @param option kNoReusePort -- 不复用端口, kReusePort -- 端口复用
+     * @param is_ET 是否采用ET模式
      */
     TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
-              const std::string &name, Option option = kNoReusePort);
+              const std::string &name, Option option = kNoReusePort, bool is_ET = false);
 
     ~TcpServer();
 
@@ -104,6 +105,8 @@ private:
         int _M_next;    // 下一个连接所属的EventLoop的索引
 
         std::atomic<int> _M_started;
+
+        bool _M_is_ET;
 
     /**
      * @brief 上层设置的回调函数

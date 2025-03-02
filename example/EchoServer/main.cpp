@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     Logger* log = Logger::get_instance();
     log->init(DEBUG, argv[3], ".log");
 
-    EventLoop loop(true);
+    EventLoop loop;
     InetAddress addr(argv[1], atoi(argv[2]));
     std::string name{"EchoServer-01"};
 
