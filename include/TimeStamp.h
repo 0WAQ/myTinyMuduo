@@ -76,6 +76,34 @@ public:
         return TimeStamp(TimePoint(this->time_since_epoch() + duration));
     }
 
+    TimeStamp operator- (const TimeDuration &duration) {
+        return TimeStamp(TimePoint(this->time_since_epoch() - duration));
+    }
+
+    bool operator< (const TimeStamp &rhs) {
+        return this->_M_sec < rhs._M_sec;
+    }
+
+    bool operator> (const TimeStamp &rhs) {
+        return this->_M_sec > rhs._M_sec;
+    }
+
+    bool operator== (const TimeStamp &rhs) {
+        return this->_M_sec == rhs._M_sec;
+    }
+
+    bool operator<= (const TimeStamp &rhs) {
+        return !(this->operator>(rhs));
+    }
+
+    bool operator>= (const TimeStamp &rhs) {
+        return !(this->operator<(rhs));
+    }
+
+    bool operator!= (const TimeStamp &rhs) {
+        return !(this->operator==(rhs));
+    }
+
 private:
     // 从1970起
     TimePoint _M_sec;
