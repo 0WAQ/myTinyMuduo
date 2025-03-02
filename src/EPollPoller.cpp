@@ -18,7 +18,7 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
 {
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
-    TimeStamp now{};
+    TimeStamp now = TimeStamp::now();
     int savedErrno = errno;  // errno为全局
     int numEvents = ::epoll_wait(_M_epoll_fd, _M_events_arr.data(),
                                     static_cast<int>(_M_events_arr.size()), timeout);    

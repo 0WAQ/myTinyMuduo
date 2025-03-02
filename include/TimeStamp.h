@@ -10,19 +10,18 @@
 #include <string>
 #include <chrono>
 
+// system_clock的时间精度为ns
+using TimePoint = std::chrono::system_clock::time_point;
+using TimeDuration = std::chrono::system_clock::duration;
+
 class TimeStamp
 {
 public:
-    using TimeDuration = std::chrono::system_clock::duration;
-    using TimePoint = std::chrono::system_clock::time_point;
-
-public:
-
 
     /**
-     * @brief 用当前时间初始化对象
+     * @brief 用零值初始化TimeStamp
      */
-    TimeStamp() : _M_sec(std::chrono::system_clock::now()) { }
+    TimeStamp() : _M_sec(TimePoint{}) { }
 
     /**
      * @brief 用指定时间初始化对象
@@ -34,7 +33,15 @@ public:
      * @brief 获取当前时间戳
      */
     static TimeStamp now() {
-        return TimeStamp();
+        return TimeStamp(std::chrono::system_clock::now());
+    }
+
+    static TimeStamp invalid() {
+        return TimeStamp{};
+    }
+
+    TimeDuration time_since_epoch() {
+        return _M_sec.time_since_epoch();
     }
 
     /**
@@ -65,9 +72,19 @@ public:
         return buf;
     }
 
+    TimeStamp operator+ (const TimeDuration &duration) {
+        return TimeStamp(TimePoint(this->time_since_epoch() + duration));
+    }
+
 private:
     // 从1970起
     TimePoint _M_sec;
 };
+
+inline TimeStamp add_time(TimeStamp timestamp, double seconds) {
+    using namespace std::chrono;
+    auto cast_duration = duration_cast<TimeDuration>(duration<double>(seconds));
+    return timestamp + cast_duration;
+}
 
 #endif // TIMESTAMP_H
