@@ -29,6 +29,7 @@ int create_eventfd()
 EventLoop::EventLoop() : 
         _M_tid(CurrentThread::tid()),
         _M_poller(Poller::new_default_poller(this)),
+        _M_timer_queue(new TimerQueue(this)),
         _M_wakeup_fd(__detail::create_eventfd()), 
         _M_wakeup_channel(new Channel(this, _M_wakeup_fd))
 {
@@ -166,4 +167,21 @@ void EventLoop::wakeup()
     if(len != sizeof(one)) {
         LOG_ERROR("EventLoop::wakeup() writes %d bytes instead of 8.\n", len);
     }
+}
+
+TimerId EventLoop::run_at(TimeStamp time, TimerCallback func) {
+    return _M_timer_queue->add_timer(time, 0.0, std::move(func));
+}
+
+TimerId EventLoop::run_after(double delay, TimerCallback func) {
+    TimeStamp time(add_time(TimeStamp::now(), delay));
+    return run_at(time, std::move(func));
+}
+TimerId EventLoop::run_every(double interval, TimerCallback func) {
+    TimeStamp time(add_time(TimeStamp::now(), interval));
+    return _M_timer_queue->add_timer(time, interval, std::move(func));
+}
+
+void EventLoop::cancel(TimerId timerId) {
+    _M_timer_queue->cancel(timerId);
 }

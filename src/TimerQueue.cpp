@@ -1,6 +1,7 @@
 #include <sys/timerfd.h>
 
 #include "TimerQueue.h"
+#include "EventLoop.h"
 #include "Logger.h"
 
 namespace __detail
@@ -104,7 +105,7 @@ void TimerQueue::add_timer_in_loop(Timer *timer)
     assert(_M_loop->is_loop_thread());
 
     // 将timer加入到TimerQueue中
-    bool earliest_changed = insert(TimerPtr(timer));
+    bool earliest_changed = insert(std::move(TimerPtr(timer)));
 
     // 如果此次timer的超时时间更近, 那么重新设置timerfd
     if(earliest_changed) {
@@ -241,16 +242,16 @@ bool TimerQueue::insert(TimerPtr timer)
     }
     
     {
-        // 将timer交由unique_ptr管理, 并添加到TimerMap
-        TimerMap::iterator result = _M_timers.insert({when, std::move(timer)});
-        assert(result != _M_timers.end());
-    }
-    
-    {
         // 将timer同时添加到ActiveList
         std::pair<ActiveList::iterator, bool> result = _M_active_timers.insert(timer->id());
         assert(result.second);
     }
+
+    {
+        // 将timer交由unique_ptr管理, 并添加到TimerMap
+        TimerMap::iterator result = _M_timers.insert({when, std::move(timer)});
+        assert(result != _M_timers.end());
+    }    
 
     assert(_M_timers.size() == _M_active_timers.size());
     return earliest_changed;

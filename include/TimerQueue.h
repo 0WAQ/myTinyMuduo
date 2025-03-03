@@ -4,14 +4,13 @@
 #include <vector>
 #include <memory>
 #include <atomic>
-#include <mutex>
 #include <set>
 #include <map>
 
-#include "Channel.h"
+#include "TimeStamp.h"
 #include "Timer.h"
 #include "TimerId.h"
-#include "TimeStamp.h"
+#include "Channel.h"
 #include "callbacks.h"
 #include "noncopyable.h"
 

@@ -24,10 +24,10 @@ public:
      */
     void restart(TimeStamp now);
 
-    TimeStamp expiration() { return _M_expiration; }
-    bool repeat() { return _M_repeat; }
-    TimerId id() { return _M_id; }
-    ssize_t last_timerId() { return _M_last_timerId; }
+    TimeStamp expiration() const { return _M_expiration; }
+    bool repeat() const { return _M_repeat; }
+    TimerId id() const { return _M_id; }
+    ssize_t last_timerId() const { return _M_last_timerId; }
 
 private:
 

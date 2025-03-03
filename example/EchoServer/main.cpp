@@ -12,6 +12,12 @@ void stop(int sig)
     exit(0);
 }
 
+void print()
+{
+    Logger* log = Logger::get_instance();
+    LOG_INFO("=========test Timer==========\n");
+}
+
 int main(int argc, char* argv[])
 {
     if(argc != 4) {
@@ -32,6 +38,9 @@ int main(int argc, char* argv[])
 
     server = new EchoServer(&loop, addr, name);
     server->start();
+
+    loop.run_every(1.0, print);
+
     loop.loop();
 
     return 0;

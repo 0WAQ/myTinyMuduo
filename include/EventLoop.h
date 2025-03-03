@@ -16,7 +16,7 @@
 
 #include "Poller.h"
 #include "TcpConnection.h"
-#include "TimeStamp.h"
+#include "TimerQueue.h"
 #include "CurrentThread.h"
 #include "callbacks.h"
 #include "noncopyable.h"
@@ -75,6 +75,11 @@ public:
      */
     void wakeup();
 
+    TimerId run_at(TimeStamp time, TimerCallback func);
+    TimerId run_after(double delay, TimerCallback func);
+    TimerId run_every(double interval, TimerCallback func);
+    void cancel(TimerId timerId);
+
     /**
      * @brief 转调用Poller中的相应函数
      */
@@ -127,6 +132,11 @@ private:
         
         // poll()返回时的时间
         TimeStamp _M_poller_return_time;
+
+    /**
+     * TimerQueue
+     */
+        std::unique_ptr<TimerQueue> _M_timer_queue;
 
     /**
      * Channel

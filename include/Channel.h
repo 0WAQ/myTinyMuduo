@@ -10,10 +10,9 @@
 #include <memory>
 #include <sys/epoll.h>
 
-#include "noncopyable.h"
-#include "EventLoop.h"
-#include "Socket.h"
 #include "TimeStamp.h"
+#include "Socket.h"
+#include "noncopyable.h"
 
 class Socket;
 class EventLoop;
