@@ -8,6 +8,9 @@
 #include "callbacks.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class EventLoop;
 class EventLoopThread;
 
@@ -51,5 +54,7 @@ private:
     int _M_next;
 
 };
+
+} // namespace mymuduo
 
 #endif // EVENTLOOPTHREADPOOL_H

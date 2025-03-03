@@ -10,6 +10,9 @@
 
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class Thread : noncopyable
 {
 public:
@@ -56,5 +59,7 @@ private:
 
     static std::atomic<int> _M_num_created;
 };
+
+} // namespace mymuduo
 
 #endif // THREAD_H

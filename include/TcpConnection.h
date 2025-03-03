@@ -20,6 +20,9 @@
 #include "noncopyable.h"
 #include "callbacks.h"
 
+namespace mymuduo
+{
+
 class EventLoop;
 class Channel;
 class TcpConnection;
@@ -149,5 +152,7 @@ private:
         CloseCallback _M_close_callback;
         HighWaterMarkCallback _M_high_water_mark_callback;
 };
+
+} // namespace mymuduo
 
 #endif // CONNECTION_H

@@ -18,6 +18,9 @@
 #include "ThreadPool.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 // 日志文件最大行数
 #define LOG_MAX_LINES       (5000)
 
@@ -30,11 +33,13 @@ enum LogLevel
     ERROR,      // 报错
 };
 
+} // namespace mymuduo
+
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define LOG_BASE(level, format, ...)                            \
     do {                                                        \
-        Logger* log = Logger::get_instance();                   \
+        mymuduo::Logger* log = mymuduo::Logger::get_instance();                   \
         if(log->is_open() && log->get_level() <= level) {       \
             log->write(level, format, ##__VA_ARGS__);           \
         }                                                       \
@@ -42,16 +47,19 @@ enum LogLevel
 
 
 #ifndef RELEASE
-    #define LOG_DEBUG(format, ...) LOG_BASE(DEBUG, format, ##__VA_ARGS__)
+    #define LOG_DEBUG(format, ...) LOG_BASE(mymuduo::DEBUG, format, ##__VA_ARGS__)
 #else
     #define LOG_DEBUG(format, ...)
 #endif
 
-#define LOG_INFO(format, ...)  LOG_BASE(INFO,  format, ##__VA_ARGS__)
-#define LOG_WARN(format, ...)  LOG_BASE(WARN,  format, ##__VA_ARGS__)
-#define LOG_ERROR(format, ...) do { LOG_BASE(ERROR, format, ##__VA_ARGS__); exit(-1); } while(0)
+#define LOG_INFO(format, ...)  LOG_BASE(mymuduo::INFO,  format, ##__VA_ARGS__)
+#define LOG_WARN(format, ...)  LOG_BASE(mymuduo::WARN,  format, ##__VA_ARGS__)
+#define LOG_ERROR(format, ...) do { LOG_BASE(mymuduo::ERROR, format, ##__VA_ARGS__); exit(-1); } while(0)
 
 ////////////////////////////////////////////////////////////////////////////////////
+
+namespace mymuduo
+{
 
 class ThreadPool;
 
@@ -166,5 +174,7 @@ private:
         // 锁
         std::mutex _M_mutex;
 };
+
+} // namespace mymuduo
 
 #endif // LOGGER_H

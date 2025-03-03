@@ -1,5 +1,8 @@
 #include "TcpServer.h"
 
+namespace mymuduo
+{
+
 namespace __detail
 {
 
@@ -92,3 +95,5 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
     _M_connections.erase(conn->name());
     conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
 }
+
+} // namespace mymuduo

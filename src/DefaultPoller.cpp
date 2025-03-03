@@ -7,6 +7,9 @@
 #include "Poller.h"
 #include "EPollPoller.h"
 
+namespace mymuduo
+{
+
 /**
  * @brief 为与Poller抽象类解耦, 故单独放在一个文件中
  */
@@ -19,3 +22,5 @@ Poller* Poller::new_default_poller(EventLoop *loop)
         return new EPollPoller(loop);  // 生成Epoll实例
     }
 }
+
+} // namespace mymuduo

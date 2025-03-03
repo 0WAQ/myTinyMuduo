@@ -1,5 +1,8 @@
 #include "Timer.h"
 
+namespace mymuduo
+{
+
 std::atomic<ssize_t> Timer::_M_last_timerId;
 
 Timer::Timer(TimeStamp when, double interval, TimerCallback cb) :
@@ -17,3 +20,5 @@ void Timer::restart(TimeStamp now)
         _M_expiration = TimeStamp::invalid();
     }
 }
+
+} // namespace mymuduo

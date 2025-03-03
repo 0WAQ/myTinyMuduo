@@ -1,5 +1,8 @@
 #include "Buffer.h"
 
+namespace mymuduo
+{
+
 Buffer::Buffer(uint16_t sep, std::size_t prependable_size, std::size_t writable_size) : 
             _M_sep(sep), 
             _M_initial_prependable(prependable_size), _M_initial_writable(writable_size), 
@@ -201,3 +204,5 @@ std::size_t Buffer::write_fd(int fd, int* save_errno)
 
     return len;
 }
+
+} // namespace mymuduo

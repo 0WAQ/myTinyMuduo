@@ -3,6 +3,9 @@
 #include "Channel.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 EPollPoller::EPollPoller(EventLoop* loop) : 
         Poller(loop),
         _M_epoll_fd(::epoll_create1(EPOLL_CLOEXEC)) ,
@@ -144,3 +147,5 @@ void EPollPoller::update(int op, Channel* ch)
 EPollPoller::~EPollPoller() {
     ::close(_M_epoll_fd);
 }
+
+} // namespace mymuduo

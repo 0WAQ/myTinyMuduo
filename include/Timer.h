@@ -8,6 +8,9 @@
 #include "callbacks.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class Timer : noncopyable
 {
 public:
@@ -48,5 +51,7 @@ private:
 
     static std::atomic<ssize_t> _M_last_timerId;
 };
+
+} // namespace mymuduo
 
 #endif // TIMER_H

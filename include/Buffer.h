@@ -15,6 +15,9 @@
 #include <sys/uio.h>
 #include <cassert>
 
+namespace mymuduo
+{
+
 class Buffer
 {
 public:
@@ -121,5 +124,7 @@ private:
     const uint16_t _M_sep;
     
 };
+
+} // namespace mymuduo
 
 #endif // BUFFER_H

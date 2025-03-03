@@ -6,6 +6,9 @@
 
 #include "TimeStamp.h"
 
+namespace mymuduo
+{
+
 class Buffer;
 class EventLoop;
 class TcpConnection;
@@ -22,5 +25,6 @@ using MessageCallback = std::function<void(const TcpConnectionPtr&, Buffer*, Tim
 using TimerCallback = std::function<void()>;
 using HighWaterMarkCallback = std::function<void(const TcpConnectionPtr&, size_t)>;
 
+} // namespace mymuduo
 
 #endif // CALLBACKS_H

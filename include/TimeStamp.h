@@ -10,6 +10,9 @@
 #include <string>
 #include <chrono>
 
+namespace mymuduo
+{
+
 // system_clock的时间精度为ns
 using TimePoint = std::chrono::system_clock::time_point;
 using TimeDuration = std::chrono::system_clock::duration;
@@ -124,5 +127,7 @@ inline TimeStamp add_time(TimeStamp timestamp, double seconds) {
     auto cast_duration = duration_cast<TimeDuration>(duration<double>(seconds));
     return timestamp + cast_duration;
 }
+
+} // namespace mymuduo
 
 #endif // TIMESTAMP_H

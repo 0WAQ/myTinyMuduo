@@ -14,6 +14,9 @@
 #include "callbacks.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class EventLoop;
 
 class TimerQueue : noncopyable
@@ -92,5 +95,7 @@ private:
     // 在cancel一个定时器时, 若该定时器在expired中(即线程正在执行超时任务), 那么无法将其直接删除, 需加入到CancelList中
     std::atomic<bool> _M_calling_expired_timers;
 };
+
+} // namespace mymuduo
 
 #endif // TIMERQUEUE_H

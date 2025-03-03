@@ -1,5 +1,8 @@
 #include "ThreadPool.h"
 
+namespace mymuduo
+{
+
 ThreadPool::ThreadPool(const std::string& type, size_t thread_num) 
                     : _M_thread_type(type), _M_stop(false)
 {
@@ -77,3 +80,5 @@ void ThreadPool::stop()
 std::size_t ThreadPool::size() { return _M_threads.size();}
 
 ThreadPool::~ThreadPool() { stop();}
+
+} // namespace mymuduo

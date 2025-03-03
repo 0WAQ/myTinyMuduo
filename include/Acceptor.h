@@ -11,6 +11,9 @@
 #include "Channel.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class EventLoop;
 
 class Acceptor : noncopyable
@@ -52,5 +55,7 @@ private:
     // 创建Connection对象的回调函数, 将回调TcpServer::create_connection
     CreateConnCallback _M_new_connection_callback;
 };
+
+} // namespace mymuduo
 
 #endif // ACCEPTOR_H

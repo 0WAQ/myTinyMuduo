@@ -22,7 +22,12 @@
 
 #include "Logger.h"
 
-/// @brief 线程池类
+namespace mymuduo
+{
+
+/**
+ * @brief 线程池类
+ */
 class ThreadPool
 {
 public:
@@ -68,5 +73,7 @@ private:
     // 线程种类
     std::string _M_thread_type; // 取值为IO, WORK
 };
+
+} // namespace mymuduo
 
 #endif // THREADPOOL_H

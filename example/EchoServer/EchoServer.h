@@ -15,12 +15,12 @@ class EchoServer
 {
 public:
 
-    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+    using TcpConnectionPtr = std::shared_ptr<mymuduo::TcpConnection>;
 
     /**
      * @brief 初始化EchoServer
      */
-    EchoServer(EventLoop *loop, const InetAddress &addr, const std::string &name) :
+    EchoServer(mymuduo::EventLoop *loop, const mymuduo::InetAddress &addr, const std::string &name) :
             loop_(loop), server_(loop, addr, name)
     {
         server_.set_connection_callback(std::bind(&EchoServer::onConnection, this, std::placeholders::_1));
@@ -45,7 +45,7 @@ public:
         }
     }
 
-    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp time)
+    void onMessage(const TcpConnectionPtr &conn, mymuduo::Buffer *buf, mymuduo::TimeStamp time)
     {
         std::string msg;
         if(buf->pick_datagram(msg)) {
@@ -60,7 +60,7 @@ public:
 
 private:
 
-    void add_sep(Buffer *buf, std::string &message)
+    void add_sep(mymuduo::Buffer *buf, std::string &message)
     {
         switch (buf->sep())
         {
@@ -82,8 +82,8 @@ private:
         }   
     }
 
-    EventLoop *loop_;
-    TcpServer server_;
+    mymuduo::EventLoop *loop_;
+    mymuduo::TcpServer server_;
 };
 
 #endif // ECHOSERVER_H

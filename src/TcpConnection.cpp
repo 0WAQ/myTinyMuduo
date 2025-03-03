@@ -2,6 +2,9 @@
 #include "Logger.h"
 #include <errno.h>
 
+namespace mymuduo
+{
+
 namespace __detail
 {
 
@@ -301,3 +304,5 @@ void TcpConnection::shutdown_in_loop()
         _M_sock->shutdown_write();  // 关闭写端, 会触发EPOLLHUP, 会触发close_callback        
     }
 }
+
+} // namespace mymuduo

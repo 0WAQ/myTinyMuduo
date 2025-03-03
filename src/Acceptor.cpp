@@ -2,6 +2,9 @@
 #include "InetAddress.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 namespace __detail
 {
     /**
@@ -71,3 +74,5 @@ void Acceptor::new_connection()
         ::close(clnt_fd);
     }
 }
+
+} // namespace mymuduo

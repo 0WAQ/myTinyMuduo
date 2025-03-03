@@ -1,6 +1,9 @@
 #include "EventLoopThreadPool.h"
 #include "EventLoopThread.h"
 
+namespace mymuduo
+{
+
 EventLoopThreadPool::EventLoopThreadPool(EventLoop *main_loop, const std::string &name) :
             _M_main_loop(main_loop), _M_name(name), _M_started(false), _M_num_threads(0), _M_next(0)
 { }
@@ -39,3 +42,5 @@ std::vector<EventLoop*> EventLoopThreadPool::get_all_loops() {
     }
     return _M_sub_loops;
 }
+
+} // namespace mymuduo

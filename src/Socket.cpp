@@ -2,6 +2,9 @@
 #include "Socket.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 // bind, listen, accept
 void Socket::bind(const InetAddress& serv_addr)
 {
@@ -66,3 +69,5 @@ void Socket::set_tcp_nodelay(bool on) {
     int opt = on ? 1 : 0;
     ::setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(opt));
 }
+
+} // namespace mymuduo

@@ -14,6 +14,9 @@
 #include "Socket.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class Socket;
 class EventLoop;
 class TimeStamp;
@@ -139,5 +142,7 @@ private:
     // 连接出错的回调函数, 将回调Connection::error_callback
     EventCallbacl _M_error_callback; 
 };
+
+}
 
 #endif // CHANNEL_H

@@ -24,6 +24,9 @@
 #include "callbacks.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 /**
  * @brief 对外的接口类
  */
@@ -112,5 +115,7 @@ private:
         HighWaterMarkCallback _M_high_water_mark_callback;
         ThreadInitCallback _M_thread_init_callback;
 };
+
+} // namespace mymuduo
 
 #endif // TCPSERVER_H

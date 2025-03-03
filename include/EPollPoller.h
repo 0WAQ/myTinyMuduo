@@ -15,6 +15,9 @@
 
 #include "Poller.h"
 
+namespace mymuduo
+{
+
 class Channel;
 class EventLoop;
 
@@ -71,5 +74,7 @@ private:
 
     EventList _M_events_arr;    // 发生事件的合集
 };
+
+} // namespace mymuduo
 
 #endif // EPOLLPOLLER_H

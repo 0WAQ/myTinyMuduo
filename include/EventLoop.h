@@ -21,6 +21,9 @@
 #include "callbacks.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class TcpConnection;
 
 /**
@@ -145,5 +148,7 @@ private:
         ChannelList _M_activeChannels;
 
 };
+
+} // namespace mymuduo
 
 #endif // EVENTLOOP_H

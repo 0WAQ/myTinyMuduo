@@ -1,6 +1,9 @@
 #ifndef NONCOPYABLE_H
 #define NONCOPYABLE_H
 
+namespace mymuduo
+{
+
 /**
  * @brief 被继承以后, 派生类对象可以正常的构造和析构, 但是无法进行拷贝构造和赋值构造
  */
@@ -17,5 +20,7 @@ protected:
     ~noncopyable() = default;
 
 };
+
+} // namespace mymuduo
 
 #endif // NONCOPYABLE_H

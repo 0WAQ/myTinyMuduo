@@ -2,6 +2,9 @@
 #include "CurrentThread.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 // 防止一个线程创建多个EventLoop, __thread: 表示thread local
 __thread EventLoop *t_loop_in_this_thread = nullptr;
 
@@ -185,3 +188,5 @@ TimerId EventLoop::run_every(double interval, TimerCallback func) {
 void EventLoop::cancel(TimerId timerId) {
     _M_timer_queue->cancel(timerId);
 }
+
+} // namespace mymuduo

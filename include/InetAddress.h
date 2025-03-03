@@ -11,6 +11,9 @@
 #include <string>
 #include <strings.h>
 
+namespace mymuduo
+{
+
 class InetAddress
 {
 public:
@@ -43,5 +46,7 @@ public:
 private:
     sockaddr_in _M_addr;
 };
+
+} // namespace mymuduo
 
 #endif // INETADDRESS_H

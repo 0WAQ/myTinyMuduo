@@ -14,6 +14,9 @@
 #include <unistd.h>
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class InetAddress;
 
 /**
@@ -49,5 +52,7 @@ public:
 private:
     const int _M_fd;
 };
+
+} // namespace mymuduo
 
 #endif // SOCKET_H

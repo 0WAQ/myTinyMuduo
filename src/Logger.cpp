@@ -1,5 +1,8 @@
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 Logger::Logger() : 
     _M_buffer(2), _M_fp(nullptr),
     _M_thread_num(1), _M_pool(new ThreadPool("LOG", 1))
@@ -154,3 +157,5 @@ Logger::~Logger()
         fclose(_M_fp);
     }
 }
+
+} // namespace mymuduo

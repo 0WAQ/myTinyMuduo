@@ -7,6 +7,9 @@
 #include "TimeStamp.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class Channel;
 class EventLoop;
 
@@ -48,5 +51,7 @@ private:
     EventLoop* _M_owner_loop;
 
 };
+
+} // namespace mymuduo
 
 #endif // POLLER_H

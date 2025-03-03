@@ -1,6 +1,9 @@
 #ifndef CURRENTTHREAD_H
 #define CURRENTTHREAD_H
 
+namespace mymuduo
+{
+
 namespace CurrentThread
 {
     extern __thread int t_cached_tid;
@@ -25,5 +28,7 @@ namespace __detail
     }
 
 } // namespace CurrentThread
+
+} // namespace mymuduo
 
 #endif // CURRENTTHREAD_H

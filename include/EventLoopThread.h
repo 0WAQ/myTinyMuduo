@@ -10,6 +10,9 @@
 #include "callbacks.h"
 #include "noncopyable.h"
 
+namespace mymuduo
+{
+
 class EventLoop;
 
 /**
@@ -54,5 +57,7 @@ private:
 
     ThreadInitCallback _M_init_callback;
 };
+
+} // namespace mymuduo
 
 #endif // EVENTLOOPTHREAD_H

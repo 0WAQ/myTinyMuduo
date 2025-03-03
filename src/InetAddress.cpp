@@ -1,6 +1,9 @@
 #include "InetAddress.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 InetAddress::InetAddress(const std::string& ip, uint16_t port) {
     bzero(&_M_addr, sizeof(sockaddr_in));
     _M_addr.sin_family = AF_INET;
@@ -35,3 +38,5 @@ sockaddr_in InetAddress::get_peer_addr(int sockfd)
     }
     return peer;
 }
+
+} // namespace mymuduo

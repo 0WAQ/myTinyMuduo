@@ -3,6 +3,9 @@
 
 #include <sys/types.h>
 
+namespace mymuduo
+{
+
 class Timer;
 
 /**
@@ -33,5 +36,7 @@ private:
     // 定时器id
     int64_t id;
 };
+
+} // namespace mymuduo
 
 #endif // TIMERID_H

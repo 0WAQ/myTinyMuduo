@@ -12,12 +12,6 @@ void stop(int sig)
     exit(0);
 }
 
-void print()
-{
-    Logger* log = Logger::get_instance();
-    LOG_INFO("=========test Timer==========\n");
-}
-
 int main(int argc, char* argv[])
 {
     if(argc != 4) {
@@ -29,17 +23,19 @@ int main(int argc, char* argv[])
     signal(SIGTERM, stop);
     signal(SIGINT, stop);
 
-    Logger* log = Logger::get_instance();
-    log->init(DEBUG, argv[3], ".log");
+    mymuduo::Logger* log = mymuduo::Logger::get_instance();
+    log->init(mymuduo::DEBUG, argv[3], ".log");
 
-    EventLoop loop;
-    InetAddress addr(argv[1], atoi(argv[2]));
+    mymuduo::EventLoop loop;
+    mymuduo::InetAddress addr(argv[1], atoi(argv[2]));
     std::string name{"EchoServer-01"};
 
     server = new EchoServer(&loop, addr, name);
     server->start();
 
-    loop.run_every(1.0, print);
+    loop.run_every(1.0, [](){
+        LOG_INFO("run every 1s.\n");
+    });
 
     loop.loop();
 

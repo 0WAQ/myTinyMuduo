@@ -2,6 +2,9 @@
 #include "TcpConnection.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 Channel::Channel(EventLoop* loop_ptr, int fd) : 
         _M_loop_ptr(loop_ptr),
         _M_fd(fd),
@@ -108,3 +111,5 @@ void Channel::set_read_callback (ReadCallback cb)  { _M_read_callback  = std::mo
 void Channel::set_write_callback(EventCallbacl cb) { _M_write_callback = std::move(cb); }
 void Channel::set_close_callback(EventCallbacl cb) { _M_close_callback = std::move(cb); }
 void Channel::set_error_callback(EventCallbacl cb) { _M_error_callback = std::move(cb); }
+
+} // namespace mymuduo

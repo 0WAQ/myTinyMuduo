@@ -4,6 +4,9 @@
 #include "EventLoop.h"
 #include "Logger.h"
 
+namespace mymuduo
+{
+
 namespace __detail
 {
     /**
@@ -256,3 +259,5 @@ bool TimerQueue::insert(TimerPtr timer)
     assert(_M_timers.size() == _M_active_timers.size());
     return earliest_changed;
 }
+
+} // namespace mymuduo

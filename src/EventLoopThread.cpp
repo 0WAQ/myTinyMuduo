@@ -1,6 +1,9 @@
 #include "EventLoopThread.h"
 #include "EventLoop.h"
 
+namespace mymuduo
+{
+
 EventLoopThread::EventLoopThread(const ThreadInitCallback &cb, const std::string &name) :
                 _M_loop(nullptr), _M_exiting(false),
                 _M_thread(std::bind(&EventLoopThread::thread_func, this), name),
@@ -56,3 +59,5 @@ void EventLoopThread::thread_func() {
         _M_loop = nullptr;
     }
 }
+
+} // namespace mymuduo

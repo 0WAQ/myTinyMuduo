@@ -1,6 +1,9 @@
 #include "Thread.h"
 #include "CurrentThread.h"
 
+namespace mymuduo
+{
+
 std::atomic<int> Thread::_M_num_created = 0;
 
 Thread::Thread(ThreadFunc func, const std::string &name) :
@@ -47,3 +50,5 @@ void Thread::set_default_name() {
         _M_name = buf;
     }
 }
+
+} // namespace mymuduo
