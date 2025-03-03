@@ -205,4 +205,28 @@ std::size_t Buffer::write_fd(int fd, int* save_errno)
     return len;
 }
 
+void Buffer::retrieve(size_t len)
+{
+    if(len < readable()) {
+        _M_read_idx += len;
+    }
+    else {
+        retrieve_all();
+    }
+}
+
+void Buffer::retrieve_all() {
+    _M_read_idx = _M_write_idx = _M_initial_prependable;
+}
+
+std::string Buffer::retrieve_as_string(size_t len) {
+    std::string res(begin() + _M_read_idx, len);
+    retrieve(len);
+    return res;
+}
+
+std::string Buffer::retrieve_as_all_string() {
+    return retrieve_as_string(readable());
+}
+
 } // namespace mymuduo

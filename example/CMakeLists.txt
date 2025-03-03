@@ -13,7 +13,6 @@ endmacro()
 
 # 添加客户端
 ADDEXAM(ChatClient)
-ADDEXAM(TestClient)
 
 # 添加Echo服务器
 ADDEXAM(EchoServer)

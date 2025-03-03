@@ -51,6 +51,14 @@ public:
      */
     bool pick_datagram(std::string& msg);
 
+    /**
+     * @brief 取出数据
+     */
+    void retrieve(size_t len);
+    void retrieve_all();
+
+    std::string retrieve_as_string(size_t len);
+    std::string retrieve_as_all_string();
 
     /**
      * @brief 删除size的大小的数据, 并返回
