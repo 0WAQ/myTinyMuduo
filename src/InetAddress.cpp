@@ -8,6 +8,12 @@ InetAddress::InetAddress(const std::string& ip, uint16_t port) {
     _M_addr.sin_port = htons(port);
 }
 
+InetAddress::InetAddress(const char* ip, const char* port) {
+    _M_addr.sin_family = AF_INET;
+    _M_addr.sin_addr.s_addr = inet_addr(ip);
+    _M_addr.sin_port = htons((uint16_t)atoi(port));
+}
+
 sockaddr_in InetAddress::get_local_addr(int sockfd)
 {
     sockaddr_in local;

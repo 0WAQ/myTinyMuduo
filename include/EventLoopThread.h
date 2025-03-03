@@ -7,6 +7,7 @@
 #include <mutex>
 
 #include "Thread.h"
+#include "callbacks.h"
 #include "noncopyable.h"
 
 class EventLoop;
@@ -16,10 +17,6 @@ class EventLoop;
  */
 class EventLoopThread : noncopyable
 {
-public:
-
-    using ThreadInitCallback = std::function<void(EventLoop*)>;
-
 public:
     
     /**

@@ -24,28 +24,6 @@ int create_eventfd()
     return efd;
 }
 
-int create_timerfd(time_t sec)
-{
-    int tfd = ::timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
-    
-    if(tfd < 0) {
-        LOG_ERROR("%s:%s:%d timerfd create error:%d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
-    }
-    else {
-        LOG_DEBUG("create a new timerfd.\n");
-    }
-
-    itimerspec tm;
-    memset(&tm, 0, sizeof(itimerspec));
-    tm.it_value.tv_sec = sec;
-    tm.it_value.tv_nsec = 0;
-
-    timerfd_settime(tfd, 0, &tm, 0);
-
-    return tfd;
-}
-
 } // namespace __detail
 
 EventLoop::EventLoop() : 

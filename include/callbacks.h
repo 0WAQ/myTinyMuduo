@@ -7,9 +7,12 @@
 #include "TimeStamp.h"
 
 class Buffer;
+class EventLoop;
 class TcpConnection;
 
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+
+using ThreadInitCallback = std::function<void(EventLoop*)>;
 
 using ConnectionCallback = std::function<void(const TcpConnectionPtr&)>;
 using CloseCallback = std::function<void(const TcpConnectionPtr&)>;

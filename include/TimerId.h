@@ -1,6 +1,8 @@
 #ifndef TIMERID_H
 #define TIMERID_H
 
+#include <sys/types.h>
+
 class Timer;
 
 /**
@@ -10,15 +12,26 @@ class TimerId
 {
 public:
 
-    TimerId() : _M_timer(nullptr), _M_id(0) { }
+    TimerId() : timer(nullptr), id(0) { }
+
+    TimerId(Timer *timer, int64_t id) : timer(timer), id(id) { }
+
+    friend class TimerQueue;
+
+    bool operator< (const TimerId &rhs) const {
+        if(this->timer == rhs.timer) {
+            return this->id < rhs.id;
+        }
+        return this->timer < rhs.timer;
+    }
 
 private:
 
     // 所属定时器
-    Timer* _M_timer;
+    Timer* timer;
 
     // 定时器id
-    long _M_id;
+    int64_t id;
 };
 
 #endif // TIMERID_H

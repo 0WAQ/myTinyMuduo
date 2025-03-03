@@ -31,11 +31,6 @@ class TcpServer : noncopyable
 {
 public:
 
-    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
-    using ThreadInitCallback = std::function<void(EventLoop*)>;
-    using DealMsgCallback = std::function<void(TcpConnectionPtr, std::string&)>;
-    using EventsCallback = std::function<void(TcpConnectionPtr)>;
-
     enum Option {
         kNoReusePort,
         kReusePort,

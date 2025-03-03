@@ -20,6 +20,7 @@ public:
      * @param port 接收主机序的port
      */
     explicit InetAddress(const std::string& ip = {}, uint16_t port = 0);
+    explicit InetAddress(const char* ip, const char* port);
     explicit InetAddress(const sockaddr_in addr) : _M_addr(addr) { }
 
     /**

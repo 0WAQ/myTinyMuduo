@@ -13,12 +13,12 @@
 #include <vector>
 #include <map>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
-#include <sys/timerfd.h> // 定时器
 
 #include "Poller.h"
 #include "TcpConnection.h"
 #include "TimeStamp.h"
 #include "CurrentThread.h"
+#include "callbacks.h"
 #include "noncopyable.h"
 
 class TcpConnection;
@@ -32,7 +32,6 @@ class EventLoop : noncopyable
 {
 public:
     
-    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
     using ChannelList = std::vector<Channel*>;
     using Functor = std::function<void()>;
 

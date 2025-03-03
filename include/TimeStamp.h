@@ -18,6 +18,12 @@ class TimeStamp
 {
 public:
 
+    static const int kMilliSecondsPerSecond = 1000;
+    static const int kMicroSecondsPerSecond = 1000 * 1000;
+    static const int knaneSecondsPerSecond  = 1000 * 1000 * 1000;
+
+public:
+
     /**
      * @brief 用零值初始化TimeStamp
      */
@@ -38,6 +44,10 @@ public:
 
     static TimeStamp invalid() {
         return TimeStamp{};
+    }
+
+    bool valid() {
+        return time_since_epoch().count() > 0; 
     }
 
     TimeDuration time_since_epoch() {
@@ -80,27 +90,27 @@ public:
         return TimeStamp(TimePoint(this->time_since_epoch() - duration));
     }
 
-    bool operator< (const TimeStamp &rhs) {
+    bool operator< (const TimeStamp &rhs) const {
         return this->_M_sec < rhs._M_sec;
     }
 
-    bool operator> (const TimeStamp &rhs) {
+    bool operator> (const TimeStamp &rhs) const {
         return this->_M_sec > rhs._M_sec;
     }
 
-    bool operator== (const TimeStamp &rhs) {
+    bool operator== (const TimeStamp &rhs) const {
         return this->_M_sec == rhs._M_sec;
     }
 
-    bool operator<= (const TimeStamp &rhs) {
+    bool operator<= (const TimeStamp &rhs) const {
         return !(this->operator>(rhs));
     }
 
-    bool operator>= (const TimeStamp &rhs) {
+    bool operator>= (const TimeStamp &rhs) const {
         return !(this->operator<(rhs));
     }
 
-    bool operator!= (const TimeStamp &rhs) {
+    bool operator!= (const TimeStamp &rhs) const {
         return !(this->operator==(rhs));
     }
 

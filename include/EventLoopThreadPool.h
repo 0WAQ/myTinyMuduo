@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "callbacks.h"
 #include "noncopyable.h"
 
 class EventLoop;
@@ -15,10 +16,6 @@ class EventLoopThread;
  */
 class EventLoopThreadPool : noncopyable
 {
-public:
-
-    using ThreadInitCallback = std::function<void(EventLoop*)>;
-
 public:
 
     EventLoopThreadPool(EventLoop *main_loop, const std::string &name);

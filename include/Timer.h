@@ -3,6 +3,7 @@
 
 #include <atomic>
 
+#include "TimerId.h"
 #include "TimeStamp.h"
 #include "callbacks.h"
 #include "noncopyable.h"
@@ -25,8 +26,8 @@ public:
 
     TimeStamp expiration() { return _M_expiration; }
     bool repeat() { return _M_repeat; }
-    long id() { return _M_id; }
-    long last_timerId() { return _M_last_timerId; }
+    TimerId id() { return _M_id; }
+    ssize_t last_timerId() { return _M_last_timerId; }
 
 private:
 
@@ -42,10 +43,10 @@ private:
     // 定时器回调函数
     const TimerCallback _M_func;
 
-    // 定时器id
-    const long _M_id;
+    // 定时器唯一id
+    const TimerId _M_id;
 
-    static std::atomic<long> _M_last_timerId;
+    static std::atomic<ssize_t> _M_last_timerId;
 };
 
 #endif // TIMER_H
