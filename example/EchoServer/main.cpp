@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
     }
 
     mymuduo::Logger* log = mymuduo::Logger::get_instance();
-    log->init(DEBUG, argv[3], ".log");
+    log->init(mymuduo::DEBUG, argv[3], ".log");
 
     mymuduo::EventLoop loop;
     mymuduo::InetAddress addr(argv[1], atoi(argv[2]));

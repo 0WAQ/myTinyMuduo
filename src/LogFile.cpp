@@ -18,7 +18,7 @@ File::File(std::string filename) :
 }
 
 File::~File() {
-    ::close(_M_fp);
+    ::fclose(_M_fp);
 }
 
 void File::append(const char* logline, size_t len)
@@ -58,7 +58,7 @@ size_t File::write(const char* logline, size_t len)
 } // namespace __detail
 
 LogFile::LogFile(const std::string& basename, off_t roll_size,
-    bool thread_safe = true, int flush_interval = 3, int check_every = 1024) : 
+    bool thread_safe, int flush_interval, int check_every) : 
         _M_basename(basename),
         _M_roll_size(roll_size),
         _M_flush_interval(flush_interval),

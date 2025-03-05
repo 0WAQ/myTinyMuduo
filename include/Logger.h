@@ -24,8 +24,6 @@ namespace mymuduo
 // 日志文件最大行数
 #define LOG_MAX_LINES       (5000)
 
-} // namespace mymuduo
-
 
 // 定义日志级别
 enum LogLevel
@@ -38,12 +36,12 @@ enum LogLevel
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define LOG_BASE(level, format, ...)                            \
-    do {                                                        \
-        mymuduo::Logger* log = mymuduo::Logger::get_instance();                   \
-        if(log->is_open() && log->get_level() <= level) {       \
-            log->write(level, format, ##__VA_ARGS__);           \
-        }                                                       \
+#define LOG_BASE(level, format, ...)                                \
+    do {                                                            \
+        mymuduo::Logger* log = mymuduo::Logger::get_instance();     \
+        if(log->is_open() && log->get_level() <= mymuduo::level) {  \
+            log->write(mymuduo::level, format, ##__VA_ARGS__);      \
+        }                                                           \
     } while(0)
 
 
@@ -59,8 +57,6 @@ enum LogLevel
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-namespace mymuduo
-{
 
 class ThreadPool;
 
