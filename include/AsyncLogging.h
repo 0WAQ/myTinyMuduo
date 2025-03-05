@@ -8,6 +8,7 @@
 #include <memory>
 #include <atomic>
 #include <mutex>
+#include <semaphore>
 #include <condition_variable>
 #include "Thread.h"
 #include "noncopyable.h"
@@ -67,7 +68,7 @@ class AsyncLogging : noncopyable
 {
 public:
 
-    AsyncLogging(const std::string& basename, off_t roll_size, int flush_interval);
+    AsyncLogging(const std::string& basename, off_t roll_size, int flush_interval = 3);
     
     ~AsyncLogging() {
         if(_M_running) {
@@ -78,12 +79,12 @@ public:
     /**
      * @brief 会被前端线程写日志时调用
      */
-    void append(const char *logline, std::size_t en);
+    void append(const char *logline, std::size_t len);
     
     void start() {
         _M_running = true;
         _M_thread.start();
-        // TODO: countDownLatch
+        _M_sem.acquire();  // 使用信号量等待后端线程完成初始化
     }
 
     void stop() {
@@ -106,16 +107,15 @@ private:
 private:
 
     std::atomic<bool> _M_running;
-
     std::string _M_basename;
-
     const int _M_flush_interval;    // 刷新缓冲区的间隔时间
+    const int _M_roll_size;         // 
 
     Thread _M_thread;               // 后端线程
-
-    std::mutex _M_mutex;            // 在append上加锁(有多个前端线程), 用于保护下面四个变量
-
-    std::condition_variable _M_cond; // 后端线程阻塞在该条件变量上
+   
+    std::counting_semaphore<1> _M_sem; // 用于等待后端线程的初始化
+    std::mutex _M_mutex;               // 在append上加锁(有多个前端线程), 用于保护下面四个变量
+    std::condition_variable _M_cond;   // 后端线程阻塞在该条件变量上
 
     BufferPtr _M_curr_buffer;       // 当前缓冲
     BufferPtr _M_next_buffer;       // 预备缓冲

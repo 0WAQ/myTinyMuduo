@@ -32,10 +32,10 @@ void File::append(const char* logline, size_t len)
 
         if(n != remain)
         {
-            int err = ferror(_M_fp);
+            int err = ::ferror(_M_fp);
             if(err)
             {
-                fprintf(stderr, "File::append() failed %d.\n", err);
+                ::fprintf(stderr, "File::append() failed %d.\n", err);
                 break;
             }
         }
@@ -168,7 +168,7 @@ std::string LogFile::get_logfile_name(const std::string& basename, time_t *now)
     filename += hostname;
 
     char pidbuf[32];
-    snprintf(pidbuf, sizeof(pidbuf), "%d", ::getpid());
+    snprintf(pidbuf, sizeof(pidbuf), ".%d", ::getpid());
     filename += pidbuf;
 
     filename += ".log";

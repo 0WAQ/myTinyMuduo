@@ -1,6 +1,8 @@
 #include "AsyncLogging.h"
+#include "LogFile.h"
 #include "TimeStamp.h"
 #include <unistd.h>
+#include <cassert>
 #include <chrono>
 
 namespace mymuduo
@@ -9,14 +11,18 @@ AsyncLogging::AsyncLogging(const std::string& basename, off_t roll_size, int flu
         _M_running(false),
         _M_basename(basename),
         _M_flush_interval(flush_interval),
+        _M_roll_size(roll_size),
         _M_thread(std::bind(&AsyncLogging::thread_func, this), "Logging"),
+        _M_sem(0),
         _M_mutex(),
         _M_cond(),
         _M_curr_buffer(new Buffer),
         _M_next_buffer(new Buffer),
         _M_buffers()
 {
-
+    _M_curr_buffer->bzero();
+    _M_next_buffer->bzero();
+    _M_buffers.reserve(16);
 }
 
 void AsyncLogging::append(const char *logline, std::size_t len)
@@ -54,8 +60,11 @@ void AsyncLogging::append(const char *logline, std::size_t len)
 
 void AsyncLogging::thread_func()
 {
-    BufferPtr new_buffer1(new Buffer);
-    BufferPtr new_buffer2(new Buffer);
+    _M_sem.release();
+    LogFile file(_M_basename, _M_roll_size, false);
+
+
+    BufferPtr new_buffer1(new Buffer), new_buffer2(new Buffer);
     new_buffer1->bzero(), new_buffer2->bzero();
 
     BufferVector buffers_to_write;
@@ -63,6 +72,10 @@ void AsyncLogging::thread_func()
 
     while(_M_running)
     {
+        assert(new_buffer1 && new_buffer1->size() == 0);
+        assert(new_buffer2 && new_buffer2->size() == 0);
+        assert(buffers_to_write.empty());
+
         {
             std::unique_lock<std::mutex> lock(_M_mutex);
 
@@ -80,6 +93,8 @@ void AsyncLogging::thread_func()
             buffers_to_write.swap(_M_buffers);
         }
 
+        assert(!buffers_to_write.empty());
+
         // 日志消息堆积, 超过后端的处理能力, 直接丢弃多余的buffer, 只保留2个
         if(buffers_to_write.size() > 25)
         {
@@ -87,14 +102,15 @@ void AsyncLogging::thread_func()
             snprintf(buf, sizeof(buf), "Dropped log message at %s, %zd larger buffers.\n",
                      TimeStamp::now().to_string().c_str(), buffers_to_write.size() - 2);
             fputs(buf, stderr);
-            // TODO: 同样用日志也输出一遍
+            file.append(buf, static_cast<int>(strlen(buf)));
             buffers_to_write.erase(buffers_to_write.begin() + 2, buffers_to_write.end());    
         }
 
         // 将buffers中的缓冲区写入磁盘
         for(const auto& buffer : buffers_to_write)
         {
-            // TODO: output
+            assert(buffer);
+            file.append(buffer->data(), buffer->size());
         }
 
         if(buffers_to_write.size() > 2)
@@ -105,23 +121,25 @@ void AsyncLogging::thread_func()
         // 将buffers写入后, 空闲出来的buffer转移给buffer1/2
         if(!new_buffer1)
         {
+            assert(!buffers_to_write.empty());
             new_buffer1 = std::move(buffers_to_write.back());
             buffers_to_write.pop_back();
-            new_buffer1.reset();
+            new_buffer1->reset();
         }
 
         if(!new_buffer2)
         {
+            assert(!buffers_to_write.empty());
             new_buffer2 = std::move(buffers_to_write.back());
             buffers_to_write.pop_back();
-            new_buffer2.reset();
+            new_buffer2->reset();
         }
 
         buffers_to_write.clear();
-        // TODO: 刷新
+        file.flush();
     }
 
-    // TODO: 退出时也要flush
+    file.flush();
 }
 
 } // namespace mymuduo

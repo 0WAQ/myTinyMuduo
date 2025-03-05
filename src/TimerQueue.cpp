@@ -48,7 +48,7 @@ namespace __detail
     {
         ssize_t read_bytes;
         ssize_t nlen = ::read(timerfd, &read_bytes, sizeof(read_bytes));
-        LOG_DEBUG("TimerQueue::handle_read() %ld at %s.\n", read_bytes, now.to_string());
+        LOG_DEBUG("TimerQueue::handle_read() %ld.\n", read_bytes);
         if(nlen != sizeof(read_bytes)) {
             LOG_WARN("TimerQueue::handle_read() reads %ld nytes instead of 8.\n", nlen);
         }

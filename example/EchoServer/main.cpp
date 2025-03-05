@@ -10,8 +10,8 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    mymuduo::Logger* log = mymuduo::Logger::get_instance();
-    log->init(mymuduo::DEBUG, argv[3], ".log");
+    mymuduo::Logger* log = mymuduo::Logger::get_instance(argv[3], "EchoServer", 500*1000);
+    log->init(mymuduo::Logger::DEBUG);
 
     mymuduo::EventLoop loop;
     mymuduo::InetAddress addr(argv[1], atoi(argv[2]));
