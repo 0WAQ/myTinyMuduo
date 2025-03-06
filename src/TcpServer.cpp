@@ -56,9 +56,11 @@ void TcpServer::start()
 
 void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 {
+    assert(_M_main_loop->is_loop_thread());
+
     // 填充TcpConnection名称
     char buf[64] = {0};
-    snprintf(buf, sizeof(buf), "-%s#%d", _M_ip_port.c_str(), ++_M_next);
+    snprintf(buf, sizeof(buf), "-%s#%d", _M_ip_port.c_str(), _M_next++);
     std::string connName = _M_name + buf;
     
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
@@ -70,7 +72,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     EventLoop *nextLoop = _M_loop_threads->get_next_loop();
     TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
     
-    _M_connections[connName] = conn;    // 用哈希表管理连接
+    _M_connections[buf] = conn;    // 用哈希表管理连接
 
     // 设置回调函数
     conn->set_connection_callback(_M_connection_callback);
@@ -79,7 +81,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     conn->set_close_callback(std::bind(&TcpServer::remove_connection, this, std::placeholders::_1));
 
     // 让对应的loop建立连接
-    nextLoop->queue_in_loop(std::bind(&TcpConnection::established, conn));
+    nextLoop->run_in_loop(std::bind(&TcpConnection::established, conn));
 }
 
 void TcpServer::remove_connection(const TcpConnectionPtr &conn)
@@ -92,7 +94,8 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
     LOG_INFO("TcpServer::remove_connection_in_loop [%s] - connection %s.\n",
                 _M_name.c_str(), conn->name().c_str());
     
-    _M_connections.erase(conn->name());
+    std::string name{conn->name().substr(conn->name().rfind('#') + 1)};
+    _M_connections.erase(name);
     conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
 }
 

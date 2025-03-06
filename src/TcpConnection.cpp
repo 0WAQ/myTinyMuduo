@@ -30,6 +30,8 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string &name, int clntf
             _M_channel(new Channel(loop, clntfd)),
             _M_local_addr(localAddr),
             _M_peer_addr(clntAddr),
+            _M_input_buffer(0),
+            _M_output_buffer(0),
             _M_high_water_mark(64*1024*1024)
 {
     // 设置Connection被channel回调的四种函数
@@ -47,19 +49,21 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string &name, int clntf
     // 保活机制
     _M_sock->set_keep_alive(true);
 
-    // 监听读事件
-    _M_channel->set_read_events();
-
-    LOG_INFO("TcpConnection::ctor[%s] at fd=%d.\n", _M_name.c_str(), clntfd);
+    LOG_INFO("TcpConnection::ctor[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), clntfd, CurrentThread::tid());
 }
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO("TcpConnection::dtor[%s] at fd=%d.\n", _M_name.c_str(), _M_channel->get_fd());
+    LOG_INFO("TcpConnection::dtor[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
 }
 
 void TcpConnection::established()
 {
+    assert(_M_loop->is_loop_thread());
+    assert(_M_state == kConnecting);
+ 
+    LOG_INFO("TcpConnection::established[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+
     _M_state = kConnected;
 
     _M_channel->tie(shared_from_this()); // 将该Connection与Channel绑定
@@ -72,10 +76,17 @@ void TcpConnection::established()
 
 void TcpConnection::destroyed()
 {
+    assert(_M_loop->is_loop_thread());
+ 
+    LOG_INFO("TcpConnection::destroyed[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+
     if(_M_state == kConnected)
     {
         _M_state = kDisConnected;
     
+        // 连接关闭后, 就不能监听事件了
+        _M_channel->unset_all_events();
+
         if(_M_close_callback) {
             _M_close_callback(shared_from_this());
         }
@@ -85,6 +96,8 @@ void TcpConnection::destroyed()
 
 void TcpConnection::handle_read_ET(TimeStamp receieveTime)
 {
+    assert(_M_loop->is_loop_thread());
+
     char buf[1024] = {0};
 
     while(true) // 因为是ET模式, 所以要确保数据一次性读完
@@ -124,25 +137,30 @@ void TcpConnection::handle_read_ET(TimeStamp receieveTime)
 
 void TcpConnection::handle_read_LT(TimeStamp receieveTime)
 {
+    assert(_M_loop->is_loop_thread());
+
     int save_error = 0;
     ssize_t nlen = _M_input_buffer.read_fd(_M_channel->get_fd(), &save_error);
 
     if(nlen > 0) {
+        LOG_INFO("TcpConnection::handle_read[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
         _M_message_callback(shared_from_this(), &_M_input_buffer, receieveTime);
     }
     else if(nlen == 0) {
+        LOG_INFO("TcpConnection::handle_close[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
         handle_close();
     }
     else {
         errno = save_error;
-        LOG_ERROR("TcpConnection::handle_read_LT.\n");
-        
+        LOG_ERROR("TcpConnection::handle_error[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
         handle_error();
     }
 }
 
 void TcpConnection::handle_write()
 {
+    assert(_M_loop->is_loop_thread());
+
     if(_M_channel->is_writing())
     {
         int save_error = 0;
@@ -178,6 +196,9 @@ void TcpConnection::handle_write()
 // 在两个地方被调用: 1.channel的handle中; 2.channel回调的read_events中
 void TcpConnection::handle_close()
 {
+    assert(_M_loop->is_loop_thread());
+    assert(_M_state == kConnected || _M_state == kConnecting);
+
     LOG_INFO("fd=%d state=%d.\n", _M_channel->get_fd(), (int)_M_state);
 
     _M_state = kDisConnected;
@@ -229,6 +250,8 @@ void TcpConnection::send(const std::string& message)
 
 void TcpConnection::send_in_loop(const void *data, size_t len)
 {
+    assert(_M_loop->is_loop_thread());
+
     ssize_t nwrote = 0;
     size_t remaining = len;
     bool fault_error = false;
@@ -265,6 +288,8 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
             }
         }
     }
+
+    assert(remaining <= len);
 
     // 将剩余数据保存到输出缓冲区中
     if(!fault_error && remaining > 0)

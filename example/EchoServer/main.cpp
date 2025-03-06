@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    mymuduo::Logger* log = mymuduo::Logger::get_instance(argv[3], "EchoServer", 500*1000);
+    mymuduo::Logger* log = mymuduo::Logger::get_instance(argv[3], "EchoServer");
     log->init(mymuduo::Logger::DEBUG);
 
     mymuduo::EventLoop loop;
@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
     EchoServer *server = new EchoServer(&loop, addr, name);
     server->start();
 
-    loop.run_every(1.0, [](){
-        LOG_INFO("run every 1s.\n");
+    loop.run_every(5.0, [](){
+        LOG_INFO("run every 5s.\n");
     });
 
     loop.loop();

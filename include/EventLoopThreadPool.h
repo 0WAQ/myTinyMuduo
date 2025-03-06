@@ -51,7 +51,7 @@ private:
 
     int _M_num_threads;
 
-    int _M_next;
+    int _M_next;    // 下一个连接所属的EventLoop的索引
 
 };
 
