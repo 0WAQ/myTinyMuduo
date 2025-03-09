@@ -29,7 +29,7 @@ EventLoop* EventLoopThreadPool::get_next_loop() {
     EventLoop *loop = _M_main_loop;
     if(!_M_sub_loops.empty()) {
         loop = _M_sub_loops[_M_next];
-        if(++_M_next > _M_sub_loops.size()) {
+        if(++_M_next >= _M_sub_loops.size()) {
             _M_next = 0;
         }
     }

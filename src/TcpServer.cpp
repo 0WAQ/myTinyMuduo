@@ -59,9 +59,11 @@ void TcpServer::start()
 
 void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 {
+    assert(_M_main_loop->is_loop_thread());
+
     // 填充TcpConnection名称
     char buf[64] = {0};
-    snprintf(buf, sizeof(buf), "-%s#%d", _M_ip_port.c_str(), ++_M_next);
+    snprintf(buf, sizeof(buf), "-%s#%d", _M_ip_port.c_str(), _M_next++);
     std::string connName = _M_name + buf;
     
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
@@ -77,7 +79,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     //      2. TcpConnection是临界资源, 为防止在一个线程使用该对象时被其它连接释放
     TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
     
-    _M_connections[connName] = conn;    // 用哈希表管理连接
+    _M_connections[buf] = conn;    // 用哈希表管理连接
 
     // 设置回调函数
     conn->set_connection_callback(_M_connection_callback);
@@ -86,7 +88,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     conn->set_close_callback(std::bind(&TcpServer::remove_connection, this, std::placeholders::_1));
 
     // 让对应的loop建立连接
-    nextLoop->queue_in_loop(std::bind(&TcpConnection::established, conn));
+    nextLoop->run_in_loop(std::bind(&TcpConnection::established, conn));
 }
 
 void TcpServer::remove_connection(const TcpConnectionPtr &conn)
@@ -104,7 +106,8 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
                 _M_name.c_str(), conn->name().c_str());
     
     // MARK: 在 主Reactor线程 中删除该对象
-    _M_connections.erase(conn->name());
+    std::string name{conn->name().substr(conn->name().rfind('#') + 1)};
+    _M_connections.erase(name);
 
     // MARK: 然后让TcpConnection对象所属的 从Reactor线程 去销毁连接
     conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));

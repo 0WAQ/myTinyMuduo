@@ -39,7 +39,7 @@ public:
     /**
      * @brief 单例模式, 获取唯一实例(懒汉模式)
      */
-    static Logger* get_instance(const std::string& path, const std::string& basename, int roll_size) {
+    static Logger* get_instance(const std::string& path, const std::string& basename, int roll_size = 500*1000*1000) {
         // 懒汉模式, 在第一次调用时才创建对象
         static Logger log(path, basename, roll_size);   // c++11以后, 使用局部变量懒汉不用加锁
         return &log;

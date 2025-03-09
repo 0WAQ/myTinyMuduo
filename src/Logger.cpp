@@ -4,7 +4,7 @@ namespace mymuduo
 {
 
 Logger::Logger(const std::string& path, const std::string& basename, int roll_size = 500*1000) :
-        _M_async_logging(path + basename, roll_size),
+        _M_async_logging(path + basename, roll_size, 1),
         _M_dir_name(path)
 { }
 
@@ -63,8 +63,7 @@ void Logger::write(LogLevel level, const char* format, ...)
     }
     msg.append(buf, strlen(buf));
 
-
-    //
+    // 4. 前端线程写入缓冲区
     _M_async_logging.append(msg.data(), msg.size());    
 }
 

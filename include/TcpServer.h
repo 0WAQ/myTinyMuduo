@@ -100,7 +100,7 @@ private:
         ConnectionMap _M_connections;
         std::mutex _M_mutex;
 
-        int _M_next;    // 下一个连接所属的EventLoop的索引
+        int _M_next;    // TcpConnection的名称组成之一 TODO: 更好的注释
 
         std::atomic<int> _M_started;
 
