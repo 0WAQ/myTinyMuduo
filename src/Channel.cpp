@@ -17,14 +17,16 @@ Channel::Channel(EventLoop* loop_ptr, int fd) :
 // 判断该fd对应的channel发生的是什么事件
 void Channel::handle(TimeStamp receiveTime)
 {
-    std::shared_ptr<void> guard;
+    // 该分支是TcpConnection对象回调会进入的分支(TcpConnecton对象在establish是调用了tie)
     if(_M_tied) {
-        guard = _M_tie.lock();  // 获取对象的强引用, 确保TcpConnection对象在channel回调期间存活
+        // MARK: 获取对象的强引用, 确保TcpConnection对象在channel回调期间存活
+        std::shared_ptr<void> guard = _M_tie.lock();
         if(guard) {
             handle_event_with_guard(receiveTime);
         }
     }
     else {
+        // MARK: 该分支是Acceptor, TimerQueue, wakeup_channel回调会进入的分支(没有调用tie)
         handle_event_with_guard(receiveTime);
     }
 }

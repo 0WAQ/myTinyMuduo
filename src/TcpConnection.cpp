@@ -50,6 +50,9 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string &name, int clntf
     // 监听读事件
     _M_channel->set_read_events();
 
+    // MARK: 默认不监听写事件, 否则在LT模式下, 只要内核缓冲区可读, 就会一直触发谢事件!!!
+    //       只有当用户缓冲区中有数据时才会监听写事件
+
     LOG_INFO("TcpConnection::ctor[%s] at fd=%d.\n", _M_name.c_str(), clntfd);
 }
 
@@ -62,6 +65,12 @@ void TcpConnection::established()
 {
     _M_state = kConnected;
 
+    // MARK: 如何保证在TcpConnection对象在执行回调时不会被意外销毁???
+    //       在建立时将当前TcpConnection对象绑定到channel的tie中
+    //       tie是一个weak_ptr, 正常情况不会增加TcpConnection对象的引用
+    //       但是在执行channel的handle时, 会将该weak_ptr提升为shared_ptr(临时增加引用计数
+    //       就不会在执行毁掉的过程中被销毁了
+
     _M_channel->tie(shared_from_this()); // 将该Connection与Channel绑定
     _M_channel->set_read_events();
 
@@ -72,6 +81,7 @@ void TcpConnection::established()
 
 void TcpConnection::destroyed()
 {
+    // MARK: 每个类成员函数内都有一个隐式的this指针(若继承自enable_shared_from_this则为shared_ptr)
     if(_M_state == kConnected)
     {
         _M_state = kDisConnected;
@@ -128,6 +138,7 @@ void TcpConnection::handle_read_LT(TimeStamp receieveTime)
     ssize_t nlen = _M_input_buffer.read_fd(_M_channel->get_fd(), &save_error);
 
     if(nlen > 0) {
+        // MARK: 还要将接受到数据的缓冲区也交给上层服务器
         _M_message_callback(shared_from_this(), &_M_input_buffer, receieveTime);
     }
     else if(nlen == 0) {
@@ -158,7 +169,11 @@ void TcpConnection::handle_write()
         {
             // 若发送后payload为0, 表示数据全部发送, 不再关注写事件
             if(_M_output_buffer.readable() == 0) {
+
+                // MARK: 将可写事件关闭掉, 防止在LT模式下内核一直触发而导致影响性能
                 _M_channel->unset_write_events();
+
+                // 调用写完回调
                 if(_M_write_complete_callback) {
                     _M_loop->run_in_loop(std::bind(_M_write_complete_callback, shared_from_this()));
                 }
@@ -281,6 +296,8 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
         }
 
         _M_output_buffer.append(std::string((char*)data, len));
+
+        // MARK: 若channel没有关注可写事件, 则关注
         if(!_M_channel->is_writing()) {
             _M_channel->set_write_events();
         }

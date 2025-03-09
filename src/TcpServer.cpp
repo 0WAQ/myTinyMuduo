@@ -34,8 +34,11 @@ TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
 TcpServer::~TcpServer()
 {
     for(auto& item : _M_connections) {
+        // MARK: 用临时的智能指针获取TcpConnection对象
         TcpConnectionPtr conn(item.second);
         item.second.reset();
+
+        // 交由对应的 从Reactor线程 执行销毁
         conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
     }
 }
@@ -68,6 +71,10 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 
     // 分配TcpConnection给相应的loop
     EventLoop *nextLoop = _M_loop_threads->get_next_loop();
+
+    // MARK: 将TcpConnection用shared_ptr管理
+    //      1. TcpConnection直接与用户交互, 无法相信用户!!!
+    //      2. TcpConnection是临界资源, 为防止在一个线程使用该对象时被其它连接释放
     TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
     
     _M_connections[connName] = conn;    // 用哈希表管理连接
@@ -84,7 +91,11 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 
 void TcpServer::remove_connection(const TcpConnectionPtr &conn)
 {
-    conn->loop()->run_in_loop(std::bind(&TcpServer::remove_connection_in_loop, this, conn));
+    // MARK: 该函数是连接断开后 从Reactor线程 执行的回调
+    //       但是TcpConnection对象是 主Reactor线程 创建的, 主Reactor线程 要在其哈希表中删除该对象
+    
+    // DONE: 这里修改为由主线程去删除
+    _M_main_loop->run_in_loop(std::bind(&TcpServer::remove_connection_in_loop, this, conn));
 }
 
 void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
@@ -92,7 +103,10 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
     LOG_INFO("TcpServer::remove_connection_in_loop [%s] - connection %s.\n",
                 _M_name.c_str(), conn->name().c_str());
     
+    // MARK: 在 主Reactor线程 中删除该对象
     _M_connections.erase(conn->name());
+
+    // MARK: 然后让TcpConnection对象所属的 从Reactor线程 去销毁连接
     conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
 }
 

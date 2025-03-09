@@ -156,7 +156,10 @@ void Buffer::resize(std::size_t len)
 
 std::size_t Buffer::read_fd(int fd, int* save_errno)
 {
-    char buf[65536] = {0};  // 临时缓冲区
+    // MARK: 一开始不知道input缓冲区是否会因为空间不足而溢出
+    //       故开辟栈上缓冲, 扩容后再将其拷贝给input缓冲
+
+    char extrabuf[65536] = {0};  // 临时缓冲区
 
     struct iovec iov[2];
     const std::size_t write_bytes = writable();
@@ -165,8 +168,8 @@ std::size_t Buffer::read_fd(int fd, int* save_errno)
     iov[0].iov_base = begin() + _M_write_idx;
     iov[0].iov_len = write_bytes;
 
-    iov[1].iov_base = buf;
-    iov[1].iov_len = sizeof(buf);
+    iov[1].iov_base = extrabuf;
+    iov[1].iov_len = sizeof(extrabuf);
 
     ssize_t nlen = readv(fd, iov, 2);
     // error
@@ -178,12 +181,12 @@ std::size_t Buffer::read_fd(int fd, int* save_errno)
     {
         _M_write_idx += nlen;
     }
-    // 还会读到buf中
+    // 还会读到extrabuf中
     else 
     {
         _M_write_idx = _M_buf.size();
-        // 将buf中的数据追加至缓冲区中(会触发resize)
-        append(buf, nlen - write_bytes);
+        // 将extrabuf中的数据追加至缓冲区中(会触发resize)
+        append(extrabuf, nlen - write_bytes);
     }
     return nlen;
 }
