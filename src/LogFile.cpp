@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cassert>
 
 namespace mymuduo
 {
@@ -11,9 +12,10 @@ namespace __detail
 {
 
 File::File(std::string filename) :
-        _M_fp(::fopen(filename.c_str(), "ae")), // 'e'表示 O_CLOEXEC
         _M_written(0)
 {
+    _M_fp = ::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
+    assert(_M_fp != nullptr);
     ::setbuffer(_M_fp, _M_buf, sizeof(_M_buf));
 }
 
