@@ -50,9 +50,6 @@ TcpConnection::TcpConnection(EventLoop *loop, size_t id, const std::string &name
     // 保活机制
     _M_sock->set_keep_alive(true);
 
-    // 监听读事件
-    _M_channel->set_read_events();
-
     // MARK: 默认不监听写事件, 否则在LT模式下, 只要内核缓冲区可读, 就会一直触发谢事件!!!
     //       只有当用户缓冲区中有数据时才会监听写事件
 
