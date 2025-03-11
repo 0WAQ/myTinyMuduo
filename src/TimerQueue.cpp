@@ -86,6 +86,7 @@ TimerQueue::TimerQueue(EventLoop *loop) :
 
 TimerQueue::~TimerQueue()
 {
+    _M_timer_channel.unset_all_events();
     _M_timer_channel.remove();
     ::close(_M_timer_fd);
 }

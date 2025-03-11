@@ -223,7 +223,7 @@ void TcpConnection::handle_close()
     _M_state = kDisConnected;
 
     // 从事件循环中删除Channel
-    _M_channel->remove();
+    _M_channel->unset_all_events();
 
     TcpConnectionPtr conn(shared_from_this());
     if(_M_connection_callback) {
@@ -241,6 +241,7 @@ void TcpConnection::handle_error()
     _M_state = kDisConnected;
 
     // 从事件循环中删除Channel
+    _M_channel->unset_all_events();
     _M_channel->remove();
 }
 

@@ -18,9 +18,10 @@ Channel::Channel(EventLoop* loop_ptr, int fd) :
 void Channel::handle(TimeStamp receiveTime)
 {
     // 该分支是TcpConnection对象回调会进入的分支(TcpConnecton对象在establish是调用了tie)
+    std::shared_ptr<void> guard;
     if(_M_tied) {
         // MARK: 获取对象的强引用, 确保TcpConnection对象在channel回调期间存活
-        std::shared_ptr<void> guard = _M_tie.lock();
+        guard = _M_tie.lock();
         if(guard) {
             handle_event_with_guard(receiveTime);
         }
@@ -75,7 +76,6 @@ void Channel::handle_event_with_guard(TimeStamp receiveTime)
 }
 
 void Channel::remove() {
-    unset_all_events();
     _M_loop_ptr->remove_channel(this);
 }
 

@@ -79,8 +79,8 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     // MARK: 将TcpConnection用shared_ptr管理
     //      1. TcpConnection直接与用户交互, 无法相信用户!!!
     //      2. TcpConnection是临界资源, 为防止在一个线程使用该对象时被其它连接释放
-    TcpConnectionPtr conn(new TcpConnection(nextLoop, id, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
-    
+    TcpConnectionPtr conn = std::make_shared<TcpConnection>(nextLoop, id, connName, clntfd, local_addr, clnt_addr, _M_is_ET);
+
     _M_connections[id] = conn;    // 用哈希表管理连接
 
     // 设置回调函数
