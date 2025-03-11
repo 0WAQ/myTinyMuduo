@@ -68,20 +68,20 @@ void TcpConnection::established()
 {
     assert(_M_loop->is_loop_thread());
     assert(_M_state == kConnecting);
- 
-    LOG_INFO("TcpConnection::established[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
-
-    _M_state = kConnected;
-
+   
+    
     // MARK: 如何保证在TcpConnection对象在执行回调时不会被意外销毁???
     //       在建立时将当前TcpConnection对象绑定到channel的tie中
     //       tie是一个weak_ptr, 正常情况不会增加TcpConnection对象的引用
     //       但是在执行channel的handle时, 会将该weak_ptr提升为shared_ptr(临时增加引用计数
     //       就不会在执行毁掉的过程中被销毁了
-
+    
+    _M_state = kConnected;
     _M_channel->tie(shared_from_this()); // 将该Connection与Channel绑定
     _M_channel->set_read_events();
 
+    LOG_INFO("TcpConnection::established[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+    
     if(_M_connection_callback) {
         _M_connection_callback(shared_from_this());
     }

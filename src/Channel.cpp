@@ -11,7 +11,8 @@ Channel::Channel(EventLoop* loop_ptr, int fd) :
         _M_monitored_events(0),
         _M_happened_events(0),
         _M_status(kNew),
-        _M_tied(false)
+        _M_tied(false),
+        _M_in_epoll(false)
 { }
 
 // 判断该fd对应的channel发生的是什么事件
@@ -76,18 +77,18 @@ void Channel::handle_event_with_guard(TimeStamp receiveTime)
 }
 
 void Channel::remove() {
+    _M_in_epoll = false;
     _M_loop_ptr->remove_channel(this);
 }
 
 void Channel::update() {
+    _M_in_epoll = true;
     _M_loop_ptr->update_channel(this);
 }
 
 
 /// 获取于设置内部成员变量
 int Channel::get_fd() { return _M_fd; }
-bool Channel::in_epoll() { return _M_in_epoll; }
-void Channel::set_in_epoll() { _M_in_epoll = true; }
 void Channel::set_happened_events(uint32_t events) { _M_happened_events = events; }
 uint32_t Channel::get_happened_events() { return _M_happened_events; }
 uint32_t Channel::get_monitored_events() { return _M_monitored_events; }

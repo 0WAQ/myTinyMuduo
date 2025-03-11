@@ -64,12 +64,6 @@ public:
     void remove();
 
     /**
-     * @brief 用来设置和判断该channel是否已被监视
-     */
-    void set_in_epoll();
-    bool in_epoll();
-
-    /**
      * @brief 设置或者取消边缘触发
      */
     void set_ET();

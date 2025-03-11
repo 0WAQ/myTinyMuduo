@@ -38,7 +38,7 @@ EventLoop* EventLoopThreadPool::get_next_loop() {
 
 std::vector<EventLoop*> EventLoopThreadPool::get_all_loops() {
     if(_M_sub_loops.empty()) {
-        return std::vector<EventLoop*>{1, _M_main_loop};
+        return std::vector<EventLoop*>{_M_main_loop};
     }
     return _M_sub_loops;
 }
