@@ -74,7 +74,7 @@ public:
 
 private:
 
-    using ConnectionMap = std::unordered_map<std::string, TcpConnectionPtr>;
+    using ConnectionMap = std::unordered_map<size_t, TcpConnectionPtr>;
 
     /**
      * 内部方法
@@ -100,7 +100,7 @@ private:
         ConnectionMap _M_connections;
         std::mutex _M_mutex;
 
-        int _M_next;    // TcpConnection的名称组成之一 TODO: 更好的注释
+        size_t _M_next;    // 连接的编号, 从1开始
 
         std::atomic<int> _M_started;
 

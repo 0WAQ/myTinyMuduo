@@ -63,7 +63,9 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 
     // 填充TcpConnection名称
     char buf[64] = {0};
-    snprintf(buf, sizeof(buf), "-%s#%d", _M_ip_port.c_str(), _M_next++);
+    size_t id = _M_next++;
+
+    snprintf(buf, sizeof(buf), "-%s#%lu", _M_ip_port.c_str(), id);
     std::string connName = _M_name + buf;
     
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
@@ -77,9 +79,9 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     // MARK: 将TcpConnection用shared_ptr管理
     //      1. TcpConnection直接与用户交互, 无法相信用户!!!
     //      2. TcpConnection是临界资源, 为防止在一个线程使用该对象时被其它连接释放
-    TcpConnectionPtr conn(new TcpConnection(nextLoop, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
+    TcpConnectionPtr conn(new TcpConnection(nextLoop, id, connName, clntfd, local_addr, clnt_addr, _M_is_ET));
     
-    _M_connections[buf] = conn;    // 用哈希表管理连接
+    _M_connections[id] = conn;    // 用哈希表管理连接
 
     // 设置回调函数
     conn->set_connection_callback(_M_connection_callback);
@@ -106,8 +108,8 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
                 _M_name.c_str(), conn->name().c_str());
     
     // MARK: 在 主Reactor线程 中删除该对象
-    std::string name{conn->name().substr(conn->name().rfind('#') + 1)};
-    _M_connections.erase(name);
+    size_t id = conn->get_id();
+    _M_connections.erase(id);
 
     // MARK: 然后让TcpConnection对象所属的 从Reactor线程 去销毁连接
     conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));

@@ -20,9 +20,10 @@ namespace __detail
 
 } // namespace __detail
 
-TcpConnection::TcpConnection(EventLoop *loop, const std::string &name, int clntfd, 
+TcpConnection::TcpConnection(EventLoop *loop, size_t id, const std::string &name, int clntfd, 
                         const InetAddress &localAddr, const InetAddress &clntAddr, bool is_ET) :
             _M_loop(__detail::check_loop_not_null(loop)),
+            _M_id(id),
             _M_name(name),
             _M_state(kConnecting),
             _M_reading(true),

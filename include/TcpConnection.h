@@ -45,7 +45,7 @@ public:
      * @brief 将sock绑定到事件循环
      * @param loop 从事件循环
      */
-    TcpConnection(EventLoop *loop, const std::string &name, int clntfd,
+    TcpConnection(EventLoop *loop, size_t, const std::string &name, int clntfd,
                 const InetAddress &localAddr, const InetAddress &clntAddr, bool is_ET = false);
 
     ~TcpConnection();
@@ -83,6 +83,7 @@ public:
     }
 
     int get_fd() const { return _M_sock->get_fd(); }
+    size_t get_id() const { return _M_id; }
     const std::string& name() const { return _M_name; }
     const InetAddress& local_address() { return _M_local_addr; }
     const InetAddress& peer_address() { return _M_peer_addr; }
@@ -124,6 +125,8 @@ private:
         EventLoop* _M_loop;
 
         std::string _M_name;
+
+        const size_t _M_id;      // 连接的编号
 
     /**
      * 
