@@ -22,9 +22,9 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
     TimeStamp now = TimeStamp::now();
-    int savedErrno = errno;  // errno为全局
     int numEvents = ::epoll_wait(_M_epoll_fd, _M_events_arr.data(),
                                     static_cast<int>(_M_events_arr.size()), timeout);    
+    int savedErrno = errno;  // errno为全局
 
     if(numEvents > 0) 
     {
@@ -41,6 +41,11 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
     }
     else if(numEvents < 0)
     {
+        // MARK:
+        // 使用gdb调试时, 会在断点处插入一条普通的中断指令(并且errno也不会被置为0), 
+        // 程序在执行到断点处时就会触发一个SIGTRAP信号;
+        // 对于一些会阻塞的函数, 如果阻塞的话, 可能会收到gdb调试器发送的信号, 故不返回0值
+        // 为解决这个问题, 当epoll_wait返回-1时, 需忽略由于接受调试信号而产生的"错误"返回.
         if(savedErrno != EINTR) {
             errno = savedErrno;
             LOG_ERROR("%s:%s():%d epoll_wait() failed, errno:%d.\n", 
