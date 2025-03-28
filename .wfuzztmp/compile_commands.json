@@ -1,0 +1,1874 @@
+[
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/EventLoop.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/EventLoop.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/EventLoop.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9EventLoopC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9EventLoopC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9EventLoopC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoop::EventLoop\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/EventLoop.h/_ZN7mymuduo9EventLoopC1Ev.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/InetAddress.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/InetAddress.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/InetAddress.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11InetAddressC1E11sockaddr_in",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11InetAddressC1E11sockaddr_in",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11InetAddressC1E11sockaddr_in",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::InetAddress::InetAddress\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/InetAddress.h/_ZN7mymuduo11InetAddressC1E11sockaddr_in.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Logger.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/Logger.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Logger.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Logger12get_instanceERKSsS2_i",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Logger12get_instanceERKSsS2_i",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Logger12get_instanceERKSsS2_i",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Logger::get_instance\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Logger.h/_ZN7mymuduo6Logger12get_instanceERKSsS2_i.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Socket.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/Socket.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Socket.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6SocketC1Ei",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6SocketC1Ei",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6SocketC1Ei",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::Socket\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Socket.h/_ZN7mymuduo6SocketC1Ei.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Thread.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/Thread.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Thread.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Thread11num_createdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Thread11num_createdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Thread11num_createdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Thread::num_created\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/Thread.h/_ZN7mymuduo6Thread11num_createdEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/TimeStamp.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9TimeStampC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9TimeStampC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9TimeStampC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimeStamp::TimeStamp\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/_ZN7mymuduo9TimeStampC1Ev.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/TimeStamp.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9TimeStampC1ENSt6chrono10time_pointINS1_3_V212system_clockENS1_8durationIlSt5ratioILl1ELl1000000000EEEEEE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9TimeStampC1ENSt6chrono10time_pointINS1_3_V212system_clockENS1_8durationIlSt5ratioILl1ELl1000000000EEEEEE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9TimeStampC1ENSt6chrono10time_pointINS1_3_V212system_clockENS1_8durationIlSt5ratioILl1ELl1000000000EEEEEE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimeStamp::TimeStamp\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/_ZN7mymuduo9TimeStampC1ENSt6chrono10time_pointINS1_3_V212system_clockENS1_8durationIlSt5ratioILl1ELl1000000000EEEEEE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/TimeStamp.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9TimeStamp3nowEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9TimeStamp3nowEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9TimeStamp3nowEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimeStamp::now\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/_ZN7mymuduo9TimeStamp3nowEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/TimeStamp.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9TimeStamp7invalidEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9TimeStamp7invalidEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9TimeStamp7invalidEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimeStamp::invalid\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimeStamp.h/_ZN7mymuduo9TimeStamp7invalidEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimerId.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/TimerId.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimerId.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7TimerIdC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7TimerIdC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7TimerIdC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimerId::TimerId\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimerId.h/_ZN7mymuduo7TimerIdC1Ev.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimerId.h",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/../include/TimerId.h",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimerId.h/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7TimerIdC1EPNS_5TimerEl",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7TimerIdC1EPNS_5TimerEl",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7TimerIdC1EPNS_5TimerEl",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimerId::TimerId\"",
+      "-I/home/bwb/work/myTinyMuduo/src/../include"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/include/TimerId.h/_ZN7mymuduo7TimerIdC1EPNS_5TimerEl.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Acceptor.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail22create_non_blocking_fdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail22create_non_blocking_fdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail22create_non_blocking_fdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::create_non_blocking_fd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/_ZN7mymuduo8__detail22create_non_blocking_fdEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Acceptor.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8AcceptorC1EPNS_9EventLoopERKNS_11InetAddressEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8AcceptorC1EPNS_9EventLoopERKNS_11InetAddressEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8AcceptorC1EPNS_9EventLoopERKNS_11InetAddressEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Acceptor::Acceptor\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/_ZN7mymuduo8AcceptorC1EPNS_9EventLoopERKNS_11InetAddressEb.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Acceptor.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8Acceptor6listenEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8Acceptor6listenEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8Acceptor6listenEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Acceptor::listen\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/_ZN7mymuduo8Acceptor6listenEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Acceptor.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8Acceptor14new_connectionEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8Acceptor14new_connectionEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8Acceptor14new_connectionEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Acceptor::new_connection\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Acceptor.cpp/_ZN7mymuduo8Acceptor14new_connectionEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/AsyncLogging.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/AsyncLogging.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/AsyncLogging.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo12AsyncLoggingC1ERKSsli",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo12AsyncLoggingC1ERKSsli",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo12AsyncLoggingC1ERKSsli",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::AsyncLogging::AsyncLogging\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/AsyncLogging.cpp/_ZN7mymuduo12AsyncLoggingC1ERKSsli.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/AsyncLogging.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/AsyncLogging.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/AsyncLogging.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo12AsyncLogging6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo12AsyncLogging6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo12AsyncLogging6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::AsyncLogging::append\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/AsyncLogging.cpp/_ZN7mymuduo12AsyncLogging6appendEPKcm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6BufferC1Etmm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6BufferC1Etmm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6BufferC1Etmm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::Buffer\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6BufferC1Etmm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::append\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer6appendEPKcm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer8append_aEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer8append_aEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer8append_aEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::append_a\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer8append_aEPKcm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer5eraseEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer5eraseEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer5eraseEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::erase\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer5eraseEm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer13pick_datagramERSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer13pick_datagramERSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer13pick_datagramERSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::pick_datagram\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer13pick_datagramERSs.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer15ensure_writableEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer15ensure_writableEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer15ensure_writableEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::ensure_writable\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer15ensure_writableEm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer6resizeEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer6resizeEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer6resizeEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::resize\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer6resizeEm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer7read_fdEiPi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer7read_fdEiPi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer7read_fdEiPi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::read_fd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer7read_fdEiPi.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer8write_fdEiPi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer8write_fdEiPi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer8write_fdEiPi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::write_fd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer8write_fdEiPi.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer8retrieveEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer8retrieveEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer8retrieveEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::retrieve\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer8retrieveEm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer12retrieve_allEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer12retrieve_allEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer12retrieve_allEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::retrieve_all\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer12retrieve_allEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer18retrieve_as_stringEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer18retrieve_as_stringEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer18retrieve_as_stringEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::retrieve_as_string\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer18retrieve_as_stringEm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Buffer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Buffer22retrieve_as_all_stringEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Buffer22retrieve_as_all_stringEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Buffer22retrieve_as_all_stringEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Buffer::retrieve_as_all_string\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Buffer.cpp/_ZN7mymuduo6Buffer22retrieve_as_all_stringEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7ChannelC1EPNS_9EventLoopEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7ChannelC1EPNS_9EventLoopEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7ChannelC1EPNS_9EventLoopEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::Channel\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7ChannelC1EPNS_9EventLoopEi.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel6handleENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel6handleENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel6handleENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::handle\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel6handleENS_9TimeStampE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel6removeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel6removeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel6removeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::remove\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel6removeEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel6get_fdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel6get_fdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel6get_fdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::get_fd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel6get_fdEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel19set_happened_eventsEj",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel19set_happened_eventsEj",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel19set_happened_eventsEj",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::set_happened_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel19set_happened_eventsEj.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel19get_happened_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel19get_happened_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel19get_happened_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::get_happened_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel19get_happened_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel20get_monitored_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel20get_monitored_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel20get_monitored_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::get_monitored_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel20get_monitored_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel3tieERKSt10shared_ptrIvE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel3tieERKSt10shared_ptrIvE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel3tieERKSt10shared_ptrIvE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::tie\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel3tieERKSt10shared_ptrIvE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel6set_ETEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel6set_ETEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel6set_ETEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::set_ET\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel6set_ETEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel8unset_ETEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel8unset_ETEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel8unset_ETEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::unset_ET\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel8unset_ETEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel15set_read_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel15set_read_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel15set_read_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::set_read_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel15set_read_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel16set_write_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel16set_write_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel16set_write_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::set_write_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel16set_write_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel17unset_read_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel17unset_read_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel17unset_read_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::unset_read_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel17unset_read_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel18unset_write_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel18unset_write_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel18unset_write_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::unset_write_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel18unset_write_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Channel.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7Channel16unset_all_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7Channel16unset_all_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7Channel16unset_all_eventsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Channel::unset_all_events\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Channel.cpp/_ZN7mymuduo7Channel16unset_all_eventsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/CurrentThread.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/CurrentThread.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/CurrentThread.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo13CurrentThread8__detail9cache_tidEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo13CurrentThread8__detail9cache_tidEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo13CurrentThread8__detail9cache_tidEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::CurrentThread::__detail::cache_tid\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/CurrentThread.cpp/_ZN7mymuduo13CurrentThread8__detail9cache_tidEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/DefaultPoller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/DefaultPoller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/DefaultPoller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Poller18new_default_pollerEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Poller18new_default_pollerEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Poller18new_default_pollerEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Poller::new_default_poller\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/DefaultPoller.cpp/_ZN7mymuduo6Poller18new_default_pollerEPNS_9EventLoopE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EPollPoller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11EPollPollerC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11EPollPollerC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11EPollPollerC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EPollPoller::EPollPoller\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/_ZN7mymuduo11EPollPollerC1EPNS_9EventLoopE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EPollPoller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11EPollPoller4pollEPSt6vectorIPNS_7ChannelESaIS3_EEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11EPollPoller4pollEPSt6vectorIPNS_7ChannelESaIS3_EEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11EPollPoller4pollEPSt6vectorIPNS_7ChannelESaIS3_EEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EPollPoller::poll\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/_ZN7mymuduo11EPollPoller4pollEPSt6vectorIPNS_7ChannelESaIS3_EEi.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EPollPoller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11EPollPoller14update_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11EPollPoller14update_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11EPollPoller14update_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EPollPoller::update_channel\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/_ZN7mymuduo11EPollPoller14update_channelEPNS_7ChannelE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EPollPoller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11EPollPoller14remove_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11EPollPoller14remove_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11EPollPoller14remove_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EPollPoller::remove_channel\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EPollPoller.cpp/_ZN7mymuduo11EPollPoller14remove_channelEPNS_7ChannelE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoop.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail14create_eventfdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail14create_eventfdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail14create_eventfdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::create_eventfd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/_ZN7mymuduo8__detail14create_eventfdEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoop.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9EventLoopC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9EventLoopC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9EventLoopC1Ev",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoop::EventLoop\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/_ZN7mymuduo9EventLoopC1Ev.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoop.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9EventLoop4loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9EventLoop4loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9EventLoop4loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoop::loop\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/_ZN7mymuduo9EventLoop4loopEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoop.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9EventLoop4quitEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9EventLoop4quitEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9EventLoop4quitEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoop::quit\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/_ZN7mymuduo9EventLoop4quitEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoop.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9EventLoop6wakeupEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9EventLoop6wakeupEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9EventLoop6wakeupEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoop::wakeup\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/_ZN7mymuduo9EventLoop6wakeupEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoop.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9EventLoop6cancelENS_7TimerIdE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9EventLoop6cancelENS_7TimerIdE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9EventLoop6cancelENS_7TimerIdE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoop::cancel\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoop.cpp/_ZN7mymuduo9EventLoop6cancelENS_7TimerIdE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThread.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoopThread.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThread.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo15EventLoopThread10start_loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo15EventLoopThread10start_loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo15EventLoopThread10start_loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoopThread::start_loop\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThread.cpp/_ZN7mymuduo15EventLoopThread10start_loopEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoopThreadPool.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo19EventLoopThreadPoolC1EPNS_9EventLoopERKSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo19EventLoopThreadPoolC1EPNS_9EventLoopERKSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo19EventLoopThreadPoolC1EPNS_9EventLoopERKSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoopThreadPool::EventLoopThreadPool\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp/_ZN7mymuduo19EventLoopThreadPoolC1EPNS_9EventLoopERKSs.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoopThreadPool.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo19EventLoopThreadPool13get_next_loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo19EventLoopThreadPool13get_next_loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo19EventLoopThreadPool13get_next_loopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoopThreadPool::get_next_loop\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp/_ZN7mymuduo19EventLoopThreadPool13get_next_loopEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/EventLoopThreadPool.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo19EventLoopThreadPool13get_all_loopsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo19EventLoopThreadPool13get_all_loopsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo19EventLoopThreadPool13get_all_loopsEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::EventLoopThreadPool::get_all_loops\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/EventLoopThreadPool.cpp/_ZN7mymuduo19EventLoopThreadPool13get_all_loopsEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/InetAddress.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11InetAddressC1ERKSst",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11InetAddressC1ERKSst",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11InetAddressC1ERKSst",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::InetAddress::InetAddress\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/_ZN7mymuduo11InetAddressC1ERKSst.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/InetAddress.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11InetAddressC1EPKcS2_",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11InetAddressC1EPKcS2_",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11InetAddressC1EPKcS2_",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::InetAddress::InetAddress\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/_ZN7mymuduo11InetAddressC1EPKcS2_.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/InetAddress.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11InetAddress14get_local_addrEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11InetAddress14get_local_addrEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11InetAddress14get_local_addrEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::InetAddress::get_local_addr\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/_ZN7mymuduo11InetAddress14get_local_addrEi.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/InetAddress.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo11InetAddress13get_peer_addrEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo11InetAddress13get_peer_addrEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo11InetAddress13get_peer_addrEi",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::InetAddress::get_peer_addr\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/InetAddress.cpp/_ZN7mymuduo11InetAddress13get_peer_addrEi.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail4FileC1ESs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail4FileC1ESs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail4FileC1ESs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::File::File\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo8__detail4FileC1ESs.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail4File6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail4File6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail4File6appendEPKcm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::File::append\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo8__detail4File6appendEPKcm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail4File5flushEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail4File5flushEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail4File5flushEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::File::flush\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo8__detail4File5flushEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7LogFileC1ERKSslbii",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7LogFileC1ERKSslbii",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7LogFileC1ERKSslbii",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::LogFile::LogFile\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo7LogFileC1ERKSslbii.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7LogFile6appendEPKci",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7LogFile6appendEPKci",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7LogFile6appendEPKci",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::LogFile::append\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo7LogFile6appendEPKci.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7LogFile5flushEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7LogFile5flushEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7LogFile5flushEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::LogFile::flush\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo7LogFile5flushEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/LogFile.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo7LogFile9roll_fileEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo7LogFile9roll_fileEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo7LogFile9roll_fileEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::LogFile::roll_file\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/LogFile.cpp/_ZN7mymuduo7LogFile9roll_fileEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Poller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Poller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Poller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6PollerC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6PollerC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6PollerC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Poller::Poller\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Poller.cpp/_ZN7mymuduo6PollerC1EPNS_9EventLoopE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Poller.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Poller.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Poller.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZNK7mymuduo6Poller11has_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZNK7mymuduo6Poller11has_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZNK7mymuduo6Poller11has_channelEPNS_7ChannelE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Poller::has_channel\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Poller.cpp/_ZNK7mymuduo6Poller11has_channelEPNS_7ChannelE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket4bindERKNS_11InetAddressE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket4bindERKNS_11InetAddressE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket4bindERKNS_11InetAddressE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::bind\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket4bindERKNS_11InetAddressE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket6listenEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket6listenEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket6listenEm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::listen\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket6listenEm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket6acceptERNS_11InetAddressE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket6acceptERNS_11InetAddressE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket6acceptERNS_11InetAddressE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::accept\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket6acceptERNS_11InetAddressE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket14shutdown_writeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket14shutdown_writeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket14shutdown_writeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::shutdown_write\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket14shutdown_writeEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket14set_keep_aliveEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket14set_keep_aliveEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket14set_keep_aliveEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::set_keep_alive\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket14set_keep_aliveEb.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket14set_reuse_addrEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket14set_reuse_addrEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket14set_reuse_addrEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::set_reuse_addr\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket14set_reuse_addrEb.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket14set_reuse_portEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket14set_reuse_portEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket14set_reuse_portEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::set_reuse_port\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket14set_reuse_portEb.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Socket.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Socket15set_tcp_nodelayEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Socket15set_tcp_nodelayEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Socket15set_tcp_nodelayEb",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Socket::set_tcp_nodelay\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Socket.cpp/_ZN7mymuduo6Socket15set_tcp_nodelayEb.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpConnection.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user_static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init_static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor_static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::check_loop_not_null\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpConnection.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo13TcpConnectionC1EPNS_9EventLoopEmRKSsiRKNS_11InetAddressES7_b",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo13TcpConnectionC1EPNS_9EventLoopEmRKSsiRKNS_11InetAddressES7_b",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo13TcpConnectionC1EPNS_9EventLoopEmRKSsiRKNS_11InetAddressES7_b",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TcpConnection::TcpConnection\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/_ZN7mymuduo13TcpConnectionC1EPNS_9EventLoopEmRKSsiRKNS_11InetAddressES7_b.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpConnection.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo13TcpConnection11establishedEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo13TcpConnection11establishedEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo13TcpConnection11establishedEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TcpConnection::established\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/_ZN7mymuduo13TcpConnection11establishedEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpConnection.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo13TcpConnection9destroyedEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo13TcpConnection9destroyedEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo13TcpConnection9destroyedEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TcpConnection::destroyed\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/_ZN7mymuduo13TcpConnection9destroyedEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpConnection.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo13TcpConnection4sendERKSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo13TcpConnection4sendERKSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo13TcpConnection4sendERKSs",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TcpConnection::send\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/_ZN7mymuduo13TcpConnection4sendERKSs.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpConnection.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo13TcpConnection8shutdownEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo13TcpConnection8shutdownEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo13TcpConnection8shutdownEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TcpConnection::shutdown\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpConnection.cpp/_ZN7mymuduo13TcpConnection8shutdownEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpServer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpServer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpServer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user_static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init_static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor_static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::check_loop_not_null\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpServer.cpp/static_func__ZN7mymuduo8__detailL19check_loop_not_nullEPNS_9EventLoopE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpServer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TcpServer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpServer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo9TcpServer5startEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo9TcpServer5startEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo9TcpServer5startEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TcpServer::start\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TcpServer.cpp/_ZN7mymuduo9TcpServer5startEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Thread.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Thread.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Thread.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Thread5startEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Thread5startEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Thread5startEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Thread::start\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Thread.cpp/_ZN7mymuduo6Thread5startEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Thread.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Thread.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Thread.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo6Thread4joinEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo6Thread4joinEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo6Thread4joinEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Thread::join\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Thread.cpp/_ZN7mymuduo6Thread4joinEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/ThreadPool.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo10ThreadPoolC1ERKSsm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo10ThreadPoolC1ERKSsm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo10ThreadPoolC1ERKSsm",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::ThreadPool::ThreadPool\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp/_ZN7mymuduo10ThreadPoolC1ERKSsm.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/ThreadPool.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo10ThreadPool4stopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo10ThreadPool4stopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo10ThreadPool4stopEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::ThreadPool::stop\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp/_ZN7mymuduo10ThreadPool4stopEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/ThreadPool.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo10ThreadPool4sizeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo10ThreadPool4sizeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo10ThreadPool4sizeEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::ThreadPool::size\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/ThreadPool.cpp/_ZN7mymuduo10ThreadPool4sizeEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Timer.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/Timer.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Timer.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo5Timer7restartENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo5Timer7restartENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo5Timer7restartENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::Timer::restart\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/Timer.cpp/_ZN7mymuduo5Timer7restartENS_9TimeStampE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TimerQueue.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail14create_timerfdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail14create_timerfdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail14create_timerfdEv",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::create_timerfd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/_ZN7mymuduo8__detail14create_timerfdEv.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TimerQueue.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail22how_much_time_from_nowENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail22how_much_time_from_nowENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail22how_much_time_from_nowENS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::how_much_time_from_now\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/_ZN7mymuduo8__detail22how_much_time_from_nowENS_9TimeStampE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TimerQueue.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail12read_timerfdEiNS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail12read_timerfdEiNS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail12read_timerfdEiNS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::read_timerfd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/_ZN7mymuduo8__detail12read_timerfdEiNS_9TimeStampE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TimerQueue.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo8__detail13reset_timerfdEiNS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo8__detail13reset_timerfdEiNS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo8__detail13reset_timerfdEiNS_9TimeStampE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::__detail::reset_timerfd\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/_ZN7mymuduo8__detail13reset_timerfdEiNS_9TimeStampE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TimerQueue.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo10TimerQueueC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo10TimerQueueC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo10TimerQueueC1EPNS_9EventLoopE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimerQueue::TimerQueue\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/_ZN7mymuduo10TimerQueueC1EPNS_9EventLoopE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/src/TimerQueue.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user__ZN7mymuduo10TimerQueue6cancelENS_7TimerIdE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init__ZN7mymuduo10TimerQueue6cancelENS_7TimerIdE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor__ZN7mymuduo10TimerQueue6cancelENS_7TimerIdE",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"mymuduo::TimerQueue::cancel\"",
+      "-I/home/bwb/work/myTinyMuduo/src"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/src/TimerQueue.cpp/_ZN7mymuduo10TimerQueue6cancelENS_7TimerIdE.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/example/ChatClient/ChatClient.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/example/ChatClient/ChatClient.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/example/ChatClient/ChatClient.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user_main",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init_main",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor_main",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"main\"",
+      "-I/home/bwb/work/myTinyMuduo/example/ChatClient"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/example/ChatClient/ChatClient.cpp/main.cpp"
+  },
+  {
+    "directory": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/example/EchoServer/main.cpp",
+    "arguments": [
+      "-include",
+      "/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/lib/wfuzz_generator_runtime.h",
+      "-I/home/bwb/.wfuzz/http...dev.xfuzz.shuimuyulin.com.10100/wfuzz-cc/include",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/example/EchoServer/main.cpp",
+      "-include",
+      "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/example/EchoServer/main.cpp/wfuzz_generated_readers.h",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_USER=__wfuzz_entrypoint_adaptor_user_main",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR_INIT=__wfuzz_entrypoint_adaptor_init_main",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_ADAPTOR=__wfuzz_entrypoint_adaptor_main",
+      "-DWFUZZ_GENERATED_ENTRYPOINT_NAME=\"main\"",
+      "-I/home/bwb/work/myTinyMuduo/example/EchoServer"
+    ],
+    "file": "/home/bwb/work/myTinyMuduo/.wfuzztmp/drivers/example/EchoServer/main.cpp/main.cpp"
+  }
+]

@@ -3,3 +3,4 @@ build/
 log/
 lib/
 bin/
+wfuzz.json
