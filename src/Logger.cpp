@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include <filesystem>
 
 namespace mymuduo
 {
@@ -6,7 +7,15 @@ namespace mymuduo
 Logger::Logger(const std::string& path, const std::string& basename, int roll_size = 500*1000) :
         _M_async_logging(path + basename, roll_size, 1),
         _M_dir_name(path)
-{ }
+{
+    namespace fs = std::filesystem;
+    fs::directory_entry entry{_M_dir_name};
+    
+    if(!entry.exists() && !fs::create_directory(entry)) {
+        fprintf(stderr, "can't create log_path directory.");
+        exit(-1);
+    }
+}
 
 void Logger::init(LogLevel level)
 {
