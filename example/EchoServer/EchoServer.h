@@ -47,9 +47,7 @@ public:
 
     void onMessage(const TcpConnectionPtr &conn, mymuduo::Buffer *buf, mymuduo::TimeStamp time)
     {
-        std::string msg = buf->retrieve_all_as_string();
-        conn->send(msg);
-        /*
+        std::string msg;
         if(buf->pick_datagram(msg)) {
             add_sep(buf, msg);
             conn->send(msg);
@@ -57,8 +55,6 @@ public:
         else {
             LOG_WARN("pick_datagram() return false.\n");
         }
-        */
-        // conn->shutdown();
     }
 
 private:
