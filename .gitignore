@@ -1,7 +1,7 @@
-.vscode/*
-build/
-log/
-lib/
-bin/
-.wfuzztmp
+.vscode/
+.wfuzztmp/
+.cache
+.build/
+build
+log/*
 wfuzz.json
