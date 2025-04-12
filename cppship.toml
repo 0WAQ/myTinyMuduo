@@ -1,5 +1,5 @@
 [package]
-name = "mymuduo-cppship"
+name = "myTinyMuduo"
 version = "0.1.0"
 std = 23
 
