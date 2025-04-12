@@ -58,7 +58,7 @@ public:
     void retrieve_all();
 
     std::string retrieve_as_string(size_t len);
-    std::string retrieve_as_all_string();
+    std::string retrieve_all_as_string();
 
     /**
      * @brief 删除size的大小的数据, 并返回

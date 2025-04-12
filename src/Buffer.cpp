@@ -228,7 +228,7 @@ std::string Buffer::retrieve_as_string(size_t len) {
     return res;
 }
 
-std::string Buffer::retrieve_as_all_string() {
+std::string Buffer::retrieve_all_as_string() {
     return retrieve_as_string(readable());
 }
 
