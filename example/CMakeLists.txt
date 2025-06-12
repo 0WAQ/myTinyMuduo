@@ -1,7 +1,7 @@
 
 project(example)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../bin/example)
 
 # 宏
 macro(ADDEXAM FILENAME)

@@ -27,6 +27,12 @@ namespace __detail
         return t_cached_tid;
     }
 
+    /**
+     * @brief 睡眠当前线程
+     */
+    void sleep_usec(int64_t usec);
+
+
 } // namespace CurrentThread
 
 } // namespace mymuduo

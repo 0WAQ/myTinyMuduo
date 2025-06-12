@@ -24,7 +24,7 @@ public:
     /**
      * @param cb 线程初始化时的回调函数, 线程启动前被调用
      */
-    EventLoopThread(const ThreadInitCallback &cb, const std::string &name);
+    EventLoopThread(const ThreadInitCallback &cb = {}, const std::string &name = {});
 
     ~EventLoopThread();
 

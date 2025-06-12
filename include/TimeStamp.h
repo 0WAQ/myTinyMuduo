@@ -127,6 +127,12 @@ inline TimeStamp add_time(TimeStamp timestamp, double seconds) {
     return timestamp + cast_duration;
 }
 
+inline int64_t time_difference(TimeStamp high, TimeStamp low) {
+    using namespace std::chrono;
+    nanoseconds diff = high.time_since_epoch() - low.time_since_epoch();
+    return diff.count();
+}
+
 } // namespace mymuduo
 
 #endif // TIMESTAMP_H
