@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <mutex>
+#include <filesystem>
 #include <time.h>
 #include "noncopyable.h"
 
@@ -46,7 +47,7 @@ class LogFile : noncopyable
 {
 public:
 
-    LogFile(const std::string& basename, off_t roll_size,
+    LogFile(const std::filesystem::path& basename, off_t roll_size,
             bool thread_safe = true, int flush_interval = 3, int check_every = 1024);
 
     ~LogFile() = default;
@@ -68,7 +69,7 @@ private:
 
 private:
 
-    const std::string _M_basename;
+    const std::filesystem::path _M_basename;
     const off_t _M_roll_size;       // 文件滚动大小
     const int _M_flush_interval;    // 文件刷新间隔
     const int _M_check_every;       // 文件最大行数

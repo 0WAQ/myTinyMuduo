@@ -14,7 +14,14 @@ namespace __detail
 File::File(std::string filename) :
         _M_written(0)
 {
-    _M_fp = ::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
+    // FIXME: 不要这样使用
+    if (filename.substr(0, 6) == "stdout") {
+        _M_fp = stdout;
+    }
+    else {
+        _M_fp = ::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
+    }
+
     assert(_M_fp != nullptr);
     ::setbuffer(_M_fp, _M_buf, sizeof(_M_buf));
 }
@@ -59,7 +66,7 @@ size_t File::write(const char* logline, size_t len)
 
 } // namespace __detail
 
-LogFile::LogFile(const std::string& basename, off_t roll_size,
+LogFile::LogFile(const std::filesystem::path& basename, off_t roll_size,
     bool thread_safe, int flush_interval, int check_every) : 
         _M_basename(basename),
         _M_roll_size(roll_size),
@@ -72,7 +79,6 @@ LogFile::LogFile(const std::string& basename, off_t roll_size,
         _M_last_flush(0)
 {
     roll_file();
-
 }
 
 void LogFile::append(const char* logline, int len)
@@ -131,7 +137,7 @@ void LogFile::append_unlocked(const char* logline, size_t len)
 bool LogFile::roll_file()
 {
     time_t now = 0;
-    std::string filename = get_logfile_name(_M_basename, &now);
+    std::string filename = get_logfile_name(_M_basename.c_str(), &now);
     time_t start = now / kRollPerSeconds_ * kRollPerSeconds_;
 
     if(now > _M_last_roll)

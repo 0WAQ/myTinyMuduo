@@ -7,7 +7,7 @@
 
 namespace mymuduo
 {
-AsyncLogging::AsyncLogging(const std::string& basename, off_t roll_size, int flush_interval) :
+AsyncLogging::AsyncLogging(const std::filesystem::path& basename, off_t roll_size, int flush_interval) :
         _M_running(false),
         _M_basename(basename),
         _M_flush_interval(flush_interval),

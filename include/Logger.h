@@ -6,6 +6,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <filesystem>
 #include <string>
 #include <stdarg.h> // vastart va_end
 #include <sys/stat.h> // mkdir
@@ -15,6 +16,8 @@
 
 namespace mymuduo
 {
+
+// TODO: 增加新功能: 可以重定向日志的输出到任意位置
 
 /// @brief 日志类, 单例模式
 class Logger : noncopyable
@@ -35,7 +38,7 @@ public:
     /**
      * @brief 单例模式, 获取唯一实例(懒汉模式)
      */
-    static Logger* get_instance(const std::string& path, const std::string& basename, int roll_size = 500*1000*1000) {
+    static Logger* get_instance(const std::string& path = "stdout", const std::string& basename = "Server", int roll_size = 500*1000*1000) {
         // 懒汉模式, 在第一次调用时才创建对象
         static Logger log(path, basename, roll_size);   // c++11以后, 使用局部变量懒汉不用加锁
         return &log;
@@ -71,21 +74,13 @@ private:
     /**
      * @brief 将构造与析构设置为private, 禁止创建与销毁单例对象
      */
-    Logger() = delete;
-    Logger(const std::string& path, const std::string& basename, int roll_size);
-
-    ~Logger() {
-        _M_async_logging.stop();
-    }
-
+    Logger();
+    Logger(const std::filesystem::path& path, const std::string& basename, int roll_size);
 
 private:
 
     // 日志等级
     LogLevel _M_level;
-
-    // 日志文件的路径
-    const std::string _M_dir_name;
 
     // 异步日志系统
     AsyncLogging _M_async_logging;
@@ -99,7 +94,7 @@ private:
 
 #define LOG_BASE(level, format, ...)                                \
     do {                                                            \
-        mymuduo::Logger* log = mymuduo::Logger::get_instance("", "", 0);     \
+        mymuduo::Logger* log = mymuduo::Logger::get_instance();     \
         if(log->log_level() <= mymuduo::level) {                    \
             log->write(mymuduo::level, format, ##__VA_ARGS__);      \
         }                                                           \

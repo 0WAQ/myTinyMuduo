@@ -2,6 +2,7 @@
 #define ASYNCLOGGING_H
 
 #include <string>
+#include <filesystem>
 #include <cstring>
 #include <strings.h>
 #include <vector>
@@ -68,7 +69,7 @@ class AsyncLogging : noncopyable
 {
 public:
 
-    AsyncLogging(const std::string& basename, off_t roll_size, int flush_interval = 3);
+    AsyncLogging(const std::filesystem::path& basename, off_t roll_size, int flush_interval = 3);
     
     ~AsyncLogging() {
         if(_M_running) {
@@ -107,7 +108,7 @@ private:
 private:
 
     std::atomic<bool> _M_running;
-    std::string _M_basename;
+    std::filesystem::path _M_basename;
     const int _M_flush_interval;    // 刷新缓冲区的间隔时间
     const int _M_roll_size;         // 
 

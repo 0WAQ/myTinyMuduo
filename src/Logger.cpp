@@ -1,17 +1,21 @@
 #include "Logger.h"
 #include "TimeStamp.h"
-#include <filesystem>
 
 namespace mymuduo
 {
 
-Logger::Logger(const std::string& path, const std::string& basename, int roll_size = 500*1000) :
-        _M_async_logging(path + basename, roll_size, 1),
-        _M_dir_name(path)
+Logger::Logger(const std::filesystem::path& path, const std::string& basename, int roll_size = 500*1000) :
+        _M_async_logging(path / basename, roll_size, 1)
 {
     namespace fs = std::filesystem;
-    fs::directory_entry entry{_M_dir_name};
-    
+
+    // FIXME: 不要这样使用!
+    if (std::string(path.c_str()) == "stdout") {
+        return;
+    }
+
+    fs::directory_entry entry{ path };
+
     if(!entry.exists() && !fs::create_directory(entry)) {
         fprintf(stderr, "can't create log_path directory.");
         exit(-1);
