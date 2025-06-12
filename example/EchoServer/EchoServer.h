@@ -7,6 +7,7 @@
 #define ECHOSERVER_H
 
 #include <TcpServer.h>
+#include <Logger.h>
 
 /**
  * @brief 业务服务器: Echo
