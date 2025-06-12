@@ -6,10 +6,8 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
-#include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
 #include <queue>
 #include <sys/syscall.h>
 #include <mutex>
@@ -17,10 +15,7 @@
 #include <thread>
 #include <condition_variable>
 #include <functional>
-#include <future>
 #include <atomic>
-
-#include "Logger.h"
 
 namespace mymuduo
 {

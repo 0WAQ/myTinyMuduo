@@ -11,7 +11,6 @@
 #include <sys/epoll.h>
 
 #include "TimeStamp.h"
-#include "Socket.h"
 #include "noncopyable.h"
 
 namespace mymuduo

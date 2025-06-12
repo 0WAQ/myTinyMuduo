@@ -2,7 +2,6 @@
 #define EVENTLOOPTHREAD_H
 
 #include <condition_variable>
-#include <functional>
 #include <string>
 #include <mutex>
 

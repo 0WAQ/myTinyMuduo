@@ -1,7 +1,6 @@
 #ifndef EVENTLOOPTHREADPOOL_H
 #define EVENTLOOPTHREADPOOL_H
 
-#include <functional>
 #include <memory>
 #include <vector>
 #include <string>

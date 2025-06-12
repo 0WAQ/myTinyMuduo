@@ -1,7 +1,6 @@
 #ifndef LOGFILE_H
 #define LOGFILE_H
 
-#include <fstream>
 #include <string>
 #include <memory>
 #include <mutex>
@@ -76,7 +75,7 @@ private:
 
     int _M_count;   // 记录文件行数
 
-    std::unique_ptr<std::mutex> _M_mutex;
+    std::unique_ptr<std::mutex> _M_mutex_ptr;
     time_t _M_start_of_period;  // 
     time_t _M_last_roll;        // 上次滚动文件时间
     time_t _M_last_flush;       // 上次刷新文件时间

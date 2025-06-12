@@ -7,7 +7,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <ctime>
-#include <functional>
 
 int main(int argc, char* argv[])
 {

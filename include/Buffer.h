@@ -6,7 +6,6 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include <iostream>
 #include <string>
 #include <cstdint>
 #include <cstring>

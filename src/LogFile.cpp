@@ -66,18 +66,19 @@ LogFile::LogFile(const std::string& basename, off_t roll_size,
         _M_flush_interval(flush_interval),
         _M_check_every(check_every),
         _M_count(0),
-        _M_mutex(thread_safe ? new std::mutex : nullptr),
+        _M_mutex_ptr(thread_safe ? new std::mutex : nullptr),
         _M_start_of_period(0),
         _M_last_roll(0),
         _M_last_flush(0)
 {
     roll_file();
+
 }
 
 void LogFile::append(const char* logline, int len)
 {
-    if(_M_mutex) {
-        std::lock_guard<std::mutex>(*_M_mutex);
+    if(_M_mutex_ptr) {
+        std::lock_guard<std::mutex> guard{ *_M_mutex_ptr };
         append_unlocked(logline, len);
     }
     else {
@@ -87,8 +88,8 @@ void LogFile::append(const char* logline, int len)
 
 void LogFile::flush()
 {
-    if(_M_mutex) {
-        std::lock_guard<std::mutex>(*_M_mutex);
+    if(_M_mutex_ptr) {
+        std::lock_guard<std::mutex> guard{ *_M_mutex_ptr };
         _M_file->flush();
     }
     else {

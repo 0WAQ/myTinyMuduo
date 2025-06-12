@@ -6,15 +6,11 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <iostream>
 #include <string>
-#include <mutex>
-#include <memory>
 #include <stdarg.h> // vastart va_end
 #include <sys/stat.h> // mkdir
 #include <cassert>
 #include "AsyncLogging.h"
-#include "TimeStamp.h"
 #include "noncopyable.h"
 
 namespace mymuduo

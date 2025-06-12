@@ -11,7 +11,6 @@
 #include <atomic>
 #include <mutex>
 #include <vector>
-#include <map>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 
 #include "Poller.h"

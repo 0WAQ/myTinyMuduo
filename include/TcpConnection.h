@@ -6,13 +6,11 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include <functional>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <memory>
 #include <atomic>
 #include "Socket.h"
-#include "EventLoop.h"
 #include "InetAddress.h"
 #include "Channel.h"
 #include "Buffer.h"

@@ -6,7 +6,6 @@
 #ifndef ACCEPTOR_H
 #define ACCEPTOR_H
 
-#include <memory>
 #include "Socket.h"
 #include "Channel.h"
 #include "noncopyable.h"

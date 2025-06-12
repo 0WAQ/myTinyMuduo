@@ -7,9 +7,7 @@
 #define TCPSERVER_H
 
 #include <unordered_map>
-#include <functional>
 #include <string>
-#include <vector>
 #include <atomic>
 #include <mutex>
 #include "EventLoop.h"
@@ -19,8 +17,6 @@
 #include "Acceptor.h"
 #include "TcpConnection.h"
 #include "InetAddress.h"
-#include "Logger.h"
-#include "ThreadPool.h"
 #include "callbacks.h"
 #include "noncopyable.h"
 

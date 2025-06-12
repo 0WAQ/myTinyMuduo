@@ -1,4 +1,5 @@
 #include "ThreadPool.h"
+#include "Logger.h"
 
 namespace mymuduo
 {
