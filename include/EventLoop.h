@@ -47,6 +47,7 @@ public:
      * @brief 开启与退出事件循环
      */
     void loop();
+    void loop_once(int timeoutMs = 10);
     void quit();
 
     /**
@@ -88,6 +89,8 @@ public:
     void update_channel(Channel* ch) { _M_poller->update_channel(ch); }
     void remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
     bool has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
+
+    const int tid() { return _M_tid; }
 
 private:
 

@@ -1,6 +1,8 @@
 #ifndef CURRENTTHREAD_H
 #define CURRENTTHREAD_H
 
+#include <cstdint>
+
 namespace mymuduo
 {
 

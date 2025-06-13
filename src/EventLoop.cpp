@@ -92,6 +92,30 @@ void EventLoop::loop()
     _M_looping = false;
 }
 
+void EventLoop::loop_once(int timeoutMs)
+{
+    LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());
+
+    assert(!_M_looping);
+    assert(is_loop_thread());
+
+    _M_looping = true;
+
+    _M_activeChannels.clear();
+    _M_poller_return_time = _M_poller->poll(&_M_activeChannels, kPollTimeMs);
+    
+    for(Channel *ch : _M_activeChannels) {
+        ch->handle(_M_poller_return_time);
+    }
+
+    // 用于执行task_queue中的任务
+    do_pending_functors();
+    _M_looping = false;
+
+
+    LOG_INFO("EventLoop %p stop looping.\n", this);
+}
+
 void EventLoop::quit() 
 {
     _M_quit = true;
