@@ -18,4 +18,8 @@ function(add_test name)
 endfunction()
 
 # 添加单元测试
-add_test(test_channel)
+add_test(test_Channel)
+add_test(test_EventLoop)
+add_test(test_EventLoopThread)
+#add_test(test_EventLoopThreadPool)
+#add_test(test_TimerQueue)
