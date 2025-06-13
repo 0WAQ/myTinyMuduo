@@ -91,6 +91,7 @@ public:
     bool has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
 
     const int tid() { return _M_tid; }
+    bool looping() { return _M_looping.load(); }
 
 private:
 
