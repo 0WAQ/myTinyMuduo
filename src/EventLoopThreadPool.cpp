@@ -1,11 +1,13 @@
 #include "EventLoopThreadPool.h"
+#include "EventLoop.h"
 #include "EventLoopThread.h"
 
 namespace mymuduo
 {
 
 EventLoopThreadPool::EventLoopThreadPool(EventLoop *main_loop, const std::string &name) :
-            _M_main_loop(main_loop), _M_name(name), _M_started(false), _M_num_threads(0), _M_next(0)
+            _M_main_loop(main_loop), _M_name(name), _M_started(false), _M_exited(false),
+            _M_num_threads(0), _M_next(0)
 { }
 
 void EventLoopThreadPool::start(const ThreadInitCallback &cb) {
@@ -22,6 +24,20 @@ void EventLoopThreadPool::start(const ThreadInitCallback &cb) {
 
     if(_M_num_threads == 0 && cb) {
         cb(_M_main_loop);
+    }
+}
+
+void EventLoopThreadPool::stop() {
+    if (_M_exited) {
+        return;
+    }
+
+    _M_exited = false;
+    _M_started = false;
+
+    for (int i = 0; i < _M_num_threads; ++i) {
+        std::unique_ptr<EventLoopThread> thread = std::move(_M_threads[i]);
+        thread->stop_loop();
     }
 }
 

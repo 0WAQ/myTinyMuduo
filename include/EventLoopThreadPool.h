@@ -26,12 +26,14 @@ public:
      * @brief 启动从EventLoop线程以及对应的事件循环
      */
     void start(const ThreadInitCallback &cb = ThreadInitCallback{});
+    void stop();
 
     EventLoop* get_next_loop();
 
     std::vector<EventLoop*> get_all_loops();
 
     void set_thread_num(int num) { _M_num_threads = num; }
+    int num_threads() { return _M_num_threads; }
     bool started() const { return _M_started; }
     const std::string name() const { return _M_name; }
 
@@ -47,6 +49,7 @@ private:
     std::string _M_name;
 
     bool _M_started;
+    bool _M_exited;
 
     int _M_num_threads;
 

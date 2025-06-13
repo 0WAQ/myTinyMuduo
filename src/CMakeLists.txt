@@ -1,7 +1,7 @@
 
 project(mymuduo)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../lib)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../bin/lib)
 
 # 获取文件列表
 file(GLOB CPP_LIST "*.cpp")
