@@ -1,6 +1,7 @@
 #include "EventLoop.h"
 #include "CurrentThread.h"
 #include "Logger.h"
+#include <cstdio>
 
 namespace mymuduo
 {
@@ -118,6 +119,10 @@ void EventLoop::loop_once(int timeoutMs)
 
 void EventLoop::quit() 
 {
+    if (_M_quit) {
+        return;
+    }
+
     _M_quit = true;
 
     // 唤醒EventLoop线程, 让其处理任务队列中剩余的任务
@@ -192,7 +197,7 @@ void EventLoop::wakeup()
     uint64_t one = 1;
     size_t len = ::write(_M_wakeup_fd, &one, sizeof(one));
     if(len != sizeof(one)) {
-        LOG_ERROR("EventLoop::wakeup() writes %d bytes instead of 8.\n", len);
+        LOG_ERROR("EventLoop::wakeup() writes %ld bytes instead of 8.\n", len);
     }
 }
 
