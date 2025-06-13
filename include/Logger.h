@@ -109,7 +109,7 @@ private:
 
 #define LOG_INFO(format, ...)  LOG_BASE(Logger::INFO, format, ##__VA_ARGS__)
 #define LOG_WARN(format, ...)  LOG_BASE(Logger::WARN, format, ##__VA_ARGS__)
-#define LOG_ERROR(format, ...) do {   fprintf(stderr, format, ##__VA_ARGS__); \
+#define LOG_ERROR(format, ...) do { std::fprintf(stderr, format, ##__VA_ARGS__); \
     LOG_BASE(Logger::ERROR, format, ##__VA_ARGS__); exit(-1); } while(0)
 
 ////////////////////////////////////////////////////////////////////////////////////

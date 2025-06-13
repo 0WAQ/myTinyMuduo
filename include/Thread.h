@@ -35,8 +35,8 @@ public:
      */
     void join();
 
-    bool started() const { return _M_started; }
-    bool joined() const { return _M_joined; }
+    bool started() const { return _M_started.load(); }
+    bool joined() const { return _M_joined.load(); }
     pid_t tid() const { return _M_tid; }
     const std::string& name() const { return _M_name; }
     static int num_created() { return _M_num_created; }
@@ -47,8 +47,8 @@ private:
 
 private:
 
-    bool _M_started;
-    bool _M_joined;
+    std::atomic<bool> _M_started;
+    std::atomic<bool> _M_joined;
 
     pid_t _M_tid;
     std::shared_ptr<std::thread> _M_thread;
