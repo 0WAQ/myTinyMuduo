@@ -62,6 +62,8 @@ EventLoop::~EventLoop()
     _M_wakeup_channel->remove();
     ::close(_M_wakeup_fd);
 
+    quit();
+
     t_loop_in_this_thread = nullptr;
 }
 
@@ -93,6 +95,7 @@ void EventLoop::loop()
     _M_looping = false;
 }
 
+// TODO: 支持 timeoutMs
 void EventLoop::loop_once(int timeoutMs)
 {
     LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());
@@ -103,7 +106,7 @@ void EventLoop::loop_once(int timeoutMs)
     _M_looping = true;
 
     _M_activeChannels.clear();
-    _M_poller_return_time = _M_poller->poll(&_M_activeChannels, kPollTimeMs);
+    _M_poller_return_time = _M_poller->poll(&_M_activeChannels, timeoutMs);
     
     for(Channel *ch : _M_activeChannels) {
         ch->handle(_M_poller_return_time);
@@ -119,11 +122,12 @@ void EventLoop::loop_once(int timeoutMs)
 
 void EventLoop::quit() 
 {
-    if (_M_quit) {
+    if (!_M_looping || _M_quit) {
         return;
     }
 
     _M_quit = true;
+    _M_looping = false;
 
     // 唤醒EventLoop线程, 让其处理任务队列中剩余的任务
     if(!is_loop_thread()) {

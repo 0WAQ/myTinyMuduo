@@ -15,13 +15,13 @@ Thread::Thread(ThreadFunc func, const std::string &name) :
 }
 
 Thread::~Thread() {
-    if(_M_started && !_M_joined) {
+    if(_M_started.load() && !_M_joined.load()) {
         _M_thread->detach();
     }
 }
 
 void Thread::start() {
-    _M_started = true;
+    _M_started.store(true);
 
     sem_t sem;
     sem_init(&sem, 0, 0);
@@ -38,7 +38,12 @@ void Thread::start() {
 }
 
 void Thread::join() {
-    _M_joined = true;
+    if (_M_joined) {
+        return;
+    }
+
+    _M_joined.store(true);
+    _M_started.store(false);
     _M_thread->join();
 }
 

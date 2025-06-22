@@ -1,12 +1,18 @@
 #include "EventLoopThreadPool.h"
+#include "EventLoop.h"
 #include "EventLoopThread.h"
 
 namespace mymuduo
 {
 
 EventLoopThreadPool::EventLoopThreadPool(EventLoop *main_loop, const std::string &name) :
-            _M_main_loop(main_loop), _M_name(name), _M_started(false), _M_num_threads(0), _M_next(0)
+            _M_main_loop(main_loop), _M_name(name), _M_num_threads(0), _M_next(0),
+            _M_started(false), _M_exited(false)
 { }
+
+EventLoopThreadPool::~EventLoopThreadPool() {
+    stop();
+}
 
 void EventLoopThreadPool::start(const ThreadInitCallback &cb) {
     _M_started = true;
@@ -25,12 +31,26 @@ void EventLoopThreadPool::start(const ThreadInitCallback &cb) {
     }
 }
 
+void EventLoopThreadPool::stop() {
+    if (!_M_started.load() || _M_exited.load()) {
+        return;
+    }
+
+    _M_exited.store(true);
+    _M_started.store(false);
+
+    for (int i = 0; i < _M_num_threads; ++i) {
+        // 会自动调用析构
+        std::unique_ptr<EventLoopThread> thread = std::move(_M_threads[i]);
+    }
+}
+
 EventLoop* EventLoopThreadPool::get_next_loop() {
     EventLoop *loop = _M_main_loop;
     if(!_M_sub_loops.empty()) {
-        loop = _M_sub_loops[_M_next];
+        loop = _M_sub_loops[_M_next.load()];
         if(++_M_next >= _M_sub_loops.size()) {
-            _M_next = 0;
+            _M_next.store(0);
         }
     }
     return loop;
@@ -38,7 +58,7 @@ EventLoop* EventLoopThreadPool::get_next_loop() {
 
 std::vector<EventLoop*> EventLoopThreadPool::get_all_loops() {
     if(_M_sub_loops.empty()) {
-        return std::vector<EventLoop*>{_M_main_loop};
+        return std::vector<EventLoop*> { _M_main_loop };
     }
     return _M_sub_loops;
 }

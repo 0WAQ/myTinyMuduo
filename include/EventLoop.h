@@ -6,10 +6,12 @@
 #ifndef EVENTLOOP_H
 #define EVENTLOOP_H
 
+#include <cstddef>
 #include <functional>
 #include <memory>
 #include <atomic>
 #include <mutex>
+#include <sched.h>
 #include <vector>
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 
@@ -90,8 +92,9 @@ public:
     void remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
     bool has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
 
-    const int tid() { return _M_tid; }
-    bool looping() { return _M_looping.load(); }
+    const pid_t tid() const { return _M_tid; }
+    const bool looping() const { return _M_looping.load(); }
+    const size_t task_queue_size() const { return _M_task_queue.size(); }
 
 private:
 

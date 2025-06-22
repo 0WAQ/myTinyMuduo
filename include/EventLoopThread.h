@@ -1,6 +1,7 @@
 #ifndef EVENTLOOPTHREAD_H
 #define EVENTLOOPTHREAD_H
 
+#include <chrono>
 #include <condition_variable>
 #include <string>
 #include <mutex>
@@ -8,6 +9,8 @@
 #include "Thread.h"
 #include "callbacks.h"
 #include "noncopyable.h"
+
+using namespace std::chrono_literals;
 
 namespace mymuduo
 {
@@ -30,8 +33,16 @@ public:
 
     /**
      * @brief 让线程启动事件循环
+     * @param timeout 等待线程启动的时间, 默认为无限等待
      */
-    EventLoop* start_loop();
+    EventLoop* start_loop(std::chrono::nanoseconds timeout = std::chrono::hours::max());
+
+    void stop_loop();
+
+    const bool started() const { return _M_thread.started(); }
+    const bool running() const { return _M_running.load(); }
+    const bool exited() const { return _M_exited.load(); }
+    EventLoop* get_loop() { return _M_loop; }
 
 private:
 
@@ -48,7 +59,8 @@ private:
     // Thread的loop
     EventLoop *_M_loop;
 
-    bool _M_exiting;
+    std::atomic<bool> _M_running;
+    std::atomic<bool> _M_exited;
 
     std::mutex _M_mutex;
 
