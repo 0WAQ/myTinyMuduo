@@ -12,9 +12,9 @@
 namespace mymuduo
 {
 
-// system_clock的时间精度为ns
-using TimePoint = std::chrono::system_clock::time_point;
-using TimeDuration = std::chrono::system_clock::duration;
+// steady_clock的时间精度为ns
+using TimePoint = std::chrono::steady_clock::time_point;
+using TimeDuration = std::chrono::steady_clock::duration;
 
 class TimeStamp
 {
@@ -41,7 +41,7 @@ public:
      * @brief 获取当前时间戳
      */
     static TimeStamp now() {
-        return TimeStamp(std::chrono::system_clock::now());
+        return TimeStamp(std::chrono::steady_clock::now());
     }
 
     static TimeStamp invalid() {
@@ -60,7 +60,8 @@ public:
      * @brief 将时间戳转换为time_t
      */
     time_t to_time_t() const {
-        return std::chrono::system_clock::to_time_t(_M_sec);
+        return std::time_t(std::chrono::duration_cast<std::chrono::seconds>
+            (_M_sec.time_since_epoch()).count());
     }
 
     /**
