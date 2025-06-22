@@ -1,5 +1,10 @@
 #include "TcpServer.h"
 #include "Logger.h"
+#include "TcpConnection.h"
+#include "callbacks.h"
+
+#include <memory>
+#include <mutex>
 
 namespace mymuduo
 {
@@ -26,21 +31,16 @@ TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
         _M_name(name),
         _M_acceptor(new Acceptor(main_loop, serv_addr, option == kReusePort)),
         _M_loop_threads(new EventLoopThreadPool(main_loop, name)),
-        _M_next(1), _M_started(0), _M_is_ET(is_ET)
+        _M_next(1), _M_started(0), _M_stopping(false), _M_is_ET(is_ET)
 {
     _M_acceptor->set_new_connection_callback(std::bind(&TcpServer::new_connection, this,
                 std::placeholders::_1, std::placeholders::_2));
 }
 
-TcpServer::~TcpServer()
-{
-    for(auto& item : _M_connections) {
-        // MARK: 用临时的智能指针获取TcpConnection对象
-        TcpConnectionPtr conn(item.second);
-        item.second.reset();
-
-        // 交由对应的 从Reactor线程 执行销毁
-        conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));
+TcpServer::~TcpServer() {
+    if (!_M_stopping) {
+        LOG_WARN("TcpServer is destroyed without calling stop().");
+        stop();
     }
 }
 
@@ -56,6 +56,37 @@ void TcpServer::start()
         // 启动主EventLoop
         _M_main_loop->run_in_loop(std::bind(&Acceptor::listen, _M_acceptor.get()));
     }
+}
+
+void TcpServer::stop() {
+    if (_M_stopping) {
+        return;
+    }
+
+    _M_stopping.store(true);
+
+
+    _M_main_loop->run_in_loop([this] {
+        _M_acceptor->stop();
+    });
+
+
+    for(auto& item : _M_connections) {
+        // MARK: 用临时的智能指针获取 TcpConnection 对象
+        std::shared_ptr<TcpConnection> conn { item.second };
+        item.second.reset();
+
+        // 关闭连接
+        conn->loop()->run_in_loop(std::bind(&TcpConnection::force_close, conn));
+    }
+
+    // 等待所有连接关闭
+    std::unique_lock<std::mutex> lock { _M_connections_mutex };
+    while (_M_connections.size() > 0) {
+        _M_connections_cond.wait_for(lock, 300ms);
+    }
+
+    _M_loop_threads->stop();
 }
 
 void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
@@ -80,7 +111,10 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     // MARK: 将TcpConnection用shared_ptr管理
     //      1. TcpConnection直接与用户交互, 无法相信用户!!!
     //      2. TcpConnection是临界资源, 为防止在一个线程使用该对象时被其它连接释放
-    TcpConnectionPtr conn = std::make_shared<TcpConnection>(nextLoop, id, connName, clntfd, local_addr, clnt_addr, _M_is_ET);
+    std::shared_ptr<TcpConnection> conn { new TcpConnection(nextLoop
+                                                    , id, connName
+                                                    , clntfd, local_addr
+                                                    , clnt_addr, _M_is_ET) };
 
     _M_connections[id] = conn;    // 用哈希表管理连接
 
@@ -97,7 +131,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
 void TcpServer::remove_connection(const TcpConnectionPtr &conn)
 {
     // MARK: 该函数是连接断开后 从Reactor线程 执行的回调
-    //       但是TcpConnection对象是 主Reactor线程 创建的, 主Reactor线程 要在其哈希表中删除该对象
+    //       但TcpConnection对象是 主Reactor线程 创建的, 主Reactor线程 要在其哈希表中删除该对象
     
     // DONE: 这里修改为由主线程去删除
     _M_main_loop->run_in_loop(std::bind(&TcpServer::remove_connection_in_loop, this, conn));
@@ -111,6 +145,13 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
     // MARK: 在 主Reactor线程 中删除该对象
     size_t id = conn->get_id();
     _M_connections.erase(id);
+
+    {
+        std::lock_guard<std::mutex> guard { _M_connections_mutex };
+        if (_M_connections.size() == 0) {
+            _M_connections_cond.notify_one();
+        }
+    }
 
     // MARK: 然后让TcpConnection对象所属的 从Reactor线程 去销毁连接
     conn->loop()->run_in_loop(std::bind(&TcpConnection::destroyed, conn));

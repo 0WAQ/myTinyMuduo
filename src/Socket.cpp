@@ -1,6 +1,8 @@
 #include "InetAddress.h"
 #include "Socket.h"
 #include "Logger.h"
+#include <cerrno>
+#include <unistd.h>
 
 namespace mymuduo
 {
@@ -11,7 +13,7 @@ void Socket::bind(const InetAddress& serv_addr)
     if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
         LOG_ERROR("%s:%s:%d bind error:%d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
-        close(_M_fd);
+        ::close(_M_fd);
     }
 }
 
@@ -20,7 +22,7 @@ void Socket::listen(size_t max_connection)
     if(::listen(_M_fd, max_connection) != 0) {
         LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
-        close(_M_fd);     
+        ::close(_M_fd);     
     }
 }
 
@@ -41,6 +43,14 @@ int Socket::accept(InetAddress& clnt_addr)
     clnt_addr.set_addr(addr);
     
     return clnt_fd;
+}
+
+void Socket::close() {
+    _M_closed = true;
+    if (::close(_M_fd) < 0) {
+        LOG_ERROR("%s:%s:%d close error:%d.\n",
+            __FILE__, __FUNCTION__, __LINE__, errno);
+    }
 }
 
 void Socket::shutdown_write() {

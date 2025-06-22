@@ -54,17 +54,22 @@ public:
     void send(const std::string &message);
 
     /**
-     * @brief 关闭连接
+     * @brief 关闭连接 (写端)
      */
     void shutdown();
     
+    /**
+     * @brief 强制关闭连接
+     */
+    void force_close();
+
     /**
      * @brief 建立连接
      */
     void established();
     
     /**
-     * @brief 销毁连接
+     * @brief 销毁连接, 用于在连接关闭后清理对象资源
      */
     void destroyed();
 
@@ -99,20 +104,18 @@ private:
     void handle_close();
     void handle_error();
 
-    /**
-     * @brief 
-     */
-    void send_in_loop(const void* data, size_t len);
 
+    void send_in_loop(const void* data, size_t len);
     void shutdown_in_loop();
+    void force_close_in_loop();
 
 private:
 
     enum State {
-        kDisConnected,
-        kConnecting,
-        kConnected,
-        kDisConnecting
+        kConnecting,        // 连接建立中 (默认状态)
+        kConnected,         // 连接已建立 (活跃状态)
+        kDisConnecting,     // 连接断开中
+        kDisConnected       // 连接已断开 (最终状态)
     };
 
         std::atomic<int> _M_state;

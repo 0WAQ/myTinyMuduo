@@ -6,6 +6,7 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
+#include <condition_variable>
 #include <unordered_map>
 #include <string>
 #include <atomic>
@@ -55,6 +56,8 @@ public:
      */
     void start();
 
+    void stop();
+
     /**
      * @brief 设置从EventLoop线程的数量, 需在启动前调用
      */
@@ -94,11 +97,14 @@ private:
         // 从事件循环
         std::shared_ptr<EventLoopThreadPool> _M_loop_threads;
         ConnectionMap _M_connections;
-        std::mutex _M_mutex;
+
+        std::condition_variable _M_connections_cond;
+        std::mutex _M_connections_mutex;
 
         size_t _M_next;    // 连接的编号, 从1开始
 
         std::atomic<int> _M_started;
+        std::atomic<bool> _M_stopping;
 
         bool _M_is_ET;
 

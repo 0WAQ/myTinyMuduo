@@ -26,10 +26,18 @@ class Socket : noncopyable
 public:
 
     explicit Socket(int fd) : _M_fd(fd) { }
+    
+    ~Socket() {
+        if (_M_closed) {
+            return;
+        }
+        close();
+    }
 
     void bind(const InetAddress& serv_addr);
     void listen(size_t max_connection = 1024);
     int accept(InetAddress& clnt_addr);
+    void close();
 
     /**
      * @brief 设置半关闭
@@ -46,10 +54,9 @@ public:
 
     int get_fd() const { return _M_fd; }
 
-    ~Socket() { close(_M_fd); }
-
 private:
     const int _M_fd;
+    bool _M_closed = false;
 };
 
 } // namespace mymuduo

@@ -1,6 +1,9 @@
 #include "Acceptor.h"
+#include "EventLoop.h"
 #include "InetAddress.h"
 #include "Logger.h"
+#include <cassert>
+#include <functional>
 
 namespace mymuduo
 {
@@ -23,7 +26,7 @@ namespace __detail
 } // namespace __detail
 
 Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport) :
-    _M_loop(loop), _M_serv_sock(__detail::create_non_blocking_fd()), _M_listenning(false),
+    _M_loop(loop), _M_serv_sock(__detail::create_non_blocking_fd()), _M_listening(false),
     _M_acceptor_channel(_M_loop, _M_serv_sock.get_fd())
 {
     LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.get_fd());
@@ -48,9 +51,30 @@ Acceptor::~Acceptor() {
 }
 
 void Acceptor::listen() {
-    _M_listenning = true;
+    _M_listening = true;
     _M_serv_sock.listen();
     _M_acceptor_channel.set_read_events();
+}
+
+void Acceptor::stop() {
+    if (_M_listening) {
+        _M_loop->run_in_loop(std::bind(&Acceptor::stop_in_loop, this));
+    }
+}
+
+void Acceptor::stop_in_loop() {
+    assert(_M_loop->is_loop_thread());
+
+    _M_stopping = true;
+
+    LOG_INFO("Acceptor::stop_in_loop - stopping on fd=%d", _M_serv_sock.get_fd());
+
+    _M_acceptor_channel.unset_all_events();
+    _M_acceptor_channel.remove();
+
+    _M_serv_sock.close();
+
+    _M_listening = false;
 }
 
 // 读事件的被调函数, 代表有新连接

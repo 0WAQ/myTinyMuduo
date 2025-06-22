@@ -1,6 +1,7 @@
 #include "TcpConnection.h"
 #include "EventLoop.h"
 #include "Logger.h"
+#include <cassert>
 #include <errno.h>
 
 namespace mymuduo
@@ -68,7 +69,7 @@ void TcpConnection::established()
     assert(_M_state == kConnecting);
    
     
-    // MARK: 如何保证在TcpConnection对象在执行回调时不会被意外销毁???
+    // MARK: 如何保证TcpConnection对象在执行回调时不会被意外销毁???
     //       在建立时将当前TcpConnection对象绑定到channel的tie中
     //       tie是一个weak_ptr, 正常情况不会增加TcpConnection对象的引用
     //       但是在执行channel的handle时, 会将该weak_ptr提升为shared_ptr(临时增加引用计数
@@ -89,21 +90,21 @@ void TcpConnection::destroyed()
 {
     // MARK: 每个类成员函数内都有一个隐式的this指针(若继承自enable_shared_from_this则为shared_ptr)
 
-    assert(_M_loop->is_loop_thread()); 
+    assert(_M_loop->is_loop_thread());
     LOG_INFO("TcpConnection::destroyed[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
 
     if(_M_state == kConnected)
     {
         _M_state = kDisConnected;
-    
+
         // 连接关闭后, 就不能监听事件了
         _M_channel->unset_all_events();
-
-        if(_M_close_callback) {
-            _M_close_callback(shared_from_this());
+        
+        if (_M_connection_callback) {
+            _M_connection_callback(shared_from_this());
         }
     }
-    _M_channel->remove();
+    _M_channel->remove();    
 }
 
 void TcpConnection::handle_read_ET(TimeStamp receieveTime)
@@ -261,7 +262,7 @@ void TcpConnection::send(const std::string& message)
     }
     else
     {
-        LOG_DEBUG("TcpConnection %p had been disconnected.\n");
+        LOG_DEBUG("TcpConnection %p had been disconnected or connecting.\n");
     }
 
 }
@@ -269,16 +270,16 @@ void TcpConnection::send(const std::string& message)
 void TcpConnection::send_in_loop(const void *data, size_t len)
 {
     assert(_M_loop->is_loop_thread());
-
-    ssize_t nwrote = 0;
-    size_t remaining = len;
-    bool fault_error = false;
-
+    
     if(_M_state == kDisConnected)
     {
         LOG_WARN("disconnected, give up writing.\n");
         return;
     }
+    
+    ssize_t nwrote = 0;
+    size_t remaining = len;
+    bool fault_error = false;
 
     // 第一次发送数据, 或者缓冲区没有待发送数据
     if(!_M_channel->is_writing() && _M_output_buffer.readable() == 0)
@@ -338,7 +339,7 @@ void TcpConnection::shutdown()
     {
         _M_state = kDisConnecting;
         _M_loop->run_in_loop(std::bind(&TcpConnection::shutdown_in_loop, this));
-    }    
+    }
 }
 
 void TcpConnection::shutdown_in_loop()
@@ -347,6 +348,22 @@ void TcpConnection::shutdown_in_loop()
     if(!_M_channel->is_writing())
     {
         _M_sock->shutdown_write();  // 关闭写端, 会触发EPOLLHUP, 会触发close_callback        
+    }
+}
+
+void TcpConnection::force_close()
+{
+    if (_M_state == kConnected || _M_state == kDisConnecting) {
+        _M_state = kDisConnecting;
+        _M_loop->queue_in_loop(std::bind(&TcpConnection::force_close_in_loop, shared_from_this()));
+    }
+}
+
+void TcpConnection::force_close_in_loop()
+{
+    assert(_M_loop->is_loop_thread());
+    if (_M_state == kConnected || _M_state == kDisConnecting) {
+        handle_close();
     }
 }
 
