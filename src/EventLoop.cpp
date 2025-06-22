@@ -81,7 +81,7 @@ void EventLoop::loop()
     {
         _M_activeChannels.clear();
         _M_poller_return_time = _M_poller->poll(&_M_activeChannels, kPollTimeMs);
-        
+
         for(Channel *ch : _M_activeChannels) {
             ch->handle(_M_poller_return_time);
         }
@@ -188,7 +188,7 @@ void EventLoop::queue_in_loop(Functor task)
     }
 
     // 1. 若当前不是EventLoop线程, 则唤醒对应的Loop线程
-    // 2. 若当前EventLoop线程, 但是其正在执行任务队列的任务, 那么防止线程之后被阻塞, 也应该wakeup
+    // 2. 若当前是EventLoop线程, 但是其正在执行任务队列的任务, 那么防止线程之后被阻塞, 也应该wakeup
     if(!is_loop_thread() || _M_calling_pending_functors) {
         wakeup();
     }
