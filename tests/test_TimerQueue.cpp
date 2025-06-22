@@ -4,6 +4,8 @@
 #include "TimerId.h"
 
 #include <array>
+#include <chrono>
+#include <cstdint>
 #include <cstdio>
 #include <memory>
 #include <condition_variable>
@@ -44,25 +46,25 @@ TEST_F(TimerQueueTest, OneShotTimers) {
     std::array<bool, 3> executed;
     executed.fill(false);
 
-    _loop->run_after(0.1, [&] {
+    _loop->run_after(100ms, [&] {
         executed[0] = true;
         EXPECT_FALSE(executed[1]);
         EXPECT_FALSE(executed[2]);
     });
 
-    _loop->run_after(0.2, [&] {
+    _loop->run_after(200ms, [&] {
         EXPECT_TRUE(executed[0]);
         executed[1] = true;
         EXPECT_FALSE(executed[2]);
     });
 
-    _loop->run_after(0.3, [&] {
+    _loop->run_after(300ms, [&] {
         EXPECT_TRUE(executed[0]);
         EXPECT_TRUE(executed[1]);
         executed[2] = true;
     });
 
-    _loop->run_after(0.4, [&] {
+    _loop->run_after(400ms, [&] {
         EXPECT_TRUE(executed[0]);
         EXPECT_TRUE(executed[1]);
         EXPECT_TRUE(executed[2]);
@@ -79,12 +81,12 @@ TEST_F(TimerQueueTest, RepeatingTimer) {
     int count = 0;
 
     // 每 0.1s 执行一次的定时器
-    TimerId timer_id = _loop->run_every(0.1, [&] {
+    TimerId timer_id = _loop->run_every(100ms, [&] {
         ++count;
     });
     
     // 设置 0.55s 后取消定时器
-    _loop->run_after(0.55, [this, timer_id] {
+    _loop->run_after(550ms, [this, timer_id] {
         _loop->cancel(timer_id);
         _loop->quit();
     });
@@ -103,11 +105,11 @@ TEST_F(TimerQueueTest, TimerCancellation) {
     bool executed1 = false;
     bool executed2 = false;
     
-    TimerId timer1 = _loop->run_after(0.2, [&] {
+    TimerId timer1 = _loop->run_after(200ms, [&] {
         executed1 = true;
     });
 
-    _loop->run_after(0.1, [&] {
+    _loop->run_after(100ms, [&] {
         executed2 = true;
         _loop->cancel(timer1);  // 定时器 1 将被取消
         _loop->quit();
@@ -123,9 +125,9 @@ TEST_F(TimerQueueTest, TimerCancellation) {
 // TAG: 定时器精度测试
 TEST_F(TimerQueueTest, TimerPrecision) {
     TimeStamp start = TimeStamp::now();
-    _loop->run_after(0.2, [this, start] {
+    _loop->run_after(200ms, [this, start] {
         TimeStamp end = TimeStamp::now();
-        double duration = time_difference(end, start) / 1e6; // ns => ms
+        int64_t duration = time_difference(end, start) / 1e6; // ns => ms
         EXPECT_NEAR(duration, 200, 20); // 允许 ±20ms 的误差
         _loop->quit();
     });
@@ -141,11 +143,11 @@ TEST_F(TimerQueueTest, CrossThreadTimers) {
 
     // 创建一个子线程去执行定时器
     std::thread another([&] {
-        TimerId timer = _loop->run_every(0.1, [&] {
+        TimerId timer = _loop->run_every(100ms, [&] {
             ++count;
         });
 
-        _loop->run_after(0.55, [&] {
+        _loop->run_after(550ms, [&] {
             _loop->cancel(timer);
             _loop->quit();
         });
@@ -179,11 +181,11 @@ TEST_F(TimerQueueTest, CrossThreadTimers) {
         return loop != nullptr;
     });
 
-    TimerId timer = loop->run_every(0.1, [&] {
+    TimerId timer = loop->run_every(100ms, [&] {
         ++count;
     });
 
-    loop->run_after(0.55, [&] {
+    loop->run_after(550ms, [&] {
         loop->cancel(timer);
         loop->quit();
     });
@@ -205,13 +207,13 @@ TEST_F(TimerQueueTest, HighVolumeTimers) {
 
     // 添加 100 个定时器，间隔 1ms
     for (int i = 0; i < TIMER_COUNT; i++) {
-        _loop->run_after(0.001 * (i + 1), [i, &executed] {
+        _loop->run_after(std::chrono::milliseconds{ i + 1 }, [i, &executed] {
             executed[i] = true;
         });
     }
 
     // 等待 0.11s 后退出
-    _loop->run_after(0.11, [&] {
+    _loop->run_after(110ms, [&] {
         _loop->quit();
     });
 
@@ -229,12 +231,12 @@ TEST_F(TimerQueueTest, SimultaneousTimers) {
     
     // 添加 5 个相同时间间隔的定时器
     for (int i = 0; i < TIMER_COUNT; i++) {
-        _loop->run_after(0.2, [&count] {
+        _loop->run_after(200ms, [&count] {
             count++;
         });
     }
 
-    _loop->run_after(0.3, [&] {
+    _loop->run_after(300ms, [&] {
         _loop->quit();
     });
     
@@ -249,13 +251,13 @@ TEST_F(TimerQueueTest, LongRunningTimers) {
     int count = 0;
 
     // 添加每 0.3s 执行一次的定时器
-    TimerId timerId = _loop->run_every(0.3, [this, &count] {
+    TimerId timerId = _loop->run_every(300ms, [this, &count] {
         ++count;
         std::this_thread::sleep_for(50ms);  // 模拟耗时操作
     });
     
     // 2s 后取消定时器
-    _loop->run_after(2.0, [this, timerId] {
+    _loop->run_after(2s, [this, timerId] {
         _loop->cancel(timerId);
         _loop->quit();
     });
@@ -273,12 +275,12 @@ TEST_F(TimerQueueTest, CancelCompletedTimer) {
     int count = 0;
     
     // 添加定时器
-    TimerId timer = _loop->run_every(0.01, [&] {
+    TimerId timer = _loop->run_every(10ms, [&] {
         count = true;
     });
     
     // 添加取消任务 (在定时器执行之后)
-    _loop->run_after(0.02, [&] {
+    _loop->run_after(20ms, [&] {
         EXPECT_NO_THROW(_loop->cancel(timer));
         _loop->quit();
     });
@@ -296,11 +298,11 @@ TEST_F(TimerQueueTest, AddTimerFromLoopThread) {
     
     // 从事件循环线程添加定时器
     _loop->run_in_loop([this, &executed] {
-        _loop->run_after(0.01, [&] {
+        _loop->run_after(10ms, [&] {
             executed = true;
         });
 
-        _loop->run_after(0.02, [&] {
+        _loop->run_after(20ms, [&] {
             _loop->quit();
         });
     });

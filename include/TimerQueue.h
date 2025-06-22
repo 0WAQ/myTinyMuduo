@@ -34,7 +34,7 @@ public:
     /**
      * @brief 创建一个timer并添加到定时器队列中
      */
-    TimerId add_timer(TimeStamp when, double interval, TimerCallback func);
+    TimerId add_timer(TimeStamp when, TimeDuration interval, TimerCallback func);
 
     /**
      * @brief 取消一个定时器

@@ -1,15 +1,21 @@
 #include "EventLoop.h"
 #include "CurrentThread.h"
 #include "Logger.h"
+#include "TimeStamp.h"
+
 #include <cstdio>
+
+using namespace std::chrono_literals;
 
 namespace mymuduo
 {
 
+using namespace std::chrono_literals;
+
 // 防止一个线程创建多个EventLoop, __thread: 表示thread local
 __thread EventLoop *t_loop_in_this_thread = nullptr;
 
-const int kPollTimeMs = 10000;      // Poller的默认超时时间
+const std::chrono::milliseconds kPollTimeMs = 10000ms;  // Poller的默认超时时间
 
 namespace __detail
 {
@@ -96,7 +102,7 @@ void EventLoop::loop()
 }
 
 // TODO: 支持 timeoutMs
-void EventLoop::loop_once(int timeoutMs)
+void EventLoop::loop_once(std::chrono::milliseconds timeoutMs)
 {
     LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());
 
@@ -206,16 +212,14 @@ void EventLoop::wakeup()
 }
 
 TimerId EventLoop::run_at(TimeStamp time, TimerCallback func) {
-    return _M_timer_queue->add_timer(time, 0.0, std::move(func));
+    return _M_timer_queue->add_timer(time, 0ns, std::move(func));
 }
 
-TimerId EventLoop::run_after(double delay, TimerCallback func) {
-    TimeStamp time(add_time(TimeStamp::now(), delay));
-    return run_at(time, std::move(func));
+TimerId EventLoop::run_after(TimeDuration delay, TimerCallback func) {
+    return run_at(TimeStamp::now() + delay, std::move(func));
 }
-TimerId EventLoop::run_every(double interval, TimerCallback func) {
-    TimeStamp time(add_time(TimeStamp::now(), interval));
-    return _M_timer_queue->add_timer(time, interval, std::move(func));
+TimerId EventLoop::run_every(TimeDuration interval, TimerCallback func) {
+    return _M_timer_queue->add_timer(TimeStamp::now() + interval, interval, std::move(func));
 }
 
 void EventLoop::cancel(TimerId timerId) {

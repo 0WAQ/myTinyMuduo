@@ -2,6 +2,7 @@
 #include "EPollPoller.h"
 #include "Channel.h"
 #include "Logger.h"
+#include <chrono>
 
 namespace mymuduo
 {
@@ -17,13 +18,15 @@ EPollPoller::EPollPoller(EventLoop* loop) :
     }
 }
 
-TimeStamp EPollPoller::poll(ChannelList *activeChannels, int timeout)
+TimeStamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::milliseconds timeout)
 {
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
     TimeStamp now = TimeStamp::now();
-    int numEvents = ::epoll_wait(_M_epoll_fd, _M_events_arr.data(),
-                                    static_cast<int>(_M_events_arr.size()), timeout);    
+    int numEvents = ::epoll_wait(_M_epoll_fd
+                        , _M_events_arr.data()
+                        , static_cast<int>(_M_events_arr.size())
+                        , timeout == std::chrono::milliseconds::max() ? -1 : timeout.count());    
     int savedErrno = errno;  // errno为全局
 
     if(numEvents > 0) 

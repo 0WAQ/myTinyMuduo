@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
     EchoServer *server = new EchoServer(&loop, addr, name);
     server->start();
 
-    loop.run_every(5.0, [](){
+    loop.run_every(5s, [](){
         LOG_INFO("run every 5s.\n");
     });
 

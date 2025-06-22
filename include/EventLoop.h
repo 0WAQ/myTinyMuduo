@@ -6,6 +6,7 @@
 #ifndef EVENTLOOP_H
 #define EVENTLOOP_H
 
+#include <chrono>
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -17,10 +18,13 @@
 
 #include "Poller.h"
 #include "TcpConnection.h"
+#include "TimeStamp.h"
 #include "TimerQueue.h"
 #include "CurrentThread.h"
 #include "callbacks.h"
 #include "noncopyable.h"
+
+using namespace std::chrono_literals;
 
 namespace mymuduo
 {
@@ -49,7 +53,7 @@ public:
      * @brief 开启与退出事件循环
      */
     void loop();
-    void loop_once(int timeoutMs = 10);
+    void loop_once(std::chrono::milliseconds timeoutMs = 10ms);
     void quit();
 
     /**
@@ -81,8 +85,8 @@ public:
     void wakeup();
 
     TimerId run_at(TimeStamp time, TimerCallback func);
-    TimerId run_after(double delay, TimerCallback func);
-    TimerId run_every(double interval, TimerCallback func);
+    TimerId run_after(TimeDuration delay, TimerCallback func);
+    TimerId run_every(TimeDuration interval, TimerCallback func);
     void cancel(TimerId timerId);
 
     /**

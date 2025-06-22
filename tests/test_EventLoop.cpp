@@ -66,7 +66,7 @@ TEST_F(EventLoopTest, RunInCreatingThread) {
     });
 
     // 提前终止
-    _loop->run_after(1.0, [&] {
+    _loop->run_after(1s, [&] {
         _loop->quit();
     });
 
@@ -87,7 +87,7 @@ TEST_F(EventLoopTest, CrossThreadOperation) {
     });
 
     // 提前退出事件循环
-    _another->run_after(1.0, [&] {
+    _another->run_after(1s, [&] {
         _another->quit();
     });
 
@@ -120,7 +120,7 @@ TEST_F(EventLoopTest, ScheduleWithoutRunningLoop) {
         called.store(true);
     });
 
-    _loop->run_after(0.2, [&] {
+    _loop->run_after(200ms, [&] {
         _loop->quit();
     });
 
@@ -140,7 +140,7 @@ TEST_F(EventLoopTest, CrossThreadTimer) {
     auto start = TimeStamp::now();
 
     // 主线程在其他线程的事件循环上设置定时器
-    _another->run_after(0.2, [&] {
+    _another->run_after(200ms, [&] {
         timerCalled.store(true);
         _another->quit();
     });

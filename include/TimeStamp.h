@@ -93,6 +93,10 @@ public:
         return TimeStamp(TimePoint(this->time_since_epoch() - duration));
     }
 
+    TimeDuration operator- (const TimeStamp& other) {
+        return this->_M_sec - other._M_sec;
+    }
+
     bool operator< (const TimeStamp &rhs) const {
         return this->_M_sec < rhs._M_sec;
     }
@@ -122,15 +126,12 @@ private:
     TimePoint _M_sec;
 };
 
-inline TimeStamp add_time(TimeStamp timestamp, double seconds) {
-    using namespace std::chrono;
-    auto cast_duration = duration_cast<TimeDuration>(duration<double>(seconds));
-    return timestamp + cast_duration;
+inline TimeStamp add_time(TimeStamp timestamp, TimeDuration dur) {
+    return timestamp + dur;
 }
 
 inline int64_t time_difference(TimeStamp high, TimeStamp low) {
-    using namespace std::chrono;
-    nanoseconds diff = high.time_since_epoch() - low.time_since_epoch();
+    TimeDuration diff = high - low;
     return diff.count();
 }
 

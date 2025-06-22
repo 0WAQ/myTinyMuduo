@@ -6,6 +6,7 @@
 #ifndef EPOLLPOLLER_H
 #define EPOLLPOLLER_H
 
+#include <chrono>
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
@@ -39,7 +40,7 @@ public:
      * @brief 分发事件, 调用epoll_wait, 返回发生事件的合集
      * @param activeChannels 发生的事件合集
      */
-    TimeStamp poll(ChannelList *activeChannels, int timeout = -1) override;
+    TimeStamp poll(ChannelList *activeChannels, std::chrono::milliseconds timeout) override;
 
     /**
      * @brief 调用epoll_ctl, 修改ch监听事件

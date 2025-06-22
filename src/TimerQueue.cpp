@@ -3,6 +3,7 @@
 #include "TimerQueue.h"
 #include "EventLoop.h"
 #include "Logger.h"
+#include "TimeStamp.h"
 
 namespace mymuduo
 {
@@ -92,7 +93,7 @@ TimerQueue::~TimerQueue()
 }
 
 
-TimerId TimerQueue::add_timer(TimeStamp when, double interval, TimerCallback func)
+TimerId TimerQueue::add_timer(TimeStamp when, TimeDuration interval, TimerCallback func)
 {
     Timer *timer = new Timer(when, interval, std::move(func));
     _M_loop->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop, this, timer));

@@ -15,7 +15,7 @@ class Timer : noncopyable
 {
 public:
 
-    Timer(TimeStamp when, double interval, TimerCallback cb);
+    Timer(TimeStamp when, TimeDuration interval, TimerCallback cb);
 
     /**
      * @brief 运行定时任务
@@ -38,7 +38,7 @@ private:
     TimeStamp _M_expiration;
 
     // 间隔时间
-    const double _M_interval;
+    const TimeDuration _M_interval;
 
     // 是否重复
     bool _M_repeat;

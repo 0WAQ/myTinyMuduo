@@ -5,6 +5,7 @@
 
 #include <atomic>
 #include <cerrno>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <functional>
@@ -26,7 +27,7 @@ using namespace mymuduo;
 class PeriodicTimer {
 public:
 
-    PeriodicTimer(EventLoop *loop, double interval, const TimerCallback &cb)
+    PeriodicTimer(EventLoop *loop, TimeDuration interval, const TimerCallback &cb)
         : _M_loop(loop), _M_timerfd(create_timerfd()), _M_timer_channel(loop, _M_timerfd),
             _M_interval(interval), _M_callback(cb)
     {
@@ -60,12 +61,12 @@ private:
         }
     }
 
-    static struct timespec to_timespec(double seconds) {
+    static struct timespec to_timespec(TimeDuration dur) {
         struct timespec ts;
         bzero(&ts, sizeof(ts));
         const int64_t kNanoSecondsPerSecond = 1000'000'000;
         const int kMinInterval = 100'000;
-        int64_t nanoseconds = static_cast<int64_t>(seconds * kNanoSecondsPerSecond);
+        int64_t nanoseconds = dur.count();
         if(nanoseconds < kMinInterval) {
             nanoseconds = kMinInterval;
         }
@@ -95,7 +96,7 @@ private:
     const int _M_timerfd;
     Channel _M_timer_channel;
 
-    const double _M_interval;
+    const TimeDuration _M_interval;
 
     TimerCallback _M_callback;
 };
@@ -104,7 +105,7 @@ class ChannelTest: public ::testing::Test {
 protected:
     void SetUp() override {
         loop.reset(new EventLoop);
-        periodic.reset(new PeriodicTimer(loop.get(), 0.5, [this] {
+        periodic.reset(new PeriodicTimer(loop.get(), 500ms, [this] {
             print("PeriodicTimer");
         }));
     }
@@ -113,7 +114,7 @@ protected:
 
     }
 
-    void runWithTimeout(double timeout) {
+    void runWithTimeout(std::chrono::steady_clock::duration timeout) {
         loop->run_after(timeout, [this] {
             loop->quit();
         });
@@ -142,12 +143,12 @@ protected:
 TEST_F(ChannelTest, BasicTimer) {
     std::atomic<int> count{ 0 };
 
-    loop->run_after(0.1, [&] {
+    loop->run_after(100ms, [&] {
         ++count;
         print("After Timer");
     });
 
-    runWithTimeout(1.5);
+    runWithTimeout(1500ms);
 
     EXPECT_EQ(count, 1);
 }
@@ -158,7 +159,7 @@ TEST_F(ChannelTest, PeriodicTimer) {
     std::atomic<int> count{ 0 };
     
     // 重置周期性回调
-    periodic.reset(new PeriodicTimer(loop.get(), 0.2, [&] {
+    periodic.reset(new PeriodicTimer(loop.get(), 200ms, [&] {
         count++;
         print("PeriodicTimer");
     }));
@@ -166,7 +167,7 @@ TEST_F(ChannelTest, PeriodicTimer) {
     periodic->start();
     
     // 运行事件循环足够时间来触发多次周期性计时器
-    runWithTimeout(1.0);
+    runWithTimeout(1s);
     
     // 检查周期性计时器被触发4-5次（每200ms一次，总时间1s）
     EXPECT_GE(count, 4);
@@ -179,10 +180,10 @@ TEST_F(ChannelTest, MultipleTimers) {
     std::atomic<int> count1{ 0 };
     std::atomic<int> count2{ 0 };
     
-    loop->run_after(0.1, [&] { count1++; });
-    loop->run_after(0.2, [&] { count2++; });
+    loop->run_after(100ms, [&] { count1++; });
+    loop->run_after(200ms, [&] { count2++; });
     
-    runWithTimeout(0.3);
+    runWithTimeout(300ms);
     
     EXPECT_EQ(count1, 1);
     EXPECT_EQ(count2, 1);
@@ -195,15 +196,15 @@ TEST_F(ChannelTest, TimerCancel) {
     std::atomic<int> canceled{ 0 };
     
     // 设置1秒后调用的计时器
-    TimerId id = loop->run_after(0.5, [&] { called++; });
+    TimerId id = loop->run_after(500ms, [&] { called++; });
     
     // 在0.2秒后取消计时器
-    loop->run_after(0.2, [&] {
+    loop->run_after(200ms, [&] {
         loop->cancel(id);
         canceled++;
     });
     
-    runWithTimeout(0.7);
+    runWithTimeout(700ms);
     
     EXPECT_EQ(canceled, 1);
     EXPECT_EQ(called, 0); // 计时器应该被取消，不会被调用

@@ -1,8 +1,6 @@
 #ifndef CURRENTTHREAD_H
 #define CURRENTTHREAD_H
 
-#include <cstdint>
-
 namespace mymuduo
 {
 
@@ -28,12 +26,6 @@ namespace __detail
         }
         return t_cached_tid;
     }
-
-    /**
-     * @brief 睡眠当前线程
-     */
-    void sleep_usec(int64_t usec);
-
 
 } // namespace CurrentThread
 

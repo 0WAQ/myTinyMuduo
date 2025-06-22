@@ -1,6 +1,7 @@
 #ifndef POLLER_H
 #define POLLER_H
 
+#include <chrono>
 #include <vector>
 #include <unordered_map>
 
@@ -35,7 +36,7 @@ public:
     bool has_channel(Channel *ch) const;
     
 
-    virtual TimeStamp poll(ChannelList *channels, int timeout = -1) = 0;
+    virtual TimeStamp poll(ChannelList *channels, std::chrono::milliseconds timeout = std::chrono::milliseconds::max()) = 0;
     virtual void update_channel(Channel *ch) = 0;
     virtual void remove_channel(Channel *ch) = 0;
 
