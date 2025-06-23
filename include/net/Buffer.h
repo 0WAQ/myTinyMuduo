@@ -33,6 +33,7 @@ public:
     Buffer(Buffer&& other) noexcept;
 
     Buffer& operator= (const Buffer& other);
+    Buffer& operator= (Buffer&& other);
 
     /**
      * @brief 分散读和集中写

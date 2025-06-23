@@ -32,7 +32,7 @@ class Channel : noncopyable
 {
 public:
 
-    using EventCallbacl = std::function<void()>;
+    using EventCallback = std::function<void()>;
     using ReadCallback = std::function<void(TimeStamp)>;
 
 public:
@@ -78,9 +78,9 @@ public:
      * @brief 设置回调函数
      */
     void set_read_callback(ReadCallback cb);   // 读事件
-    void set_write_callback(EventCallbacl cb); // 写事件
-    void set_close_callback(EventCallbacl cb); // 关闭连接
-    void set_error_callback(EventCallbacl cb); // 错误事件
+    void set_write_callback(EventCallback cb); // 写事件
+    void set_close_callback(EventCallback cb); // 关闭连接
+    void set_error_callback(EventCallback cb); // 错误事件
 
     bool is_none_events() { return _M_monitored_events == _M_none_events; }
     bool is_reading() { return _M_monitored_events == _M_read_events; }
@@ -126,13 +126,13 @@ private:
     ReadCallback _M_read_callback; 
 
     // 写事件的回调函数, 将回调Connection::send
-    EventCallbacl _M_write_callback;
+    EventCallback _M_write_callback;
 
     // 连接关闭的回调函数, 将回调Connection::close_callback
-    EventCallbacl _M_close_callback; 
+    EventCallback _M_close_callback; 
 
     // 连接出错的回调函数, 将回调Connection::error_callback
-    EventCallbacl _M_error_callback; 
+    EventCallback _M_error_callback; 
 };
 
 } // namespace net

@@ -1,5 +1,6 @@
 #include "net/Buffer.h"
 #include <algorithm>
+#include <utility>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -38,6 +39,16 @@ Buffer& Buffer::operator= (const Buffer& other) {
     _M_read_idx = other._M_read_idx;
     _M_write_idx = other._M_write_idx;
     _M_buf = other._M_buf;
+    _M_sep = other._M_sep;
+    return *this;
+}
+
+Buffer& Buffer::operator= (Buffer&& other) {
+    _M_initial_prependable = other._M_initial_prependable;
+    _M_initial_writable = other._M_initial_writable;
+    _M_read_idx = other._M_read_idx;
+    _M_write_idx = other._M_write_idx;
+    _M_buf = std::move(other._M_buf);
     _M_sep = other._M_sep;
     return *this;
 }

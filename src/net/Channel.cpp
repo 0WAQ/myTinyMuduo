@@ -112,7 +112,7 @@ void Channel::unset_all_events() {   _M_monitored_events = _M_none_events;    up
 
 // 读,写,关闭,错误 四个设置回调函数
 void Channel::set_read_callback (ReadCallback cb)  { _M_read_callback  = std::move(cb); }
-void Channel::set_write_callback(EventCallbacl cb) { _M_write_callback = std::move(cb); }
-void Channel::set_close_callback(EventCallbacl cb) { _M_close_callback = std::move(cb); }
-void Channel::set_error_callback(EventCallbacl cb) { _M_error_callback = std::move(cb); }
+void Channel::set_write_callback(EventCallback cb) { _M_write_callback = std::move(cb); }
+void Channel::set_close_callback(EventCallback cb) { _M_close_callback = std::move(cb); }
+void Channel::set_error_callback(EventCallback cb) { _M_error_callback = std::move(cb); }
 

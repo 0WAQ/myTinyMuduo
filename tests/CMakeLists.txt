@@ -19,6 +19,7 @@ endfunction()
 
 
 # 添加单元测试
+add_test(test_Buffer)
 add_test(test_Channel)
 add_test(test_EventLoop)
 add_test(test_EventLoopThread)
