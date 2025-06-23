@@ -1,6 +1,6 @@
-#include "EventLoopThreadPool.h"
-#include "EventLoopThread.h"
-#include "EventLoop.h"
+#include "net/EventLoop.h"
+#include "net/EventLoopThread.h"
+#include "net/EventLoopThreadPool.h"
 
 #include <algorithm>
 #include <array>
@@ -18,6 +18,7 @@
 namespace {
     
 using namespace mymuduo;
+using namespace mymuduo::net;
 
 class EventLoopThreadPoolTest : public ::testing::Test {
 protected:

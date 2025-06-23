@@ -1,5 +1,5 @@
-#include "EventLoop.h"
-#include "TimeStamp.h"
+#include "base/TimeStamp.h"
+#include "net/EventLoop.h"
 
 #include <atomic>
 #include <cassert>
@@ -15,6 +15,7 @@
 namespace {
 
 using namespace mymuduo;
+using namespace mymuduo::net;
     
 class EventLoopTest : public ::testing::Test {
 protected:

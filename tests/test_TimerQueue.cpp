@@ -1,7 +1,7 @@
-#include "EventLoop.h"
-#include "EventLoopThread.h"
-#include "TimeStamp.h"
-#include "TimerId.h"
+#include "base/TimeStamp.h"
+#include "net/TimerId.h"
+#include "net/EventLoop.h"
+#include "net/EventLoopThread.h"
 
 #include <array>
 #include <chrono>
@@ -17,6 +17,7 @@
 namespace {
 
 using namespace mymuduo;
+using namespace mymuduo::net;
 
 class TimerQueueTest : public ::testing::Test {
 protected:

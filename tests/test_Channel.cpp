@@ -1,7 +1,7 @@
-#include "Channel.h"
-#include "CurrentThread.h"
-#include "EventLoop.h"
-#include "TimeStamp.h"
+#include "base/TimeStamp.h"
+#include "base/CurrentThread.h"
+#include "net/Channel.h"
+#include "net/EventLoop.h"
 
 #include <atomic>
 #include <cerrno>
@@ -23,6 +23,7 @@
 namespace {
 
 using namespace mymuduo;
+using namespace mymuduo::net;
 
 class PeriodicTimer {
 public:

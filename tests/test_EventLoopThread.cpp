@@ -1,17 +1,19 @@
-#include "EventLoopThread.h"
-#include "EventLoop.h"
+#include "net/EventLoop.h"
+#include "net/EventLoopThread.h"
 
 #include <atomic>
 #include <cstdio>
-#include <gtest/gtest-death-test.h>
 #include <memory>
 #include <unistd.h>
 
 #include <gtest/gtest.h>
+#include <gtest/gtest-death-test.h>
 
 namespace {
     
 using namespace mymuduo;
+using namespace mymuduo::net;
+
 using namespace std::chrono_literals;
 
 class EventLoopThreadTest : public ::testing::Test {

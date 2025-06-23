@@ -3,10 +3,13 @@
  * 简易的EchoServer实现
  * 
  */
-#include <TcpServer.h>
-#include <Logger.h>
+#include <net/TcpServer.h>
+#include <base/Logger.h>
 
 #include <iostream>
+
+using namespace mymuduo;
+using namespace mymuduo::net;
 
 /**
  * @brief 业务服务器: Echo
@@ -15,12 +18,12 @@ class EchoServer
 {
 public:
 
-    using TcpConnectionPtr = std::shared_ptr<mymuduo::TcpConnection>;
+    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
 
     /**
      * @brief 初始化EchoServer
      */
-    EchoServer(mymuduo::EventLoop *loop, const mymuduo::InetAddress &addr, const std::string &name) :
+    EchoServer(EventLoop *loop, const InetAddress &addr, const std::string &name) :
             loop_(loop), server_(loop, addr, name)
     {
         server_.set_connection_callback(std::bind(&EchoServer::onConnection, this, std::placeholders::_1));
@@ -45,7 +48,7 @@ public:
         }
     }
 
-    void onMessage(const TcpConnectionPtr &conn, mymuduo::Buffer *buf, mymuduo::TimeStamp time)
+    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp time)
     {
         std::string msg;
         if(buf->pick_datagram(msg)) {
@@ -59,7 +62,7 @@ public:
 
 private:
 
-    void add_sep(mymuduo::Buffer *buf, std::string &message)
+    void add_sep(Buffer *buf, std::string &message)
     {
         switch (buf->sep())
         {
@@ -81,8 +84,8 @@ private:
         }   
     }
 
-    mymuduo::EventLoop *loop_;
-    mymuduo::TcpServer server_;
+    EventLoop *loop_;
+    TcpServer server_;
 };
 
 int main(int argc, char* argv[])
@@ -93,11 +96,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    mymuduo::Logger* log = mymuduo::Logger::get_instance(argv[3], "EchoServer");
-    log->init(mymuduo::Logger::DEBUG);
+    Logger* log = Logger::get_instance(argv[3], "EchoServer");
+    log->init(Logger::DEBUG);
 
-    mymuduo::EventLoop loop;
-    mymuduo::InetAddress addr(argv[1], atoi(argv[2]));
+    EventLoop loop;
+    InetAddress addr(argv[1], atoi(argv[2]));
     std::string name{"EchoServer-01"};
 
     EchoServer *server = new EchoServer(&loop, addr, name);
