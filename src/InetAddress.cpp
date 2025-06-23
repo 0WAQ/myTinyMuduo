@@ -1,8 +1,17 @@
 #include "InetAddress.h"
 #include "Logger.h"
+#include <arpa/inet.h>
+#include <cstdint>
+#include <netinet/in.h>
+#include <strings.h>
+#include <sys/socket.h>
 
 namespace mymuduo
 {
+
+InetAddress::InetAddress(uint16_t port)
+    : InetAddress("0.0.0.0", port)
+{ }
 
 InetAddress::InetAddress(const std::string& ip, uint16_t port) {
     bzero(&_M_addr, sizeof(sockaddr_in));

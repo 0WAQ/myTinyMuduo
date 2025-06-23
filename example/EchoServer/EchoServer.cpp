@@ -37,11 +37,11 @@ public:
     {
         if(conn->connected())
         {
-            LOG_INFO("conn UP : %s\n", conn->peer_address().get_ip_port().c_str());
+            LOG_INFO("conn UP : %s\n", conn->peer_address().ip_port().c_str());
         }
         else
         {
-            LOG_INFO("conn DOWN : %s\n", conn->peer_address().get_ip_port().c_str());
+            LOG_INFO("conn DOWN : %s\n", conn->peer_address().ip_port().c_str());
         }
     }
 

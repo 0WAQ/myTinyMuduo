@@ -72,7 +72,7 @@ private:
     void onConnection(const TcpConnectionPtr& conn) {
         LOG_INFO("%s Connection %s\n", 
                  conn->connected() ? "New" : "Closed",
-                 conn->peer_address().get_ip_port().c_str());
+                 conn->peer_address().ip_port().c_str());
     }
 
     void onMessage(const TcpConnectionPtr& conn, Buffer* buf, TimeStamp time) {

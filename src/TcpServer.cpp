@@ -27,7 +27,7 @@ namespace __detail
 TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
                      const std::string &name, Option option, bool is_ET) :
         _M_main_loop(__detail::check_loop_not_null(main_loop)),
-        _M_ip_port(serv_addr.get_ip_port()),
+        _M_ip_port(serv_addr.ip_port()),
         _M_name(name),
         _M_acceptor(new Acceptor(main_loop, serv_addr, option == kReusePort)),
         _M_loop_threads(new EventLoopThreadPool(main_loop, name)),
@@ -101,7 +101,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     std::string connName = _M_name + buf;
     
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
-        _M_name.c_str(), connName.c_str(), clnt_addr.get_ip_port().c_str());
+        _M_name.c_str(), connName.c_str(), clnt_addr.ip_port().c_str());
 
     InetAddress local_addr(InetAddress::get_local_addr(clntfd));
 

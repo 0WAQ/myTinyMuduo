@@ -10,7 +10,7 @@ namespace mymuduo
 // bind, listen, accept
 void Socket::bind(const InetAddress& serv_addr)
 {
-    if(::bind(_M_fd, serv_addr.get_addr(), sizeof(sockaddr)) < 0) {
+    if(::bind(_M_fd, serv_addr.addr(), sizeof(sockaddr)) < 0) {
         LOG_ERROR("%s:%s:%d bind error:%d.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno);
         ::close(_M_fd);
