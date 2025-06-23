@@ -77,11 +77,11 @@ void EPollPoller::update_channel(Channel* ch)
 {    
     channelStatus status = ch->get_status();
 
-    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->get_fd(), ch->get_happened_events(), status);
+    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->fd(), ch->get_happened_events(), status);
 
     if(status == kNew || status == kDeleted) // 未注册或者已注册未监听
     {
-        int fd = ch->get_fd();
+        int fd = ch->fd();
 
         if(status == kNew) { // 若为新的channel, 将其注册到map中
             _M_channel_map[fd] = ch;
@@ -96,7 +96,7 @@ void EPollPoller::update_channel(Channel* ch)
     }
     else  // 已被监听, 那么要修改
     {
-        int fd = ch->get_fd();
+        int fd = ch->fd();
 
         if(ch->is_none_events()) {  // ch已被监听, 但要将其取消监听
             update(EPOLL_CTL_DEL, ch);
@@ -112,7 +112,7 @@ void EPollPoller::remove_channel(Channel* ch)
 {
     channelStatus status = ch->get_status();
 
-    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->get_fd(), ch->get_happened_events(), status);
+    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->fd(), ch->get_happened_events(), status);
 
     // 若channel已经被监听, 那么删除
     if(status == kAdded) {
@@ -120,7 +120,7 @@ void EPollPoller::remove_channel(Channel* ch)
     }
 
     // 将其取消注册
-    _M_channel_map.erase(ch->get_fd());
+    _M_channel_map.erase(ch->fd());
     ch->set_status(kNew);
 }
 
@@ -132,7 +132,7 @@ void EPollPoller::update(int op, Channel* ch)
     ev.data.ptr = ch;
     ev.events = ch->get_monitored_events();
 
-    if(epoll_ctl(_M_epoll_fd, op, ch->get_fd(), &ev) == -1) {
+    if(epoll_ctl(_M_epoll_fd, op, ch->fd(), &ev) == -1) {
         switch (op)
         {
         case EPOLL_CTL_ADD:

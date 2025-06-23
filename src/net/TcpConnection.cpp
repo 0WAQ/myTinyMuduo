@@ -1,5 +1,6 @@
 #include "base/Logger.h"
 #include "net/TcpConnection.h"
+#include "base/TimeStamp.h"
 #include "net/EventLoop.h"
 
 #include <cassert>
@@ -35,8 +36,8 @@ TcpConnection::TcpConnection(EventLoop *loop, size_t id, const std::string &name
             _M_channel(new Channel(loop, clntfd)),
             _M_local_addr(localAddr),
             _M_peer_addr(clntAddr),
-            _M_input_buffer(0),
-            _M_output_buffer(0),
+            _M_input_buffer(),
+            _M_output_buffer(),
             _M_high_water_mark(64*1024*1024)
 {
     // 设置Connection被channel回调的四种函数
@@ -62,7 +63,7 @@ TcpConnection::TcpConnection(EventLoop *loop, size_t id, const std::string &name
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO("TcpConnection::dtor[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+    LOG_INFO("TcpConnection::dtor[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->fd(), CurrentThread::tid());
 }
 
 void TcpConnection::established()
@@ -81,7 +82,7 @@ void TcpConnection::established()
     _M_channel->tie(shared_from_this()); // 将该Connection与Channel绑定
     _M_channel->set_read_events();
 
-    LOG_INFO("TcpConnection::established[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+    LOG_INFO("TcpConnection::established[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->fd(), CurrentThread::tid());
     
     if(_M_connection_callback) {
         _M_connection_callback(shared_from_this());
@@ -93,7 +94,7 @@ void TcpConnection::destroyed()
     // MARK: 每个类成员函数内都有一个隐式的this指针(若继承自enable_shared_from_this则为shared_ptr)
 
     assert(_M_loop->is_loop_thread());
-    LOG_INFO("TcpConnection::destroyed[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+    LOG_INFO("TcpConnection::destroyed[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->fd(), CurrentThread::tid());
 
     if(_M_state == kConnected)
     {
@@ -113,20 +114,18 @@ void TcpConnection::handle_read_ET(TimeStamp receieveTime)
 {
     assert(_M_loop->is_loop_thread());
 
-    char buf[1024] = {0};
-
     while(true) // 因为是ET模式, 所以要确保数据一次性读完
     {
         int save_error = 0;
 
         // 将数据直接读取到输入缓冲区
-        ssize_t nlen = _M_input_buffer.read_fd(_M_channel->get_fd(), &save_error);
+        ssize_t nlen = _M_input_buffer.read_fd(_M_channel->fd(), &save_error);
 
         // 数据读取成功
         if(nlen > 0) 
         {
             LOG_DEBUG("TcpConnection::handle_read[fd=%d], read %ld bytes to input_buffer\n", 
-                        _M_channel->get_fd(), nlen);
+                        _M_channel->fd(), nlen);
             continue;
         }
         // 读取时被中断
@@ -136,10 +135,11 @@ void TcpConnection::handle_read_ET(TimeStamp receieveTime)
                 __FILE__, __FUNCTION__, __LINE__, save_error);
             continue;
         }
-        // 非阻塞读的行为, 全部的数据已读取完毕(即目前的Socket缓冲区中没有数据)
+        // 非阻塞读在没有读到数据时会返回 -1, 表示全部的数据已读取完毕(即目前的Socket缓冲区中没有数据)
         else if(nlen == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) 
         {
             _M_message_callback(shared_from_this(), &_M_input_buffer, receieveTime);
+            break;
         }
         // 连接断开
         else if(nlen == 0) 
@@ -155,20 +155,20 @@ void TcpConnection::handle_read_LT(TimeStamp receieveTime)
     assert(_M_loop->is_loop_thread());
 
     int save_error = 0;
-    ssize_t nlen = _M_input_buffer.read_fd(_M_channel->get_fd(), &save_error);
+    ssize_t nlen = _M_input_buffer.read_fd(_M_channel->fd(), &save_error);
 
     if(nlen > 0) {
         // MARK: 还要将接受到数据的缓冲区也交给上层服务器
-        LOG_INFO("TcpConnection::handle_read[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+        LOG_INFO("TcpConnection::handle_read[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->fd(), CurrentThread::tid());
         _M_message_callback(shared_from_this(), &_M_input_buffer, receieveTime);
     }
     else if(nlen == 0) {
-        LOG_INFO("TcpConnection::handle_close[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+        LOG_INFO("TcpConnection::handle_close[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->fd(), CurrentThread::tid());
         handle_close();
     }
     else {
         errno = save_error;
-        LOG_ERROR("TcpConnection::handle_error[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->get_fd(), CurrentThread::tid());
+        LOG_ERROR("TcpConnection::handle_error[%s] at fd=%d in thread#%d.\n", _M_name.c_str(), _M_channel->fd(), CurrentThread::tid());
         handle_error();
     }
 }
@@ -181,7 +181,7 @@ void TcpConnection::handle_write()
     {
         int save_error = 0;
         // 当可写后, 尝试把用户缓冲区的数据全部发送出去
-        ssize_t nlen = _M_output_buffer.write_fd(get_fd(), &save_error);
+        ssize_t nlen = _M_output_buffer.write_fd(fd(), &save_error);
         // 因为操作系统的原因(tcp滑动窗口), 数据不一定能全部接收, 剩下的数据等待下一次写事件触发
 
         if(nlen < 0) {
@@ -209,7 +209,7 @@ void TcpConnection::handle_write()
     }
     else
     {
-        LOG_WARN("TcpConnection fd=%d is down, no more writin.\n", _M_channel->get_fd());
+        LOG_WARN("TcpConnection fd=%d is down, no more writin.\n", _M_channel->fd());
     }
 }
 
@@ -217,9 +217,9 @@ void TcpConnection::handle_write()
 void TcpConnection::handle_close()
 {
     assert(_M_loop->is_loop_thread());
-    assert(_M_state == kConnected || _M_state == kConnecting);
+    assert(_M_state == kConnected || _M_state == kDisConnecting);
 
-    LOG_INFO("fd=%d state=%d.\n", _M_channel->get_fd(), (int)_M_state);
+    LOG_INFO("fd=%d state=%d.\n", _M_channel->fd(), (int)_M_state);
 
     _M_state = kDisConnected;
 
@@ -287,7 +287,7 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
     if(!_M_channel->is_writing() && _M_output_buffer.readable() == 0)
     {
         // 先将数据直接写入fd
-        nwrote = ::write(_M_channel->get_fd(), data, len);
+        nwrote = ::write(_M_channel->fd(), data, len);
 
         if(nwrote > 0) {
             remaining = len - nwrote;
@@ -302,7 +302,7 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
             nwrote = 0;
             if(errno != EWOULDBLOCK)
             {
-                LOG_ERROR("TcpConnection::send_in_loop");
+                LOG_WARN("TcpConnection::send_in_loop write to %d failed.\n", fd());
                 if(errno == EPIPE || errno == ECONNRESET) {
                     fault_error = true;
                 }
@@ -358,6 +358,20 @@ void TcpConnection::force_close()
     if (_M_state == kConnected || _M_state == kDisConnecting) {
         _M_state = kDisConnecting;
         _M_loop->queue_in_loop(std::bind(&TcpConnection::force_close_in_loop, shared_from_this()));
+    }
+}
+
+void TcpConnection::force_close_with_delay(TimeDuration delay) {
+    if (_M_state == kConnected || _M_state == kDisConnecting) {
+        _M_state = kDisConnecting;
+
+        // 使用 weak_ptr, 防止对象的生命周期被定时器延长
+        auto weak_conn = weak_from_this();
+        _M_loop->run_after(delay, [weak_conn] {
+            if (auto conn = weak_conn.lock()) {
+                conn->force_close();
+            }
+        });
     }
 }
 

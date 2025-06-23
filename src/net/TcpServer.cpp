@@ -144,7 +144,7 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
                 _M_name.c_str(), conn->name().c_str());
     
     // MARK: 在 主Reactor线程 中删除该对象
-    size_t id = conn->get_id();
+    size_t id = conn->id();
     _M_connections.erase(id);
 
     {

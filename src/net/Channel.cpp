@@ -89,7 +89,7 @@ void Channel::update() {
 
 
 /// 获取于设置内部成员变量
-int Channel::get_fd() { return _M_fd; }
+int Channel::fd() { return _M_fd; }
 void Channel::set_happened_events(uint32_t events) { _M_happened_events = events; }
 uint32_t Channel::get_happened_events() { return _M_happened_events; }
 uint32_t Channel::get_monitored_events() { return _M_monitored_events; }

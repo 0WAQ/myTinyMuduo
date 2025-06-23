@@ -30,9 +30,9 @@ namespace __detail
 
 Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport) :
     _M_loop(loop), _M_serv_sock(__detail::create_non_blocking_fd()), _M_listening(false),
-    _M_acceptor_channel(_M_loop, _M_serv_sock.get_fd())
+    _M_acceptor_channel(_M_loop, _M_serv_sock.fd())
 {
-    LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.get_fd());
+    LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.fd());
 
     // 设置serv_sock的属性
     _M_serv_sock.set_keep_alive(true);
@@ -70,7 +70,7 @@ void Acceptor::stop_in_loop() {
 
     _M_stopping = true;
 
-    LOG_INFO("Acceptor::stop_in_loop - stopping on fd=%d", _M_serv_sock.get_fd());
+    LOG_INFO("Acceptor::stop_in_loop - stopping on fd=%d", _M_serv_sock.fd());
 
     _M_acceptor_channel.unset_all_events();
     _M_acceptor_channel.remove();

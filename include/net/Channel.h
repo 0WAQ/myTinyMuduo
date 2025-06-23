@@ -94,7 +94,7 @@ public:
     channelStatus  get_status() { return _M_status; }
     void set_status(channelStatus status) { _M_status = status; }
 
-    int get_fd();
+    int fd();
     EventLoop* owner_loop() { return _M_loop_ptr; }
 
 private:

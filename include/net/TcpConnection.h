@@ -35,8 +35,17 @@ class TcpConnection;
 class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnection>
 {
 public:
-    
+
+    friend class TcpConnectionAccessor;
+
     using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+
+    enum State {
+        kConnecting,        // 连接建立中 (默认状态)
+        kConnected,         // 连接已建立 (活跃状态)
+        kDisConnecting,     // 连接断开中
+        kDisConnected       // 连接已断开 (最终状态)
+    };
 
 public:
 
@@ -64,6 +73,7 @@ public:
      * @brief 强制关闭连接
      */
     void force_close();
+    void force_close_with_delay(TimeDuration delay);
 
     /**
      * @brief 建立连接
@@ -82,13 +92,12 @@ public:
     void set_message_callback(MessageCallback func) { _M_message_callback = std::move(func); }
     void set_write_complete_callback(WriteCompleteCallback func) { _M_write_complete_callback = std::move(func); }
     void set_close_callback(CloseCallback func) { _M_close_callback = std::move(func); }
-    void set_high_water_mark_callback(HighWaterMarkCallback func, size_t high_water_mark) {
-        _M_high_water_mark = high_water_mark;
-        _M_high_water_mark_callback = std::move(func);
-    }
-
-    int get_fd() const { return _M_sock->get_fd(); }
-    size_t get_id() const { return _M_id; }
+    void set_high_water_mark_callback(HighWaterMarkCallback func) { _M_high_water_mark_callback = std::move(func); }
+    
+    void set_high_water_mark(size_t high_water_mark) { _M_high_water_mark = high_water_mark; }
+    const size_t high_water_mark() const { return _M_high_water_mark; }
+    int fd() const { return _M_sock->fd(); }
+    size_t id() const { return _M_id; }
     const std::string& name() const { return _M_name; }
     const InetAddress& local_address() { return _M_local_addr; }
     const InetAddress& peer_address() { return _M_peer_addr; }
@@ -113,13 +122,6 @@ private:
     void force_close_in_loop();
 
 private:
-
-    enum State {
-        kConnecting,        // 连接建立中 (默认状态)
-        kConnected,         // 连接已建立 (活跃状态)
-        kDisConnecting,     // 连接断开中
-        kDisConnected       // 连接已断开 (最终状态)
-    };
 
         std::atomic<int> _M_state;
         bool _M_reading;

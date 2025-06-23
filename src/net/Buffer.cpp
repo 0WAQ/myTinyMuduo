@@ -1,6 +1,4 @@
 #include "net/Buffer.h"
-#include <algorithm>
-#include <utility>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -224,7 +222,10 @@ std::size_t Buffer::read_fd(int fd, int* save_errno)
     iov[1].iov_base = extrabuf;
     iov[1].iov_len = sizeof(extrabuf);
 
-    ssize_t nlen = readv(fd, iov, 2);
+    // 如果 buffer 的可写区域大于 extrabuf, 那么忽略 extrabuf
+    const int iov_count = (write_bytes < sizeof(extrabuf)) ? 2 : 1;
+
+    ssize_t nlen = ::readv(fd, iov, iov_count);
     // error
     if(nlen < 0) {
         *save_errno = errno;
