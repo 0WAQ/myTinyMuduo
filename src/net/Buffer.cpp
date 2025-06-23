@@ -1,46 +1,81 @@
 #include "net/Buffer.h"
+#include <algorithm>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
 
-Buffer::Buffer(uint16_t sep, std::size_t prependable_size, std::size_t writable_size) : 
-            _M_sep(sep), 
+Buffer::Buffer(std::size_t prependable_size, std::size_t writable_size) : 
             _M_initial_prependable(prependable_size), _M_initial_writable(writable_size), 
             _M_read_idx(_M_initial_prependable), _M_write_idx(_M_initial_prependable),
             _M_buf(_M_initial_prependable + _M_initial_writable)
 { }
 
-void Buffer::append(const char* data, std::size_t size)
+Buffer::Buffer(const Buffer& other)
+    : _M_initial_prependable(other._M_initial_prependable)
+    , _M_initial_writable(other._M_initial_writable)
+    , _M_read_idx(other._M_read_idx)
+    , _M_write_idx(other._M_write_idx)
+    , _M_buf(other._M_buf)
+    , _M_sep(other._M_sep)
+{ }
+
+Buffer::Buffer(Buffer&& other) noexcept
+    : _M_initial_prependable(other._M_initial_prependable)
+    , _M_initial_writable(other._M_initial_writable)
+    , _M_read_idx(other._M_read_idx)
+    , _M_write_idx(other._M_write_idx)
+    , _M_buf(std::move(other._M_buf))
+    , _M_sep(other._M_sep)
+{
+    other._M_initial_prependable = other._M_initial_writable = 0;
+    other._M_read_idx = other._M_write_idx = 0;
+    other._M_sep = None;
+}
+
+Buffer& Buffer::operator= (const Buffer& other) {
+    _M_initial_prependable = other._M_initial_prependable;
+    _M_initial_writable = other._M_initial_writable;
+    _M_read_idx = other._M_read_idx;
+    _M_write_idx = other._M_write_idx;
+    _M_buf = other._M_buf;
+    _M_sep = other._M_sep;
+    return *this;
+}
+
+void Buffer::append_with_sep(const char* data, std::size_t size)
 {
     switch (_M_sep)
     {
         case 0: // 无分割符
         {
-            append_a(data, size);
+            append(data, size);
             break;
         }
         case 1: // 固定长度4字节做报文头
         {
             // 先将数据的大小送入缓冲区
-            append_a((char*)&size, 4);    
+            append((char*)&size, 4);    
             // 再将数据本身送入缓冲区
-            append_a(data, size);
+            append(data, size);
             break;
         }
-        case 2: // 报文尾部加"\r\n\r\n"
+        case 2: // 报文尾部加 "\r\n\r\n"
         {
             // 先将数据放入缓冲区
-            append_a(data, size);
+            append(data, size);
             // 再放入分割符
-            append_a("\r\n\r\n", 4);
+            append("\r\n\r\n", 4);
 
             break;
         }
     }
-
 }
 
-void Buffer::append_a(const char* data, std::size_t size)
+void Buffer::append_with_sep(const std::string& msg) {
+    append_with_sep(msg.data(), msg.size());
+}
+
+void Buffer::append(const char* data, std::size_t size)
 {
     assert(data != nullptr);
     ensure_writable(size);
@@ -48,11 +83,14 @@ void Buffer::append_a(const char* data, std::size_t size)
     has_written(size);
 }
 
+void Buffer::append(const std::string& msg) {
+    append(msg.data(), msg.size());
+}
+
 std::string Buffer::erase(std::size_t size)
 {
     // 不会有这种情况出现
     if(size > readable()) {
-        
         return {};
     }
 
@@ -131,6 +169,10 @@ void Buffer::ensure_writable(std::size_t size)
     }
 }
 
+void Buffer::has_written(std::size_t size) {
+    _M_write_idx += size;
+}
+
 void Buffer::resize(std::size_t len)
 {
     // 当writable和读空下来的prependable不够时, 重新分配
@@ -186,7 +228,7 @@ std::size_t Buffer::read_fd(int fd, int* save_errno)
     {
         _M_write_idx = _M_buf.size();
         // 将extrabuf中的数据追加至缓冲区中(会触发resize)
-        append(extrabuf, nlen - write_bytes);
+        append_with_sep(extrabuf, nlen - write_bytes);
     }
     return nlen;
 }
@@ -195,7 +237,7 @@ std::size_t Buffer::write_fd(int fd, int* save_errno)
 {
     // 将缓冲区的payload全部发送出去
     std::size_t read_size = readable();
-    ssize_t len = write(fd, begin() + _M_read_idx, read_size);
+    ssize_t len = ::write(fd, begin() + _M_read_idx, read_size);
 
     if(len < 0) {
         *save_errno = errno;

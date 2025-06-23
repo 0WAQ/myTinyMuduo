@@ -326,7 +326,7 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
             _M_loop->run_in_loop(std::bind(_M_high_water_mark_callback, shared_from_this(), oldLen + remaining));
         }
 
-        _M_output_buffer.append(std::string((char*)data, len));
+        _M_output_buffer.append_with_sep(std::string((char*)data, len));
 
         // MARK: 若channel没有关注可写事件, 则关注
         if(!_M_channel->is_writing()) {

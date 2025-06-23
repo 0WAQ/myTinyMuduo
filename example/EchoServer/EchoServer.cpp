@@ -3,6 +3,7 @@
  * 简易的EchoServer实现
  * 
  */
+#include "net/Buffer.h"
 #include <net/TcpServer.h>
 #include <base/Logger.h>
 
@@ -81,7 +82,7 @@ private:
         case 2:
             message.append("\r\n\r\n");
             break;
-        }   
+        }
     }
 
     EventLoop *loop_;

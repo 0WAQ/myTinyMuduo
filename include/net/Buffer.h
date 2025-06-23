@@ -7,7 +7,6 @@
 #define BUFFER_H
 
 #include <string>
-#include <cstdint>
 #include <cstring>
 #include <vector>
 #include <unistd.h>
@@ -20,116 +19,93 @@ namespace net {
 class Buffer
 {
 public:
-    
-    /**
-     * @brief 初始化buffer
-     * @param sep 选择报文分割类型: 0-无分割符; 1-四字节的报文头; 2-"\r\n\r\n"分割符(Http协议)
-     */
-    Buffer(uint16_t sep = 0, std::size_t prependable_size = 8, std::size_t writable_size = 1024);
 
+    // TODO: 分割符后缀未处理转义!!!
+    enum SepType {
+        None,               // 无分割符
+        LengthPrefix,       // 四字节的报文头
+        DelimiterSuffix     // \r\n\r\n
+    };
 
-    /**
-     * @brief 将字符串追加到缓冲区, 带有分割符
-     */
-    void append(const char* data, std::size_t size);
-    void append(const std::string& msg) { append(msg.data(), msg.size()); }
+    Buffer(std::size_t prependable_size = 8, std::size_t writable_size = 1024);
 
+    Buffer(const Buffer& other);
+    Buffer(Buffer&& other) noexcept;
 
-    /**
-     * @brief 将数据追加至缓冲区
-     * @param data 数据首地址
-     * @param size 数据大小
-     */
-    void append_a(const char* data, std::size_t size);
-    
+    Buffer& operator= (const Buffer& other);
 
     /**
-     * @brief 从buf中取出一个报文
-     * @param msg 报文数据
-     * @return 成功true, 失败false
-     */
-    bool pick_datagram(std::string& msg);
-
-    /**
-     * @brief 取出数据
-     */
-    void retrieve(size_t len);
-    void retrieve_all();
-
-    std::string retrieve_as_string(size_t len);
-    std::string retrieve_all_as_string();
-
-    /**
-     * @brief 删除size的大小的数据, 并返回
-     * @param size 
-     * @return 
-     */
-    std::string erase(std::size_t size);
-
-
-    /**
-     * @brief 扩容
-     * @param len 扩容到len 
-     */
-    void resize(std::size_t len);
-
-
-    /**
-     * @brief 确保缓冲区有size的大小
-     * @param size 
-     */
-    void ensure_writable(std::size_t size);
-
-
-    /**
-     * @brief 写区域增加len的大小
-     * @param size 
-     */
-    void has_written(std::size_t size) { _M_write_idx += size; }
-
-
-    /**
-     * @brief 获取缓冲区的首地址
-     */
-    char* begin() { return &*_M_buf.begin(); }
-    const char* cbegin() const { return &*_M_buf.begin(); }
-
-
-    /**
-     * @brief 获取缓冲区三个区域的大小
-     * @return 大小 
-     */
-    std::size_t prependable() { return _M_read_idx; }
-    std::size_t readable()    { return _M_write_idx - _M_read_idx; }
-    std::size_t writable()    { return _M_buf.size() - _M_write_idx; }
-
-
-    /**
-     * @brief 直接操作内核缓冲区和用户缓冲区
+     * @brief 分散读和集中写
      */
     std::size_t read_fd(int fd, int* save_errno);
     std::size_t write_fd(int fd, int* save_errno);
 
-    uint16_t sep() { return _M_sep; }
+
+    void append_with_sep(const char* data, std::size_t size);
+    void append_with_sep(const std::string& msg);
+
+    void append(const char* data, std::size_t size);
+    void append(const std::string& msg);
+
+    char* begin() { return &*_M_buf.begin(); }
+    const char* cbegin() const { return &*_M_buf.begin(); }
+
+    char* end() { return &*_M_buf.end(); }
+    const char* cend() const { return &*_M_buf.end(); }
+
+    // 从 readable 区域中删除
+    std::string erase(std::size_t size);
+
+    void resize(std::size_t len);
+
+    /**
+     * @brief 从buf中取出一个报文
+     */
+    bool pick_datagram(std::string& msg);
+
+    /**
+     * @brief 移动 read_idx, 用于取出数据后
+     */
+    void retrieve(size_t len);
+    void retrieve_all();
+    std::string retrieve_as_string(size_t len);
+    std::string retrieve_all_as_string();
+
+    /**
+     * @brief 确保缓冲区有size的大小
+     */
+    void ensure_writable(std::size_t size);
+
+    /**
+     * @brief 写区域增加len的大小
+     */
+    void has_written(std::size_t size);
+
+    /**
+     * @brief 获取缓冲区三个区域的大小
+     */
+    std::size_t prependable() { return _M_read_idx; }
+    std::size_t readable()    { return _M_write_idx - _M_read_idx; }
+    std::size_t writable()    { return _M_buf.size() - _M_write_idx; }
+    SepType sep() { return _M_sep; }
+    void set_sep(SepType sep) { _M_sep = sep; }
 
 private:
 
-    // prependable的初始大小, 也是read和write idx的初始值
+    // prependable的初始大小, 也是 read_idx 和 write_idx 的初始值
     std::size_t _M_initial_prependable;
 
     // writable的初始大小
     std::size_t _M_initial_writable;
 
-    // read和write区域的索引
     std::size_t _M_read_idx;
     std::size_t _M_write_idx;
 
     // 自动扩容的vector<char>
     std::vector<char> _M_buf;
 
-    // 分割符
-    const uint16_t _M_sep;
-    
+    // 分割类型
+    SepType _M_sep = None;
 };
 
 } // namespace net
