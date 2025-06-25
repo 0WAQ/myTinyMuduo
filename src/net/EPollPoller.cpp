@@ -19,7 +19,7 @@ EPollPoller::EPollPoller(EventLoop* loop) :
     }
 }
 
-TimeStamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::milliseconds timeout)
+TimeStamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::steady_clock::duration timeout)
 {
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
@@ -27,7 +27,7 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::millisecon
     int numEvents = ::epoll_wait(_M_epoll_fd
                         , _M_events_arr.data()
                         , static_cast<int>(_M_events_arr.size())
-                        , timeout == std::chrono::milliseconds::max() ? -1 : timeout.count());    
+                        , timeout == std::chrono::steady_clock::duration::max() ? -1 : timeout.count());    
     int savedErrno = errno;  // errno为全局
 
     if(numEvents > 0) 

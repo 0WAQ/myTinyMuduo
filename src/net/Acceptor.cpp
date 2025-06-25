@@ -29,7 +29,8 @@ namespace __detail
 } // namespace mymuduo::net
 
 Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport) :
-    _M_loop(loop), _M_serv_sock(__detail::create_non_blocking_fd()), _M_listening(false),
+    _M_loop(loop), _M_serv_addr(serv_addr), 
+    _M_serv_sock(__detail::create_non_blocking_fd()), _M_listening(false),
     _M_acceptor_channel(_M_loop, _M_serv_sock.fd())
 {
     LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.fd());
@@ -41,7 +42,7 @@ Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport
     _M_serv_sock.set_tcp_nodelay(true);
 
     // 绑定且监听
-    _M_serv_sock.bind(serv_addr);
+    _M_serv_sock.bind(_M_serv_addr);
 
     // 设置acceptor_channel_ptr的执行函数为new_connection
     _M_acceptor_channel.set_read_callback(std::bind(&Acceptor::new_connection, this));
@@ -49,8 +50,7 @@ Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport
 }
 
 Acceptor::~Acceptor() {
-    _M_acceptor_channel.unset_all_events();
-    _M_acceptor_channel.remove();
+    this->stop();
 }
 
 void Acceptor::listen() {

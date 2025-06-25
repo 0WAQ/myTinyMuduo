@@ -7,6 +7,7 @@
 #define ACCEPTOR_H
 
 #include "base/noncopyable.h"
+#include "net/InetAddress.h"
 #include "net/Socket.h"
 #include "net/Channel.h"
 
@@ -31,12 +32,12 @@ public:
     ~Acceptor();
 
     void listen();
-
     void stop();
 
     void new_connection();
 
     bool listenning() const { return _M_listening; }
+    const InetAddress& listen_addr() const { return _M_serv_addr; }
 
     void set_new_connection_callback(CreateConnCallback func) {
         _M_new_connection_callback = std::move(func);
@@ -48,6 +49,7 @@ private:
 private:
 
     EventLoop* _M_loop;
+    InetAddress _M_serv_addr;
     Socket _M_serv_sock;
     Channel _M_acceptor_channel;
 

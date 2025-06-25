@@ -56,7 +56,6 @@ public:
      * @brief 启动TcpServer, 不需要暂停, 会自动析构
      */
     void start();
-
     void stop();
 
     /**
@@ -66,11 +65,12 @@ public:
         _M_loop_threads->set_thread_num(num_threads);
     }
 
-
     void set_connection_callback(ConnectionCallback func) { _M_connection_callback = std::move(func); }
     void set_message_callback(MessageCallback func) { _M_message_callback = std::move(func); }
     void set_write_complete_callback(WriteCompleteCallback func) { _M_write_complete_callback = std::move(func); }
     void set_thread_init_callback(ThreadInitCallback func) { _M_thread_init_callback = std::move(func); }
+
+    const InetAddress& listen_addr() const { return _M_acceptor->listen_addr(); }    
 
 private:
 
@@ -94,7 +94,7 @@ private:
         // 主事件循环
         EventLoop *_M_main_loop;
         std::unique_ptr<Acceptor> _M_acceptor;
-        
+
         // 从事件循环
         std::shared_ptr<EventLoopThreadPool> _M_loop_threads;
         ConnectionMap _M_connections;

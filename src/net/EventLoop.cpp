@@ -3,9 +3,8 @@
 #include "base/TimeStamp.h"
 #include "net/EventLoop.h"
 
+#include <chrono>
 #include <cstdio>
-
-using namespace std::chrono_literals;
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -14,8 +13,6 @@ using namespace std::chrono_literals;
 
 // 防止一个线程创建多个EventLoop, __thread: 表示thread local
 __thread EventLoop *t_loop_in_this_thread = nullptr;
-
-const std::chrono::milliseconds kPollTimeMs = 10000ms;  // Poller的默认超时时间
 
 namespace mymuduo::net {
 namespace __detail {
@@ -65,17 +62,17 @@ EventLoop::EventLoop() :
 
 EventLoop::~EventLoop()
 {
+    this->quit();
+
     _M_wakeup_channel->unset_all_events();
     _M_wakeup_channel->remove();
+
     ::close(_M_wakeup_fd);
-
-    quit();
-
     t_loop_in_this_thread = nullptr;
 }
 
 // 运行事件循环
-void EventLoop::loop()
+void EventLoop::loop(std::chrono::steady_clock::duration timeout)
 {
     LOG_DEBUG("EventLoop %p start looping, thread is %d.\n", this, CurrentThread::tid());
 
@@ -87,7 +84,7 @@ void EventLoop::loop()
     while(!_M_quit)
     {
         _M_activeChannels.clear();
-        _M_poller_return_time = _M_poller->poll(&_M_activeChannels, kPollTimeMs);
+        _M_poller_return_time = _M_poller->poll(&_M_activeChannels, timeout);
 
         for(Channel *ch : _M_activeChannels) {
             ch->handle(_M_poller_return_time);
@@ -103,7 +100,7 @@ void EventLoop::loop()
 }
 
 // TODO: 支持 timeoutMs
-void EventLoop::loop_once(std::chrono::milliseconds timeoutMs)
+void EventLoop::loop_once(std::chrono::steady_clock::duration timeout)
 {
     LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());
 
@@ -113,7 +110,7 @@ void EventLoop::loop_once(std::chrono::milliseconds timeoutMs)
     _M_looping = true;
 
     _M_activeChannels.clear();
-    _M_poller_return_time = _M_poller->poll(&_M_activeChannels, timeoutMs);
+    _M_poller_return_time = _M_poller->poll(&_M_activeChannels, timeout);
     
     for(Channel *ch : _M_activeChannels) {
         ch->handle(_M_poller_return_time);
