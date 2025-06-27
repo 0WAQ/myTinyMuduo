@@ -41,7 +41,7 @@ TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
 TcpServer::~TcpServer() {
     if (!_M_stopping) {
         LOG_WARN("TcpServer is destroyed without calling stop().");
-        stop();
+        this->stop();
     }
 }
 
@@ -65,12 +65,6 @@ void TcpServer::stop() {
     }
 
     _M_stopping.store(true);
-
-
-    _M_main_loop->run_in_loop([this] {
-        _M_acceptor->stop();
-    });
-
 
     for(auto& item : _M_connections) {
         // MARK: 用临时的智能指针获取 TcpConnection 对象

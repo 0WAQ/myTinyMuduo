@@ -32,7 +32,6 @@ public:
     ~Acceptor();
 
     void listen();
-    void stop();
 
     void new_connection();
 
@@ -42,9 +41,6 @@ public:
     void set_new_connection_callback(CreateConnCallback func) {
         _M_new_connection_callback = std::move(func);
     }
-
-private:
-    void stop_in_loop();
 
 private:
 

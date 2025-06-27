@@ -50,34 +50,15 @@ Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport
 }
 
 Acceptor::~Acceptor() {
-    this->stop();
+    _M_acceptor_channel.unset_all_events();
+    _M_acceptor_channel.remove();
+    _M_serv_sock.close();
 }
 
 void Acceptor::listen() {
     _M_listening = true;
     _M_serv_sock.listen();
     _M_acceptor_channel.set_read_events();
-}
-
-void Acceptor::stop() {
-    if (_M_listening) {
-        _M_loop->run_in_loop(std::bind(&Acceptor::stop_in_loop, this));
-    }
-}
-
-void Acceptor::stop_in_loop() {
-    assert(_M_loop->is_loop_thread());
-
-    _M_stopping = true;
-
-    LOG_INFO("Acceptor::stop_in_loop - stopping on fd=%d", _M_serv_sock.fd());
-
-    _M_acceptor_channel.unset_all_events();
-    _M_acceptor_channel.remove();
-
-    _M_serv_sock.close();
-
-    _M_listening = false;
 }
 
 // 读事件的被调函数, 代表有新连接
