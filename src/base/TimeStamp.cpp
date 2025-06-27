@@ -10,6 +10,10 @@ TimeStamp::TimeStamp(TimePoint sec)
     : _M_sec(sec)
 { }
 
+TimeStamp::TimeStamp(TimeDuration dur)
+    : _M_sec(TimePoint{} + dur)
+{ }
+
 TimeStamp TimeStamp::now() {
     return TimeStamp(std::chrono::steady_clock::now());
 }

@@ -1,6 +1,7 @@
 #ifndef ASYNCLOGGING_H
 #define ASYNCLOGGING_H
 
+#include <chrono>
 #include <string>
 #include <filesystem>
 #include <cstring>
@@ -12,6 +13,7 @@
 #include <semaphore>
 #include <condition_variable>
 
+#include "base/LogFile.h"
 #include "base/Thread.h"
 #include "base/noncopyable.h"
 
@@ -70,30 +72,20 @@ class AsyncLogging : noncopyable
 {
 public:
 
-    AsyncLogging(const std::filesystem::path& basename, off_t roll_size, int flush_interval = 3);
-    
-    ~AsyncLogging() {
-        if(_M_running) {
-            stop();
-        }
-    }
+    AsyncLogging(const std::filesystem::path& filepath,
+                    const std::string& filename,
+                    off_t roll_size = 500*1000*1000,
+                    std::chrono::seconds flush_interval = std::chrono::seconds { 3 });
+
+    ~AsyncLogging();
 
     /**
      * @brief 会被前端线程写日志时调用
      */
     void append(const char *logline, std::size_t len);
     
-    void start() {
-        _M_running = true;
-        _M_thread.start();
-        _M_sem.acquire();  // 使用信号量等待后端线程完成初始化
-    }
-
-    void stop() {
-        _M_running = false;
-        _M_cond.notify_one();
-        _M_thread.join();
-    }
+    void start();
+    void stop();
 
 private:
     
@@ -109,9 +101,9 @@ private:
 private:
 
     std::atomic<bool> _M_running;
-    std::filesystem::path _M_basename;
-    const int _M_flush_interval;    // 刷新缓冲区的间隔时间
-    const int _M_roll_size;         // 
+
+    const std::chrono::seconds _M_flush_interval;    // 刷新缓冲区的间隔时间
+    std::unique_ptr<LogFile> _M_log_file;
 
     Thread _M_thread;               // 后端线程
    

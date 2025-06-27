@@ -1,12 +1,14 @@
 #ifndef LOGFILE_H
 #define LOGFILE_H
 
+#include <chrono>
 #include <string>
 #include <memory>
 #include <mutex>
 #include <filesystem>
 #include <time.h>
 
+#include "base/TimeStamp.h"
 #include "base/noncopyable.h"
 
 namespace mymuduo
@@ -48,8 +50,12 @@ class LogFile : noncopyable
 {
 public:
 
-    LogFile(const std::filesystem::path& basename, off_t roll_size,
-            bool thread_safe = true, int flush_interval = 3, int check_every = 1024);
+    LogFile(const std::filesystem::path& filepath,
+            const std::string& basename,
+            off_t roll_size,
+            bool thread_safe,
+            std::chrono::seconds flush_interval,
+            int check_every = 1024);
 
     ~LogFile() = default;
 
@@ -66,24 +72,25 @@ private:
     /**
      * @brief 获取日志文件的名字
      */
-    static std::string get_logfile_name(const std::string& basename, time_t *now);
+    static std::string get_logfile_name(const std::string& path_name, time_t *now);
 
 private:
 
-    const std::filesystem::path _M_basename;
+    const std::filesystem::path _M_filepath;
+    const std::string _M_basename;
     const off_t _M_roll_size;       // 文件滚动大小
-    const int _M_flush_interval;    // 文件刷新间隔
+    const std::chrono::seconds _M_flush_interval;    // 刷新缓冲区的间隔时间
     const int _M_check_every;       // 文件最大行数
 
     int _M_count;   // 记录文件行数
 
     std::unique_ptr<std::mutex> _M_mutex_ptr;
-    time_t _M_start_of_period;  // 
-    time_t _M_last_roll;        // 上次滚动文件时间
-    time_t _M_last_flush;       // 上次刷新文件时间
+    TimeStamp _M_start_of_period;  // 
+    TimeStamp _M_last_roll;        // 上次滚动文件时间
+    TimeStamp _M_last_flush;       // 上次刷新文件时间
     std::unique_ptr<__detail::File> _M_file;
 
-    const int kRollPerSeconds_ = 60*60*24;
+    const std::chrono::seconds kRollPerSeconds = std::chrono::seconds{60 * 60 * 24};
 };
 
 } // namespace mymuduo

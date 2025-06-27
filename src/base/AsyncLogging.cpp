@@ -2,32 +2,54 @@
 #include "base/LogFile.h"
 #include "base/TimeStamp.h"
 
+#include <chrono>
+#include <string>
 #include <unistd.h>
 #include <cassert>
-#include <chrono>
 
 using namespace mymuduo;
 
-AsyncLogging::AsyncLogging(const std::filesystem::path& basename, off_t roll_size, int flush_interval) :
-        _M_running(false),
-        _M_basename(basename),
-        _M_flush_interval(flush_interval),
-        _M_roll_size(roll_size),
-        _M_thread(std::bind(&AsyncLogging::thread_func, this), "Logging"),
-        _M_sem(0),
-        _M_mutex(),
-        _M_cond(),
-        _M_curr_buffer(new Buffer),
-        _M_next_buffer(new Buffer),
-        _M_buffers()
+AsyncLogging::AsyncLogging(const std::filesystem::path& filepath,
+                            const std::string& basename,
+                            off_t roll_size,
+                            std::chrono::seconds flush_interval)
+    : _M_running(false)
+    , _M_flush_interval(flush_interval)
+    , _M_log_file(new LogFile(filepath, basename, roll_size, true, flush_interval))
+    , _M_thread(std::bind(&AsyncLogging::thread_func, this), "Logging")
+    , _M_sem(0)
+    , _M_curr_buffer(new Buffer)
+    , _M_next_buffer(new Buffer)
 {
     _M_curr_buffer->bzero();
     _M_next_buffer->bzero();
     _M_buffers.reserve(16);
 }
 
-void AsyncLogging::append(const char *logline, std::size_t len)
-{
+AsyncLogging::~AsyncLogging() {
+    if (!_M_running) {
+        return;
+    }
+    stop();
+}
+
+void AsyncLogging::start() {
+    _M_running.store(true);
+    _M_thread.start();
+    _M_sem.acquire();  // 使用信号量等待后端线程完成日志文件的初始化
+}
+
+void AsyncLogging::stop() {
+    _M_running.store(false);
+    _M_cond.notify_one();
+
+    if (_M_thread.joinable()) {
+        _M_thread.join();
+    }
+}
+
+void AsyncLogging::append(const char *logline, std::size_t len) {
+
     std::lock_guard<std::mutex> guard(_M_mutex);
     
     // 若当前缓冲剩余空间足够大
@@ -59,20 +81,17 @@ void AsyncLogging::append(const char *logline, std::size_t len)
     }
 }
 
-void AsyncLogging::thread_func()
-{
-    _M_sem.release();
-    LogFile file(_M_basename, _M_roll_size, false);
-
+void AsyncLogging::thread_func() {
 
     BufferPtr new_buffer1(new Buffer), new_buffer2(new Buffer);
     new_buffer1->bzero(), new_buffer2->bzero();
-
+    
     BufferVector buffers_to_write;
     buffers_to_write.reserve(16);
+    
+    _M_sem.release();
 
-    while(_M_running)
-    {
+    while(_M_running) {
         assert(new_buffer1 && new_buffer1->size() == 0);
         assert(new_buffer2 && new_buffer2->size() == 0);
         assert(buffers_to_write.empty());
@@ -82,7 +101,7 @@ void AsyncLogging::thread_func()
 
             // 如果暂且没有待落盘的缓冲区, 则释放锁并且等待flush_interval秒
             if(_M_buffers.empty()) {
-                _M_cond.wait_for(lock, std::chrono::seconds{_M_flush_interval});
+                _M_cond.wait_for(lock, std::chrono::seconds{ _M_flush_interval });
             }
 
             _M_buffers.emplace_back(std::move(_M_curr_buffer));
@@ -103,7 +122,7 @@ void AsyncLogging::thread_func()
             snprintf(buf, sizeof(buf), "Dropped log message at %s, %zd larger buffers.\n",
                      TimeStamp::now().to_string().c_str(), buffers_to_write.size() - 2);
             fputs(buf, stderr);
-            file.append(buf, static_cast<int>(strlen(buf)));
+            _M_log_file->append(buf, static_cast<int>(strlen(buf)));
             buffers_to_write.erase(buffers_to_write.begin() + 2, buffers_to_write.end());    
         }
 
@@ -111,7 +130,7 @@ void AsyncLogging::thread_func()
         for(const auto& buffer : buffers_to_write)
         {
             assert(buffer);
-            file.append(buffer->data(), buffer->size());
+            _M_log_file->append(buffer->data(), buffer->size());
         }
 
         if(buffers_to_write.size() > 2)
@@ -137,8 +156,8 @@ void AsyncLogging::thread_func()
         }
 
         buffers_to_write.clear();
-        file.flush();
+        _M_log_file->flush();
     }
 
-    file.flush();
+    _M_log_file->flush();
 }

@@ -35,6 +35,7 @@ public:
      * @param sec TimePoint
      */
     explicit TimeStamp(TimePoint sec);
+    explicit TimeStamp(TimeDuration dur);
 
     /**
      * @brief 获取当前时间戳

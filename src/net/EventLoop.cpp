@@ -99,7 +99,6 @@ void EventLoop::loop(std::chrono::steady_clock::duration timeout)
     _M_looping = false;
 }
 
-// TODO: 支持 timeoutMs
 void EventLoop::loop_once(std::chrono::steady_clock::duration timeout)
 {
     LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());

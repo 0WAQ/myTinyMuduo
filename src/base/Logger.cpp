@@ -1,67 +1,71 @@
 #include "base/Logger.h"
+#include "base/AsyncLogging.h"
 #include "base/TimeStamp.h"
+
+#include <atomic>
+#include <cstdio>
+#include <functional>
+#include <memory>
 
 using namespace mymuduo;
 
-Logger::Logger(const std::filesystem::path& path, const std::string& basename, int roll_size = 500*1000) :
-        _M_async_logging(path / basename, roll_size, 1)
-{
-    namespace fs = std::filesystem;
-
-    // FIXME: 不要这样使用!
-    if (std::string(path.c_str()) == "stdout") {
-        return;
-    }
-
-    fs::directory_entry entry{ path };
-
-    if(!entry.exists() && !fs::create_directory(entry)) {
-        fprintf(stderr, "can't create log_path directory.");
-        exit(-1);
-    }
+Logger* Logger::instance() {
+    // 懒汉模式, 在第一次调用时才创建对象
+    static Logger logger;   // c++11以后, 使用局部变量懒汉不用加锁
+    return &logger;
 }
 
-void Logger::init(LogLevel level)
-{
-    _M_level = level;
-
-    _M_async_logging.start();
-}
+Logger::Logger()
+    : _M_initialized(false)
+    , _M_level(Logger::INFO)
+    , _M_output_func()
+{ }
 
 void Logger::set_log_level(LogLevel level) {
-    _M_level = level;
+    instance()->_M_level = level;
 }
 
-Logger::LogLevel Logger::log_level() {
-    return _M_level;
+bool Logger::set_output(OutputFunc func) {
+    if (_M_initialized.load()) {
+        return false;
+    }
+    _M_initialized.store(true);
+    _M_output_func = std::move(func);
+    return true;
 }
 
-void Logger::append_level_title(LogLevel level, std::string& msg) 
+bool Logger::set_async(const std::shared_ptr<AsyncLogging>& async) {
+    if (_M_initialized.load()) {
+        return false;
+    }
+    _M_initialized.store(true);
+    _M_output_func = std::bind(&AsyncLogging::append, async.get(),
+                        std::placeholders::_1, std::placeholders::_2);
+    async->start();
+    return true;
+}
+
+void Logger::append_with_level_title(LogLevel level, std::string& msg) 
 {
-    switch (level)
-    {
-    case 0:
-        msg.append("[DEBUG]: ");
-        break;
-    case 1:
-        msg.append("[INFO]: ");
-        break;
-    case 2:
-        msg.append("[WARN] : ");
-        break;
-    case 3:
-        msg.append("[ERROR]: ");
-        break;
+    switch (level) {
+    case DEBUG: msg.append("[DEBUG]: "); break;
+    case INFO:  msg.append("[INFO ]: "); break;
+    case WARN:  msg.append("[WARN ]: "); break;
+    case ERROR: msg.append("[ERROR]: "); break;
+    default:    msg.append("[UNKN ]: "); break;
     }
 }
 
 void Logger::write(LogLevel level, const char* format, ...)
-{   
-    // 待填充的信息
+{
+    if (_M_level > level) {
+        return;
+    }
+
     std::string msg;
 
     // 1.填充标题头
-    append_level_title(level, msg);
+    append_with_level_title(level, msg);
     
     // 2.填充时间  
     msg.append(TimeStamp::now().to_string() + ' ');
@@ -76,6 +80,6 @@ void Logger::write(LogLevel level, const char* format, ...)
     }
     msg.append(buf, strlen(buf));
 
-    // 4. 前端线程写入缓冲区
-    _M_async_logging.append(msg.data(), msg.size());    
+    // 4. 输出日志
+    _M_output_func(msg.data(), msg.size());
 }

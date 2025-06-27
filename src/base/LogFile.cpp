@@ -1,7 +1,10 @@
 #include "base/LogFile.h"
+#include "base/TimeStamp.h"
 
+#include <chrono>
 #include <cstdio>
 #include <fcntl.h>
+#include <filesystem>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <cassert>
@@ -12,13 +15,7 @@ namespace __detail {
 File::File(std::string filename) :
         _M_written(0)
 {
-    // FIXME: 不要这样使用
-    if (filename.substr(0, 6) == "stdout") {
-        _M_fp = stdout;
-    }
-    else {
-        _M_fp = ::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
-    }
+    _M_fp = ::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
 
     assert(_M_fp != nullptr);
     ::setbuffer(_M_fp, _M_buf, sizeof(_M_buf));
@@ -67,18 +64,30 @@ size_t File::write(const char* logline, size_t len)
 
 using namespace mymuduo;
 
-LogFile::LogFile(const std::filesystem::path& basename, off_t roll_size,
-    bool thread_safe, int flush_interval, int check_every) : 
-        _M_basename(basename),
-        _M_roll_size(roll_size),
-        _M_flush_interval(flush_interval),
-        _M_check_every(check_every),
-        _M_count(0),
-        _M_mutex_ptr(thread_safe ? new std::mutex : nullptr),
-        _M_start_of_period(0),
-        _M_last_roll(0),
-        _M_last_flush(0)
+LogFile::LogFile(const std::filesystem::path& filepath,
+                 const std::string& basename,
+                 off_t roll_size,
+                 bool thread_safe,
+                 std::chrono::seconds flush_interval, 
+                 int check_every
+                )
+    : _M_filepath(filepath)
+    , _M_basename(basename)
+    , _M_roll_size(roll_size)
+    , _M_flush_interval(flush_interval)
+    , _M_check_every(check_every)
+    , _M_count(0)
+    , _M_mutex_ptr(thread_safe ? new std::mutex : nullptr)
+    , _M_start_of_period(TimeStamp {})
+    , _M_last_roll(TimeStamp {})
+    , _M_last_flush(TimeStamp {})
 {
+    namespace fs = std::filesystem;
+    if(!fs::exists(filepath) && !fs::create_directory(filepath)) {
+        fprintf(stderr, "can't create log_path directory.");
+        exit(-1);
+    }
+
     roll_file();
 }
 
@@ -120,8 +129,10 @@ void LogFile::append_unlocked(const char* logline, size_t len)
         {
             _M_count = 0;
 
-            time_t now = ::time(NULL);
-            time_t thisPeriod = now / kRollPerSeconds_ * kRollPerSeconds_;
+            auto now = TimeStamp::now();
+            std::chrono::seconds seconds = 
+                    std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
+            TimeStamp thisPeriod(seconds / kRollPerSeconds * kRollPerSeconds);
             if(thisPeriod != _M_start_of_period)
             {
                 roll_file();
@@ -137,12 +148,12 @@ void LogFile::append_unlocked(const char* logline, size_t len)
 
 bool LogFile::roll_file()
 {
-    time_t now = 0;
-    std::string filename = get_logfile_name(_M_basename.c_str(), &now);
-    time_t start = now / kRollPerSeconds_ * kRollPerSeconds_;
+    auto now = TimeStamp::now();
+    time_t to_time_t = now.to_time_t();
 
-    if(now > _M_last_roll)
-    {
+    std::string filename = get_logfile_name(_M_filepath / _M_basename, &to_time_t);
+
+    if(now > _M_last_roll) {
         _M_last_roll = now;
         _M_last_flush = now;
         _M_start_of_period = now;
@@ -153,11 +164,11 @@ bool LogFile::roll_file()
     return false;
 }
 
-std::string LogFile::get_logfile_name(const std::string& basename, time_t *now)
+std::string LogFile::get_logfile_name(const std::string& path_name, time_t *now)
 {
     std::string filename;
-    filename.reserve(basename.size() + 64);
-    filename = basename;
+    filename.reserve(path_name.size() + 64);
+    filename = path_name;
 
     std::string hostname;
     char buf[256];

@@ -3,7 +3,9 @@
  * 简易的EchoServer实现
  * 
  */
+#include "base/AsyncLogging.h"
 #include "net/Buffer.h"
+#include <memory>
 #include <net/TcpServer.h>
 #include <base/Logger.h>
 
@@ -97,8 +99,12 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    Logger* log = Logger::get_instance(argv[3], "EchoServer");
-    log->init(Logger::DEBUG);
+    // 使用异步日志系统
+    std::shared_ptr<AsyncLogging> async(new AsyncLogging(argv[3], "EchoServer"));
+    
+    Logger* log = Logger::instance();
+    log->set_log_level(Logger::DEBUG);
+    log->set_async(async);
 
     EventLoop loop;
     InetAddress addr(argv[1], atoi(argv[2]));
