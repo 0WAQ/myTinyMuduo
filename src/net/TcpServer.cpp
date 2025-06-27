@@ -40,7 +40,7 @@ TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
 
 TcpServer::~TcpServer() {
     if (!_M_stopping) {
-        LOG_WARN("TcpServer is destroyed without calling stop().");
+        LOG_WARN("TcpServer(%x) is destroyed without calling stop().", this);
         this->stop();
     }
 }

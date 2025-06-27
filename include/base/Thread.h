@@ -1,6 +1,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 
+#include <cstddef>
 #include <thread>
 #include <functional>
 #include <memory>
@@ -16,47 +17,39 @@ class Thread : noncopyable
 {
 public:
 
-    using ThreadFunc = std::function<void()>;
+    explicit Thread(std::function<void()> func, const std::string &name = std::string{});
 
-public:
-
-    explicit Thread(ThreadFunc func, const std::string &name = std::string{});
+    explicit Thread(Thread&& other);
+    Thread& operator= (Thread&& other);
 
     ~Thread();
 
-    /**
-     * @brief 启动线程
-     */
-    void start();
 
-    /**
-     * @brief 汇入线程
-     */
+    void start();
     void join();
 
-    bool started() const { return _M_started.load(); }
-    bool joined() const { return _M_joined.load(); }
-    pid_t tid() const { return _M_tid; }
-    const std::string& name() const { return _M_name; }
-    static int num_created() { return _M_num_created; }
+    bool started() const noexcept { return _M_started.load(); }
+    bool joined() const noexcept { return _M_joined.load(); }
+    bool joinable() const noexcept { return _M_thread->joinable(); }
+    pid_t tid() const noexcept { return _M_tid; }
+    const std::string& name() const noexcept { return _M_name; }
+    static const int num_created() noexcept { return _M_num_created; }
 
 private:
-
     void set_default_name();
 
 private:
-
     std::atomic<bool> _M_started;
     std::atomic<bool> _M_joined;
 
     pid_t _M_tid;
-    std::shared_ptr<std::thread> _M_thread;
+    std::unique_ptr<std::thread> _M_thread;
 
-    ThreadFunc _M_func;     // 线程的执行函数
+    std::function<void()> _M_func;
 
     std::string _M_name;
 
-    static std::atomic<int> _M_num_created;
+    static std::atomic<size_t> _M_num_created;
 };
 
 } // namespace mymuduo

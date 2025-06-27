@@ -19,4 +19,5 @@ endfunction()
 
 
 # 添加单元测试
-
+add_test(test_Thread)
+add_test(test_ThreadPool)

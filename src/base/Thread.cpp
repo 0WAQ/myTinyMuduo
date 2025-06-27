@@ -1,16 +1,38 @@
 #include "base/Thread.h"
 #include "base/CurrentThread.h"
+#include <condition_variable>
+#include <mutex>
+#include <utility>
 
 using namespace mymuduo;
 
-std::atomic<int> Thread::_M_num_created = 0;
+std::atomic<size_t> Thread::_M_num_created = 0ul;
 
-Thread::Thread(ThreadFunc func, const std::string &name) :
-            _M_started(false), _M_joined(false), 
-            _M_tid(0), _M_name(name),
-            _M_func(std::move(func))
+Thread::Thread(std::function<void()> func, const std::string &name)
+    : _M_started(false), _M_joined(false)
+    , _M_tid(0), _M_name(name)
+    , _M_func(std::move(func))
 {
     set_default_name();
+}
+
+Thread::Thread(Thread&& other)
+    : _M_started(other._M_started.load()), _M_joined(other._M_joined.load())
+    , _M_tid(other._M_tid), _M_name(std::move(other._M_name))
+    , _M_func(std::move(other._M_func))
+{
+    other._M_started.store(false);
+    other._M_joined.store(false);
+    other._M_tid = 0;
+}
+
+Thread& Thread::operator= (Thread&& other) {
+    _M_started = other._M_started.load();
+    _M_joined = other._M_joined.load();
+    _M_tid = other._M_tid;
+    _M_name = std::move(other._M_name);
+    _M_func = std::move(other._M_func);
+    return *this;
 }
 
 Thread::~Thread() {
@@ -22,21 +44,30 @@ Thread::~Thread() {
 void Thread::start() {
     _M_started.store(true);
 
-    sem_t sem;
-    sem_init(&sem, 0, 0);
+    std::condition_variable cv;
+    std::mutex mtx;
 
     // 启动子线程
-    _M_thread = std::shared_ptr<std::thread>(new std::thread([&](){
+    _M_thread = std::unique_ptr<std::thread>(new std::thread([&](){
         _M_tid = CurrentThread::tid();
-        sem_post(&sem);
+        cv.notify_one();
         _M_func();
     }));
 
     // 等待子线程获取tid
-    sem_wait(&sem);
+    std::unique_lock<std::mutex> lock { mtx };
+    cv.wait(lock, [this] {
+        return _M_tid != 0;
+    });
 }
 
 void Thread::join() {
+
+    // 防止线程未启动就 join
+    if (!_M_started || !_M_thread) {
+        return;
+    }
+    
     if (_M_joined) {
         return;
     }
