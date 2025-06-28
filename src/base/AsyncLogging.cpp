@@ -3,6 +3,7 @@
 #include "base/TimeStamp.h"
 
 #include <chrono>
+#include <memory>
 #include <string>
 #include <unistd.h>
 #include <cassert>
@@ -16,6 +17,20 @@ AsyncLogging::AsyncLogging(const std::filesystem::path& filepath,
     : _M_running(false)
     , _M_flush_interval(flush_interval)
     , _M_log_file(new LogFile(filepath, basename, roll_size, true, flush_interval))
+    , _M_thread(std::bind(&AsyncLogging::thread_func, this), "Logging")
+    , _M_sem(0)
+    , _M_curr_buffer(new Buffer)
+    , _M_next_buffer(new Buffer)
+{
+    _M_curr_buffer->bzero();
+    _M_next_buffer->bzero();
+    _M_buffers.reserve(16);
+}
+
+AsyncLogging::AsyncLogging(std::unique_ptr<LogFile> log_file)
+    : _M_running(false)
+    , _M_flush_interval(log_file->flush_interval())
+    , _M_log_file(std::move(log_file))
     , _M_thread(std::bind(&AsyncLogging::thread_func, this), "Logging")
     , _M_sem(0)
     , _M_curr_buffer(new Buffer)

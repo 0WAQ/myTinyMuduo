@@ -17,11 +17,8 @@
 #include "base/Thread.h"
 #include "base/noncopyable.h"
 
-namespace mymuduo
-{
-
-namespace __detail
-{
+namespace mymuduo {
+namespace __detail {
 
 const std::size_t kSmallBuffer = 4000;
 const std::size_t kLargeBuffer = 4000*1000;
@@ -30,11 +27,10 @@ const std::size_t kLargeBuffer = 4000*1000;
  * @brief 异步日志系统的缓冲区
  */
 template<int SIZE>
-class Buffer : noncopyable
-{
+class Buffer : noncopyable {
 public:
-
     Buffer() : _M_cur(_M_data) { }
+    
     ~Buffer() { }
 
     void append(const char *buf, std::size_t len) {
@@ -65,17 +61,15 @@ private:
 
 } // namespace __detail
 
-/**
- * @brief 异步日志的后端线程
- */
-class AsyncLogging : noncopyable
-{
-public:
 
+class AsyncLogging : noncopyable {
+public:
     AsyncLogging(const std::filesystem::path& filepath,
                     const std::string& filename,
                     off_t roll_size = 500*1000*1000,
                     std::chrono::seconds flush_interval = std::chrono::seconds { 3 });
+
+    AsyncLogging(std::unique_ptr<LogFile> log_file);
 
     ~AsyncLogging();
 
@@ -88,10 +82,6 @@ public:
     void stop();
 
 private:
-    
-    /**
-     * @brief 后端线程的任务 
-     */
     void thread_func();
 
     using Buffer = __detail::Buffer<__detail::kLargeBuffer>;
@@ -99,7 +89,6 @@ private:
     using BufferVector = std::vector<BufferPtr>;
 
 private:
-
     std::atomic<bool> _M_running;
 
     const std::chrono::seconds _M_flush_interval;    // 刷新缓冲区的间隔时间

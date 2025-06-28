@@ -6,16 +6,14 @@
 #include <memory>
 #include <mutex>
 #include <filesystem>
+#include <sys/types.h>
 #include <time.h>
 
 #include "base/TimeStamp.h"
 #include "base/noncopyable.h"
 
-namespace mymuduo
-{
-    
-namespace __detail
-{
+namespace mymuduo {
+namespace __detail {
     
 class File : noncopyable
 {
@@ -46,10 +44,8 @@ private:
 
 } // namespace __detail
 
-class LogFile : noncopyable
-{
+class LogFile : noncopyable {
 public:
-
     LogFile(const std::filesystem::path& filepath,
             const std::string& basename,
             off_t roll_size,
@@ -65,17 +61,18 @@ public:
 
     bool roll_file();
 
-private:
+    const std::filesystem::path& filepath() const noexcept { return _M_filepath; }
+    const std::string& basename() const noexcept { return _M_basename; }
+    const off_t roll_size() const noexcept { return _M_roll_size; }
+    const std::chrono::seconds flush_interval() const noexcept { return _M_flush_interval; }
+    const int check_every() const noexcept { return _M_check_every; }
 
+private:
     void append_unlocked(const char* logline, size_t len);
 
-    /**
-     * @brief 获取日志文件的名字
-     */
     static std::string get_logfile_name(const std::string& path_name, time_t *now);
 
 private:
-
     const std::filesystem::path _M_filepath;
     const std::string _M_basename;
     const off_t _M_roll_size;       // 文件滚动大小
