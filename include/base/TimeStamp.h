@@ -12,8 +12,8 @@
 namespace mymuduo {
 
 // steady_clock的时间精度为ns
-using TimePoint = std::chrono::steady_clock::time_point;
-using TimeDuration = std::chrono::steady_clock::duration;
+using TimePoint = std::chrono::system_clock::time_point;
+using TimeDuration = std::chrono::system_clock::duration;
 
 class TimeStamp
 {

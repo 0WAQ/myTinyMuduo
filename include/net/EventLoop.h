@@ -52,8 +52,8 @@ public:
     /**
      * @brief 开启与退出事件循环
      */
-    void loop(std::chrono::steady_clock::duration timeout = kPollTimeMs);
-    void loop_once(std::chrono::steady_clock::duration timeout = 10ms);
+    void loop(std::chrono::system_clock::duration timeout = kPollTimeMs);
+    void loop_once(std::chrono::system_clock::duration timeout = 10ms);
     void quit();
 
     /**
@@ -114,7 +114,7 @@ private:
 
 public:
     // Poller的默认超时时间
-    static constexpr std::chrono::steady_clock::duration kPollTimeMs = 10000ms;
+    static constexpr std::chrono::system_clock::duration kPollTimeMs = 10000ms;
 
 private:
 

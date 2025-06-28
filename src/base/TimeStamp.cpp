@@ -15,7 +15,7 @@ TimeStamp::TimeStamp(TimeDuration dur)
 { }
 
 TimeStamp TimeStamp::now() {
-    return TimeStamp(std::chrono::steady_clock::now());
+    return TimeStamp(std::chrono::system_clock::now());
 }
 
 TimeStamp TimeStamp::invalid() {

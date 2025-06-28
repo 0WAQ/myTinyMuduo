@@ -72,7 +72,7 @@ EventLoop::~EventLoop()
 }
 
 // 运行事件循环
-void EventLoop::loop(std::chrono::steady_clock::duration timeout)
+void EventLoop::loop(std::chrono::system_clock::duration timeout)
 {
     LOG_DEBUG("EventLoop %p start looping, thread is %d.\n", this, CurrentThread::tid());
 
@@ -99,7 +99,7 @@ void EventLoop::loop(std::chrono::steady_clock::duration timeout)
     _M_looping = false;
 }
 
-void EventLoop::loop_once(std::chrono::steady_clock::duration timeout)
+void EventLoop::loop_once(std::chrono::system_clock::duration timeout)
 {
     LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());
 

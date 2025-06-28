@@ -36,7 +36,7 @@ EventLoop* EventLoopThread::start_loop(std::chrono::nanoseconds timeout) {
 
         // 等待EventLoop线程获取loop对象, 该loop存储在线程的栈上
         if (timeout.count() > 0) {  // 超时等待
-            const auto time_point = std::chrono::steady_clock::now() + timeout;
+            const auto time_point = std::chrono::system_clock::now() + timeout;
             while (!_M_loop) {
                 if (_M_cond.wait_until(lock, time_point) == std::cv_status::timeout)
                 {

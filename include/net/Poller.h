@@ -36,7 +36,7 @@ public:
     bool has_channel(Channel *ch) const;
     
 
-    virtual TimeStamp poll(ChannelList *channels, std::chrono::steady_clock::duration timeout = std::chrono::milliseconds::max()) = 0;
+    virtual TimeStamp poll(ChannelList *channels, std::chrono::system_clock::duration timeout = std::chrono::milliseconds::max()) = 0;
     virtual void update_channel(Channel *ch) = 0;
     virtual void remove_channel(Channel *ch) = 0;
 

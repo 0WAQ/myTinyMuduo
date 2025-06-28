@@ -115,7 +115,7 @@ protected:
 
     }
 
-    void runWithTimeout(std::chrono::steady_clock::duration timeout) {
+    void runWithTimeout(std::chrono::system_clock::duration timeout) {
         loop->run_after(timeout, [this] {
             loop->quit();
         });

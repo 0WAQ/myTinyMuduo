@@ -40,7 +40,7 @@ public:
      * @brief 分发事件, 调用epoll_wait, 返回发生事件的合集
      * @param activeChannels 发生的事件合集
      */
-    TimeStamp poll(ChannelList *activeChannels, std::chrono::steady_clock::duration timeout) override;
+    TimeStamp poll(ChannelList *activeChannels, std::chrono::system_clock::duration timeout) override;
 
     /**
      * @brief 调用epoll_ctl, 修改ch监听事件
