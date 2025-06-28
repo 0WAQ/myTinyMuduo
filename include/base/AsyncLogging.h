@@ -2,6 +2,7 @@
 #define ASYNCLOGGING_H
 
 #include <chrono>
+#include <cstddef>
 #include <string>
 #include <filesystem>
 #include <cstring>
@@ -26,7 +27,7 @@ const std::size_t kLargeBuffer = 4000*1000;
 /**
  * @brief 异步日志系统的缓冲区
  */
-template<int SIZE>
+template<size_t SIZE>
 class Buffer : noncopyable {
 public:
     Buffer() : _M_cur(_M_data) { }
@@ -34,23 +35,24 @@ public:
     ~Buffer() { }
 
     void append(const char *buf, std::size_t len) {
-        if(available() > len) {
+        if(available() >= len) {
             memcpy(_M_cur, buf, len);
             _M_cur += len;
         }
     }
 
-    const char* begin() const { return _M_data; }
+    constexpr char* begin() const { return _M_data; }
     const char* end() const { return _M_data + sizeof(_M_data); }
     const char* data() const { return _M_data; }
-    std::size_t size() const { return static_cast<std::size_t>(_M_cur - _M_data); }
-    std::size_t length() const { return size(); }
-    std::size_t available() const { return static_cast<std::size_t>(end() - _M_cur); }
+    size_t size() const { return static_cast<size_t>(_M_cur - _M_data); }
+    size_t length() const { return size(); }
+    size_t available() const { return static_cast<size_t>(end() - _M_cur); }
+    static constexpr size_t capacity() { return SIZE; }
     bool empty() const { return _M_data == _M_cur; }
     std::string to_string() const { return std::string(_M_data, size()); }
 
     char* curr() { return _M_cur; }
-    void add(std::size_t len) { _M_cur += len; }
+    void add(size_t len) { _M_cur += len; }
     void reset() { _M_cur = _M_data; }
     void bzero() { ::bzero(_M_data, sizeof(_M_data)); }
 
@@ -63,6 +65,11 @@ private:
 
 
 class AsyncLogging : noncopyable {
+public:
+    using Buffer = __detail::Buffer<__detail::kLargeBuffer>;
+    using BufferPtr = std::unique_ptr<Buffer>;
+    using BufferVector = std::vector<BufferPtr>;
+
 public:
     AsyncLogging(const std::filesystem::path& filepath,
                     const std::string& filename,
@@ -84,10 +91,6 @@ public:
 private:
     void thread_func();
 
-    using Buffer = __detail::Buffer<__detail::kLargeBuffer>;
-    using BufferPtr = std::unique_ptr<Buffer>;
-    using BufferVector = std::vector<BufferPtr>;
-
 private:
     std::atomic<bool> _M_running;
 
@@ -102,7 +105,7 @@ private:
 
     BufferPtr _M_curr_buffer;       // 当前缓冲
     BufferPtr _M_next_buffer;       // 预备缓冲
-    BufferVector _M_buffers;        // 待落入磁盘的以添满的缓冲
+    BufferVector _M_buffers;        // 已写满的缓冲, 由后端线程落入磁盘
 };
 
 } // namespace mymuduo

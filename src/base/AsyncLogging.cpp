@@ -68,22 +68,20 @@ void AsyncLogging::append(const char *logline, std::size_t len) {
     std::lock_guard<std::mutex> guard(_M_mutex);
     
     // 若当前缓冲剩余空间足够大
-    if(_M_curr_buffer->available() > len)
-    {
+    if(_M_curr_buffer->available() >= len) {
         _M_curr_buffer->append(logline, len);
     }
-    else
-    {
+    else {
         // 若前端Buffer缓冲区不够该条日志了, 那么将其放入BufferVector中
         _M_buffers.emplace_back(_M_curr_buffer.release());
 
-        if(_M_next_buffer)
-        {
+        if(_M_next_buffer){
             // 将next_buffer移动到curr_buffer
             _M_curr_buffer = std::move(_M_next_buffer);
         }
-        else    // 若next_buffer不存在, 则分配一个新的
-        {
+
+        // 若next_buffer不存在, 则分配一个新的
+        else {
             // 让curr_buffer管理一个新的缓冲区
             _M_curr_buffer.reset(new Buffer);
         }
@@ -142,28 +140,24 @@ void AsyncLogging::thread_func() {
         }
 
         // 将buffers中的缓冲区写入磁盘
-        for(const auto& buffer : buffers_to_write)
-        {
+        for(const auto& buffer : buffers_to_write) {
             assert(buffer);
             _M_log_file->append(buffer->data(), buffer->size());
         }
 
-        if(buffers_to_write.size() > 2)
-        {
+        if(buffers_to_write.size() > 2) {
             buffers_to_write.resize(2);
         }
 
         // 将buffers写入后, 空闲出来的buffer转移给buffer1/2
-        if(!new_buffer1)
-        {
+        if(!new_buffer1) {
             assert(!buffers_to_write.empty());
             new_buffer1 = std::move(buffers_to_write.back());
             buffers_to_write.pop_back();
             new_buffer1->reset();
         }
 
-        if(!new_buffer2)
-        {
+        if(!new_buffer2) {
             assert(!buffers_to_write.empty());
             new_buffer2 = std::move(buffers_to_write.back());
             buffers_to_write.pop_back();

@@ -25,20 +25,16 @@ File::~File() {
     ::fclose(_M_fp);
 }
 
-void File::append(const char* logline, size_t len)
-{
+void File::append(const char* logline, size_t len) {
     size_t written = 0;
 
-    while(written != len)
-    {
+    while(written != len) {
         size_t remain = len - written;
         size_t n = write(logline + written, remain);
 
-        if(n != remain)
-        {
+        if(n != remain) {
             int err = ::ferror(_M_fp);
-            if(err)
-            {
+            if(err) {
                 ::fprintf(stderr, "File::append() failed %d.\n", err);
                 break;
             }
@@ -54,8 +50,7 @@ void File::flush() {
     ::fflush(_M_fp);
 }
 
-size_t File::write(const char* logline, size_t len)
-{
+size_t File::write(const char* logline, size_t len) {
     return ::fwrite_unlocked(logline, 1, len, _M_fp);
 }
 
