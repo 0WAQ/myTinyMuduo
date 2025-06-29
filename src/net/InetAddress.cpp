@@ -1,11 +1,4 @@
-#include "base/Logger.h"
 #include "net/InetAddress.h"
-
-#include <cstdint>
-#include <strings.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -27,25 +20,6 @@ InetAddress::InetAddress(const char* ip, const char* port) {
     _M_addr.sin_port = htons((uint16_t)atoi(port));
 }
 
-sockaddr_in InetAddress::get_local_addr(int sockfd)
-{
-    sockaddr_in local;
-    ::bzero(&local, sizeof(sockaddr_in));
-    socklen_t len = sizeof(sockaddr_in);
-    if(::getsockname(sockfd, (sockaddr*)&local, &len) < 0) {
-        LOG_ERROR("InetAddress::get_local_addr.\n");
-    }
-    return local;
-}
-
-sockaddr_in InetAddress::get_peer_addr(int sockfd)
-{
-    sockaddr_in peer;
-    ::bzero(&peer, sizeof(sockaddr_in));
-    socklen_t len = sizeof(sockaddr_in);
-    if(::getpeername(sockfd, (sockaddr*)&peer, &len) < 0) {
-        LOG_ERROR("InetAddress::get_peer_addr,\n");
-    }
-    return peer;
-}
-
+InetAddress::InetAddress(const sockaddr_in addr)
+    : _M_addr(addr)
+{ }

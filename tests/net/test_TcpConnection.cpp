@@ -4,6 +4,7 @@
 #include "net/Channel.h"
 #include "net/EventLoop.h"
 #include "net/TcpConnection.h"
+#include "net/SocketOps.h"
 #include "net/callbacks.h"
 
 #include <asm-generic/socket.h>
@@ -79,7 +80,7 @@ protected:
     }
 
     void TearDown() override {
-        ::close(_socketfd[1]);
+        sockets::close(_socketfd[1]);
     }
 
 protected:
@@ -450,7 +451,7 @@ TEST_F(TcpConnectionTest, HandlerWriteError) {
     ASSERT_EQ(0, _high_water_mark_callback_count);
     
     // 提前关闭 serv_sock
-    ::close(_socketfd[1]);
+    sockets::close(_socketfd[1]);
     
     std::string msg { "TcpConnectionTest.HandlerWriteError" };
     conn->send(msg);

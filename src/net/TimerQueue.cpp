@@ -2,6 +2,7 @@
 #include "base/TimeStamp.h"
 #include "net/TimerQueue.h"
 #include "net/EventLoop.h"
+#include "net/SocketOps.h"
 
 #include <sys/timerfd.h>
 
@@ -92,10 +93,7 @@ TimerQueue::~TimerQueue()
 {
     _M_timer_channel.unset_all_events();
     _M_timer_channel.remove();
-    if (::close(_M_timer_fd) < 0) {
-        LOG_ERROR("%s:%s:%d close error:%d.\n",
-            __FILE__, __FUNCTION__, __LINE__, errno);
-    }
+    sockets::close(_M_timer_fd);
 }
 
 

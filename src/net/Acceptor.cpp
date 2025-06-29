@@ -2,6 +2,7 @@
 #include "net/Acceptor.h"
 #include "net/EventLoop.h"
 #include "net/InetAddress.h"
+#include "net/SocketOps.h"
 
 #include <cassert>
 #include <functional>
@@ -75,10 +76,7 @@ void Acceptor::new_connection()
         _M_new_connection_callback(clnt_fd, clnt_addr);
     }
     else {
-        if (::close(clnt_fd) < 0) {
-            LOG_ERROR("%s:%s:%d close error:%d.\n",
-                __FILE__, __FUNCTION__, __LINE__, errno);
-        }
+        sockets::close(clnt_fd);
     }
 }
 

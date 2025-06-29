@@ -6,38 +6,19 @@
 #ifndef INETADDRESS_H
 #define INETADDRESS_H
 
-#include <arpa/inet.h>
-#include <cstdint>
-#include <netinet/in.h>
 #include <string>
 #include <strings.h>
+#include <arpa/inet.h>
 
 namespace mymuduo {
 namespace net {
 
-class InetAddress
-{
+class InetAddress {
 public:
-
-    /**
-     * @brief 用ip和port初始化sockaddr_in的内部变量 
-     * @param port 接收主机序的port
-     */
     explicit InetAddress(uint16_t port);
     explicit InetAddress(const std::string& ip = {}, uint16_t port = 0);
     explicit InetAddress(const char* ip, const char* port);
-    explicit InetAddress(const sockaddr_in addr) : _M_addr(addr) { }
-
-    /**
-     * @brief 获取本地地址信息
-     */
-    static sockaddr_in get_local_addr(int sockfd);
-
-    /**
-     * @brief 获取对端地址信息
-     */
-    static sockaddr_in get_peer_addr(int sockfd);
-
+    explicit InetAddress(const sockaddr_in addr);
     
     std::string ip() const { return ::inet_ntoa(_M_addr.sin_addr); }
     uint16_t port() const { return ntohs(_M_addr.sin_port); }

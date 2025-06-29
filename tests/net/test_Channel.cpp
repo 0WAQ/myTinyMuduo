@@ -2,6 +2,7 @@
 #include "base/CurrentThread.h"
 #include "net/Channel.h"
 #include "net/EventLoop.h"
+#include "net/SocketOps.h"
 
 #include <atomic>
 #include <cerrno>
@@ -49,7 +50,7 @@ public:
     ~PeriodicTimer() {
         _M_timer_channel.unset_all_events();
         _M_timer_channel.remove();
-        ::close(_M_timerfd);
+        sockets::close(_M_timerfd);
     }
 
 private:

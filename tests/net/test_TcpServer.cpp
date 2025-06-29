@@ -4,6 +4,7 @@
 #include "net/EventLoop.h"
 #include "net/InetAddress.h"
 #include "net/TcpConnection.h"
+#include "net/SocketOps.h"
 #include "net/callbacks.h"
 
 #include <cerrno>
@@ -136,7 +137,7 @@ TEST_F(TcpServerTest, AcceptConnectionAndMessage) {
     ASSERT_EQ(_message_received, msg);
 
     // 关闭客户端
-    ::close(sockfd);
+    sockets::close(sockfd);
     
     // 等待关闭连接回调
     {

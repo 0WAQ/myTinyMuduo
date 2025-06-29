@@ -3,6 +3,7 @@
 #include "net/Acceptor.h"
 #include "net/Channel.h"
 #include "net/Socket.h"
+#include "net/SocketOps.h"
 
 #include <asm-generic/socket.h>
 #include <cassert>
@@ -100,18 +101,12 @@ void Connector::connect() {
     case EFAULT:
     case ENOTSOCK:
         LOG_ERROR("connect error in Connector::start_in_loop %d\n", saved_errno);
-        if (::close(sockfd) < 0) {
-            LOG_ERROR("%s:%s:%d close error:%d.\n",
-                __FILE__, __FUNCTION__, __LINE__, errno);
-        }
+        sockets::close(sockfd);
         break;
 
     default:
         LOG_ERROR("Unexpected error in Connector::start_in_loop %d\n", saved_errno);
-        if (::close(sockfd) < 0) {
-            LOG_ERROR("%s:%s:%d close error:%d.\n",
-                __FILE__, __FUNCTION__, __LINE__, errno);
-        }
+        sockets::close(sockfd);
         break;
     }
 }
@@ -143,49 +138,13 @@ void Connector::handle_write() {
             }
         };
 
-        auto is_self_connect = [](int sockfd) {
-            struct sockaddr_in6 localaddr = [](int sockfd) {
-                struct sockaddr_in6 localaddr;
-                bzero(&localaddr, sizeof localaddr);
-                socklen_t addrlen = static_cast<socklen_t>(sizeof localaddr);
-                if (::getsockname(sockfd, static_cast<struct sockaddr*>(static_cast<void*>(&localaddr)), &addrlen) < 0) {
-                    LOG_ERROR("is_self_connect");
-                }
-                return localaddr;
-            }(sockfd);
-
-            struct sockaddr_in6 peeraddr = [](int sockfd) {
-                struct sockaddr_in6 peeraddr;
-                bzero(&peeraddr, sizeof peeraddr);
-                socklen_t addrlen = static_cast<socklen_t>(sizeof peeraddr);
-                if (::getpeername(sockfd, static_cast<struct sockaddr*>(static_cast<void*>(&peeraddr)), &addrlen) < 0) {
-                    LOG_ERROR("is_self_connect");
-                }
-                return peeraddr;
-            }(sockfd);
-
-            if (localaddr.sin6_family == AF_INET) {
-                const struct sockaddr_in* laddr4 = reinterpret_cast<struct sockaddr_in*>(&localaddr);
-                const struct sockaddr_in* raddr4 = reinterpret_cast<struct sockaddr_in*>(&peeraddr);
-                return laddr4->sin_port == raddr4->sin_port
-                    && laddr4->sin_addr.s_addr == raddr4->sin_addr.s_addr;
-            }
-            else if (localaddr.sin6_family == AF_INET6) {
-                return localaddr.sin6_port == peeraddr.sin6_port
-                    && memcmp(&localaddr.sin6_addr, &peeraddr.sin6_addr, sizeof localaddr.sin6_addr) == 0;
-            }
-            else {
-                return false;
-            }
-        };
-
         int sockfd = remove_and_reset_channel();
         int err = get_socket_error(sockfd);
         if (err) {
             LOG_WARN("Connector::handle_write - SO_ERROR = %d %s\n", err, strerror(err));
             retry(sockfd);
         }
-        else if(is_self_connect(sockfd)) {
+        else if(sockets::is_self_connect(sockfd)) {
             LOG_WARN("Connector::handle_write - Self connect\n");
             retry(sockfd);
         }
@@ -195,7 +154,7 @@ void Connector::handle_write() {
                 _M_new_connection_callback(sockfd);
             }
             else {
-                ::close(sockfd);
+                sockets::close(sockfd);
             }
         }
     }
@@ -228,10 +187,7 @@ void Connector::handle_error() {
 }
 
 void Connector::retry(int sockfd) {
-    if (::close(sockfd) < 0) {
-        LOG_ERROR("%s:%s:%d close error:%d.\n",
-            __FILE__, __FUNCTION__, __LINE__, errno);
-    }
+    sockets::close(sockfd);
 }
 
 int Connector::remove_and_reset_channel() {

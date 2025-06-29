@@ -2,6 +2,7 @@
 #include "base/Logger.h"
 #include "base/TimeStamp.h"
 #include "net/EventLoop.h"
+#include "net/SocketOps.h"
 
 #include <chrono>
 #include <cstdio>
@@ -67,10 +68,7 @@ EventLoop::~EventLoop()
     _M_wakeup_channel->unset_all_events();
     _M_wakeup_channel->remove();
 
-    if (::close(_M_wakeup_fd) < 0) {
-        LOG_ERROR("%s:%s:%d close error:%d.\n",
-            __FILE__, __FUNCTION__, __LINE__, errno);
-    }
+    sockets::close(_M_wakeup_fd);
     t_loop_in_this_thread = nullptr;
 }
 

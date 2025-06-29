@@ -2,6 +2,7 @@
 #include "net/callbacks.h"
 #include "net/TcpServer.h"
 #include "net/TcpConnection.h"
+#include "net/SocketOps.h"
 
 #include <memory>
 #include <mutex>
@@ -95,7 +96,7 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
         _M_name.c_str(), connName.c_str(), clnt_addr.ip_port().c_str());
 
-    InetAddress local_addr(InetAddress::get_local_addr(clntfd));
+    InetAddress local_addr(sockets::get_local_addr(clntfd));
 
     // 分配TcpConnection给相应的loop
     EventLoop *nextLoop = _M_loop_threads->get_next_loop();
