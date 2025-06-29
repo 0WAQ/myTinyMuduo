@@ -10,9 +10,6 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <stdarg.h> // vastart va_end
-#include <sys/stat.h> // mkdir
-#include <cassert>
 
 #include "mymuduo/base/AsyncLogging.h"
 #include "mymuduo/base/noncopyable.h"
@@ -20,7 +17,8 @@
 
 namespace mymuduo {
 
-class Logger : public Singleton<Logger>, noncopyable
+class Logger : noncopyable
+             , public Singleton<Logger>
 {
 public:
     friend class Singleton<Logger>;

@@ -1,41 +1,22 @@
 #include "mymuduo/base/Logger.h"
 #include "mymuduo/net/Acceptor.h"
 #include "mymuduo/net/EventLoop.h"
-#include "mymuduo/net/InetAddress.h"
 #include "mymuduo/net/SocketOps.h"
-
-#include <cassert>
-#include <functional>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
 
-namespace mymuduo::net {
-namespace __detail {
-    int create_non_blocking_fd()
-    {
-        int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
-        if(sockfd < 0) {
-            LOG_ERROR("%s:%s:%d sockfd create error:%d.\n", 
-                __FILE__, __FUNCTION__, __LINE__, errno);
-        }
-        return sockfd;
-    }
-
-} // namespace __detail
-} // namespace mymuduo::net
-
-Acceptor::Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport) :
-    _M_loop(loop), _M_serv_addr(serv_addr), 
-    _M_serv_sock(__detail::create_non_blocking_fd()), _M_listening(false),
-    _M_acceptor_channel(_M_loop, _M_serv_sock.fd())
+Acceptor::Acceptor(EventLoop* main_loop, const InetAddress &serv_addr, bool reuseport)
+    : _M_loop(main_loop), _M_serv_addr(serv_addr)
+    , _M_serv_sock(sockets::create_non_blocking_fd()), _M_listening(false)
+    , _M_acceptor_channel(_M_loop, _M_serv_sock.fd())
 {
     LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _M_serv_sock.fd());
 
     // 设置serv_sock的属性
     _M_serv_sock.set_keep_alive(true);
     _M_serv_sock.set_reuse_addr(true);
-    _M_serv_sock.set_reuse_port(true);
+    _M_serv_sock.set_reuse_port(reuseport);
     _M_serv_sock.set_tcp_nodelay(true);
 
     // 绑定且监听
@@ -63,20 +44,22 @@ void Acceptor::new_connection()
 {
     InetAddress clnt_addr;
 
-    int clnt_fd = _M_serv_sock.accept(clnt_addr);
-    if(clnt_fd < 0) {
-        LOG_ERROR("%s:%s:%d accpet error %d.\n", __FILE__, __FUNCTION__, __LINE__, errno);
+    int clntfd = _M_serv_sock.accept(clnt_addr);
+    if(clntfd < 0) {
+        LOG_ERROR("%s:%s:%d accprt errot - errno = %d %s.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         if(errno == EMFILE) {
-            LOG_ERROR("%s:%s:%d clnt_fd reached limit!\n", __FILE__, __FUNCTION__, __LINE__);
+            LOG_ERROR("%s:%s:%d clntfd reached limit! - errno = %d %s.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         }
     }
 
     // 通过回调函数将创建好的clnt_sock传递给TcpServer, 让TcpServer创建Connection对象
     if(_M_new_connection_callback) {
-        _M_new_connection_callback(clnt_fd, clnt_addr);
+        _M_new_connection_callback(clntfd, clnt_addr);
     }
     else {
-        sockets::close(clnt_fd);
+        sockets::close(clntfd);
     }
 }
 

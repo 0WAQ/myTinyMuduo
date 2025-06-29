@@ -24,7 +24,6 @@ protected:
 private:
     Singleton(const Singleton<T>&) = delete;
     Singleton& operator= (const Singleton<T>&) = delete;
-
 };
 
 } // namespace mymuduo

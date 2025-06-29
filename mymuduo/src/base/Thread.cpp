@@ -1,9 +1,8 @@
 #include "mymuduo/base/Thread.h"
 #include "mymuduo/base/CurrentThread.h"
 
-#include <condition_variable>
-#include <mutex>
 #include <utility>
+#include <condition_variable>
 
 using namespace mymuduo;
 

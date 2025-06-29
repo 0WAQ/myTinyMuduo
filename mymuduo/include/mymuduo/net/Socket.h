@@ -6,11 +6,7 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/tcp.h>
-#include <cerrno>
-#include <unistd.h>
 
 #include "mymuduo/base/noncopyable.h"
 
@@ -25,23 +21,16 @@ class InetAddress;
 class Socket : noncopyable
 {
 public:
-
-    explicit Socket(int fd) : _M_fd(fd) { }
-    
-    ~Socket() {
-        if (_M_closed) {
-            return;
-        }
-        close();
-    }
+    explicit Socket(int fd);
+    ~Socket();
 
     void bind(const InetAddress& serv_addr);
-    void listen(size_t max_connection = 1024);
+    void listen();
     int accept(InetAddress& clnt_addr);
     void close();
 
     /**
-     * @brief 设置半关闭
+     * @brief 半关闭
      */
     void shutdown_write();
 

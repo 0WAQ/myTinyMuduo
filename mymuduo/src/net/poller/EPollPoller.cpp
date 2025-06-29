@@ -3,7 +3,9 @@
 #include "mymuduo/net/Channel.h"
 #include "mymuduo/net/poller/EPollPoller.h"
 
-#include <chrono>
+#include <cassert>
+#include <cerrno>
+#include <cstring>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -14,8 +16,8 @@ EPollPoller::EPollPoller(EventLoop* loop) :
         _M_events_arr(_M_max_events)
 {
     if(_M_epoll_fd < 0) {
-        LOG_ERROR("%s:%s:%d epoll_create() failed: %d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
+        LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
 }
 
@@ -52,8 +54,8 @@ TimeStamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clo
         // 为解决这个问题, 当epoll_wait返回-1时, 需忽略由于接受调试信号而产生的"错误"返回.
         if(savedErrno != EINTR) {
             errno = savedErrno;
-            LOG_ERROR("%s:%s():%d epoll_wait() failed, errno:%d.\n", 
-                __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         }
     }
     else {
@@ -136,18 +138,18 @@ void EPollPoller::update(int op, Channel* ch)
         switch (op)
         {
         case EPOLL_CTL_ADD:
-            LOG_ERROR("%s:%s:%d epoll_ctl() add failed: %d.\n", 
-                    __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_ERROR("%s:%s:%d epoll_ctl() add failed - errno = %d %s.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
             break;
 
         case EPOLL_CTL_MOD:
-            LOG_ERROR("%s:%s:%d epoll_ctl() modify failed: %d.\n", 
-                    __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_ERROR("%s:%s:%d epoll_ctl() modify failed - errno = %d %s.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
             break;
         
         case EPOLL_CTL_DEL:
-            LOG_ERROR("%s:%s:%d epoll_ctl() remove failed: %d.\n", 
-                    __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_ERROR("%s:%s:%d epoll_ctl() remove failed - errno = %d %s.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
             break;
         }
     }
@@ -155,8 +157,8 @@ void EPollPoller::update(int op, Channel* ch)
 
 EPollPoller::~EPollPoller() {
     if (::close(_M_epoll_fd) < 0) {
-        LOG_ERROR("%s:%s:%d close error:%d.\n",
-            __FILE__, __FUNCTION__, __LINE__, errno);
+        LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
 }
 

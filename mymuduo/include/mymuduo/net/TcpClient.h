@@ -1,18 +1,17 @@
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
-#include "mymuduo/base/noncopyable.h"
-#include "mymuduo/net/Connector.h"
-#include "mymuduo/net/EventLoop.h"
-#include "mymuduo/net/InetAddress.h"
-#include "mymuduo/net/TcpConnection.h"
-#include "mymuduo/net/callbacks.h"
-
 #include <memory>
 #include <mutex>
 
+#include "mymuduo/base/noncopyable.h"
+#include "mymuduo/net/callbacks.h"
+#include "mymuduo/net/Connector.h"
+
 namespace mymuduo {
 namespace net {
+
+class EventLoopl;
 
 class TcpClient : noncopyable {
 public:

@@ -6,8 +6,6 @@
 #include <memory>
 #include <mutex>
 #include <filesystem>
-#include <sys/types.h>
-#include <time.h>
 
 #include "mymuduo/base/TimeStamp.h"
 #include "mymuduo/base/noncopyable.h"
@@ -15,31 +13,22 @@
 namespace mymuduo {
 namespace __detail {
     
-class File : noncopyable
-{
+class File : noncopyable {
 public:
-
     explicit File(std::string filename);
     ~File();
 
     void append(const char* logline, size_t len);
-
     void flush();
-
     off_t written() const { return _M_written; }
 
 private:
-
     size_t write(const char* logline, size_t len);
 
 private:
-
     FILE *_M_fp;
-
     char _M_buf[64*1024];
-
     off_t _M_written;
-
 };
 
 } // namespace __detail

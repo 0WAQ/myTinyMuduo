@@ -9,17 +9,12 @@
 #include <string>
 #include <cstring>
 #include <vector>
-#include <unistd.h>
-#include <sys/uio.h>
-#include <cassert>
 
 namespace mymuduo {
 namespace net {
 
-class Buffer
-{
+class Buffer {
 public:
-
     // TODO: 分割符后缀未处理转义!!!
     enum SepType {
         None,               // 无分割符
@@ -28,10 +23,8 @@ public:
     };
 
     Buffer(std::size_t prependable_size = 8, std::size_t writable_size = 1024);
-
     Buffer(const Buffer& other);
     Buffer(Buffer&& other) noexcept;
-
     Buffer& operator= (const Buffer& other);
     Buffer& operator= (Buffer&& other);
 
@@ -92,7 +85,6 @@ public:
     void set_sep(SepType sep) { _M_sep = sep; }
 
 private:
-
     // prependable的初始大小, 也是 read_idx 和 write_idx 的初始值
     std::size_t _M_initial_prependable;
 

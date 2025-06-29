@@ -2,10 +2,7 @@
 #include "mymuduo/base/AsyncLogging.h"
 #include "mymuduo/base/TimeStamp.h"
 
-#include <atomic>
-#include <cstdio>
-#include <functional>
-#include <memory>
+#include <stdarg.h> // vastart va_end
 
 using namespace mymuduo;
 

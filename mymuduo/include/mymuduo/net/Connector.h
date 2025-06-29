@@ -1,16 +1,13 @@
 #ifndef CONNECTOR_H
 #define CONNECTOR_H
 
-#include "mymuduo/base/TimeStamp.h"
-#include "mymuduo/base/noncopyable.h"
-#include "mymuduo/net/Channel.h"
-#include "mymuduo/net/EventLoop.h"
-#include "mymuduo/net/InetAddress.h"
-#include "mymuduo/net/TcpConnection.h"
-
 #include <atomic>
-#include <gtest/gtest.h>
 #include <memory>
+#include <functional>
+
+#include "mymuduo/base/noncopyable.h"
+#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/net/InetAddress.h"
 
 using namespace std::chrono_literals;
 
@@ -20,11 +17,15 @@ namespace net {
 class Channel;
 class EventLoop;
 
+/**
+ * @brief 用于客户端主动发起连接, 负责连接建立过程的临时管理
+ */
 class Connector : noncopyable
                 , public std::enable_shared_from_this<Connector> 
 {
 public:
     using NewConnectionCallback = std::function<void(int sockfd)>;
+    using RetryCallback = std::function<void(int sockfd)>;
 
     enum State {
         kDisConnected,
@@ -41,8 +42,10 @@ public:
     void stop();
 
     const InetAddress& server_addr() const { return _M_server_addr; }
+    const bool connecting() const { return _M_connect.load(); }
 
     void set_new_connection_callback(NewConnectionCallback cb) { _M_new_connection_callback = std::move(cb); }
+    void set_retry_callback(RetryCallback cb) { _M_retry_callback = std::move(cb); }
 
 private:
 
@@ -52,7 +55,7 @@ private:
     void start_in_loop();
     void stop_in_loop();
     void connect();
-    void connecting(int sockfd);
+    void do_connect(int sockfd);
     void handle_write();
     void handle_error();
     void retry(int sockfd);
@@ -67,6 +70,7 @@ private:
     TimeDuration _M_retry_delay;
     std::atomic<bool> _M_connect;
     NewConnectionCallback _M_new_connection_callback;
+    RetryCallback _M_retry_callback;
 };
 
 } // namespace net

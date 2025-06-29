@@ -17,12 +17,10 @@ class EventLoop;
 /**
  * 多路事件分发器: IO复用模块
  */
-class Poller : noncopyable
-{
+class Poller : noncopyable {
     using ChannelList = std::vector<Channel*>;
 
 public:
-
     Poller(EventLoop *loop);
 
     /**
@@ -48,7 +46,6 @@ protected:
     ChannelMap _M_channel_map;
 
 private:
-
     EventLoop* _M_owner_loop;
 
 };

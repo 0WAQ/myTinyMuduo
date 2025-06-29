@@ -8,18 +8,13 @@ namespace net {
 
 class Timer;
 
-/**
- * @brief
- */
-class TimerId
-{
+class TimerId {
 public:
-
-    TimerId() : timer(nullptr), id(0) { }
-
-    TimerId(Timer *timer, int64_t id) : timer(timer), id(id) { }
-
     friend class TimerQueue;
+
+public:
+    TimerId() : timer(nullptr), id(0) { }
+    TimerId(Timer *timer, int64_t id) : timer(timer), id(id) { }
 
     bool operator< (const TimerId &rhs) const {
         if(this->timer == rhs.timer) {
@@ -29,11 +24,7 @@ public:
     }
 
 private:
-
-    // 所属定时器
     Timer* timer;
-
-    // 定时器id
     int64_t id;
 };
 

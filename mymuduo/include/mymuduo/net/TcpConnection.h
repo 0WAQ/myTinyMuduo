@@ -16,7 +16,6 @@
 #include "mymuduo/net/callbacks.h"
 #include "mymuduo/net/Socket.h"
 #include "mymuduo/net/InetAddress.h"
-#include "mymuduo/net/Channel.h"
 #include "mymuduo/net/Buffer.h"
 
 
@@ -27,12 +26,12 @@ class EventLoop;
 class Channel;
 class TcpConnection;
 
-
 /**
  *  Channel之上的封装类, 专门用于创建客户端的Socket
  *  继承自这个类, 用shared_from_this代替this指针
  */
-class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnection>
+class TcpConnection : noncopyable
+                    , public std::enable_shared_from_this<TcpConnection>
 {
 public:
 

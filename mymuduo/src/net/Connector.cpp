@@ -2,8 +2,8 @@
 #include "mymuduo/net/Connector.h"
 #include "mymuduo/net/Acceptor.h"
 #include "mymuduo/net/Channel.h"
-#include "mymuduo/net/Socket.h"
 #include "mymuduo/net/SocketOps.h"
+#include "mymuduo/net/EventLoop.h"
 
 #include <asm-generic/socket.h>
 #include <cassert>
@@ -20,6 +20,7 @@ using namespace mymuduo::net;
 Connector::Connector(EventLoop* loop, const InetAddress& server_addr) 
     : _M_loop(loop)
     , _M_server_addr(server_addr)
+    , _M_channel(nullptr)
     , _M_connect(false)
     , _M_state(kDisConnected)
     , _M_retry_delay(kInitRetryDelay)
@@ -37,9 +38,21 @@ void Connector::start() {
     _M_loop->run_in_loop(std::bind(&Connector::start_in_loop, this));
 }
 
+void Connector::start_in_loop() {
+    _M_loop->is_loop_thread();
+    assert(_M_state == kDisConnected);
+
+    if (_M_connect.load()) {
+        connect();
+    }
+    else {
+        LOG_DEBUG("do not connect\n");
+    }
+}
+
 void Connector::restart() {
     _M_loop->is_loop_thread();
-    _M_state= kDisConnected;
+    _M_state = kDisConnected;
     _M_retry_delay = kInitRetryDelay;
     _M_connect.store(true);
     start_in_loop();
@@ -51,18 +64,6 @@ void Connector::stop() {
 }
 
 
-void Connector::start_in_loop() {
-    _M_loop->is_loop_thread();
-    assert(_M_state = kDisConnected);
-
-    if (_M_connect) {
-        connect();
-    }
-    else {
-        LOG_DEBUG("do not connector\n");
-    }
-}
-
 void Connector::stop_in_loop() {
     _M_loop->is_loop_thread();
     if (_M_state == kConnecting) {
@@ -73,8 +74,8 @@ void Connector::stop_in_loop() {
 }
 
 void Connector::connect() {
-    int sockfd = __detail::create_non_blocking_fd();
-    int ret = ::connect(sockfd, _M_server_addr.addr(), sizeof(sockaddr));
+    int sockfd = sockets::create_non_blocking_fd();
+    int ret = sockets::connect(sockfd, _M_server_addr.addr());
     int saved_errno = (ret == 0) ? 0 : errno;
 
     switch (saved_errno) {
@@ -82,7 +83,7 @@ void Connector::connect() {
     case EINPROGRESS:
     case EINTR:
     case EISCONN:
-        connecting(sockfd);
+        do_connect(sockfd);
         break;
 
     case EAGAIN:
@@ -111,36 +112,24 @@ void Connector::connect() {
     }
 }
 
-void Connector::connecting(int sockfd) {
+void Connector::do_connect(int sockfd) {
     _M_state = kConnecting;
     assert(!_M_channel);
+
+    // 创建临时 channel 仅用于连接建立的过程
     _M_channel.reset(new Channel(_M_loop, sockfd));
     _M_channel->set_write_callback(std::bind(&Connector::handle_write, this));
     _M_channel->set_error_callback(std::bind(&Connector::handle_error, this));
     _M_channel->set_write_events();
 }
 
-// TODO:
 void Connector::handle_write() {
     LOG_DEBUG("Connector::handle_write %d\n", _M_state);
 
     if (_M_state == kConnecting) {
-
-        auto get_socket_error = [](int sockfd) {
-            int optval;
-            socklen_t optlen = static_cast<socklen_t>(sizeof(optval));
-
-            if (::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0) {
-                return errno;
-            }
-            else {
-                return optval;
-            }
-        };
-
         int sockfd = remove_and_reset_channel();
-        int err = get_socket_error(sockfd);
-        if (err) {
+        int err = sockets::get_socket_error(sockfd);
+        if (err != 0) {
             LOG_WARN("Connector::handle_write - SO_ERROR = %d %s\n", err, strerror(err));
             retry(sockfd);
         }
@@ -148,9 +137,9 @@ void Connector::handle_write() {
             LOG_WARN("Connector::handle_write - Self connect\n");
             retry(sockfd);
         }
-        else {
+        else {  // 连接成功
             _M_state = kConnected;
-            if (_M_connect) {
+            if (_M_connect && _M_new_connection_callback) {
                 _M_new_connection_callback(sockfd);
             }
             else {
@@ -163,24 +152,10 @@ void Connector::handle_write() {
     }
 }
 
-// TODO:
 void Connector::handle_error() {
     if (_M_state == kConnecting) {
         int sockfd = remove_and_reset_channel();
-        
-        auto get_socket_error = [](int sockfd) {
-            int optval;
-            socklen_t optlen = static_cast<socklen_t>(sizeof(optval));
-
-            if (::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0) {
-                return errno;
-            }
-            else {
-                return optval;
-            }
-        };
-
-        int err = get_socket_error(sockfd);
+        int err = sockets::get_socket_error(sockfd);
         LOG_DEBUG("SO_ERROR = %d %s\n", err, strerror(err));
         retry(sockfd);
     }
@@ -188,6 +163,26 @@ void Connector::handle_error() {
 
 void Connector::retry(int sockfd) {
     sockets::close(sockfd);
+    _M_state = kDisConnected;
+
+    if (_M_connect) {
+        using namespace std::chrono;
+
+        LOG_INFO("Connector::retry - Retry connecting to %s in %dms.\n",
+                        _M_server_addr.ip_port().c_str(),
+                        duration_cast<milliseconds>(_M_retry_delay).count());
+
+        if (_M_retry_callback) {
+            _M_retry_callback(sockfd);
+        }
+
+        _M_loop->run_after(_M_retry_delay,
+                            std::bind(&Connector::start_in_loop, shared_from_this()));
+        _M_retry_delay = std::min(_M_retry_delay * 2, kMaxRetryDelay);
+    }
+    else {
+        LOG_DEBUG("do not connect.\n");
+    }
 }
 
 int Connector::remove_and_reset_channel() {

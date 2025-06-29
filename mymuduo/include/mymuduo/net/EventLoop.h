@@ -20,7 +20,6 @@
 #include "mymuduo/base/TimeStamp.h"
 #include "mymuduo/base/CurrentThread.h"
 #include "mymuduo/net/Poller.h"
-#include "mymuduo/net/TcpConnection.h"
 #include "mymuduo/net/TimerQueue.h"
 #include "mymuduo/net/callbacks.h"
 

@@ -23,3 +23,8 @@ InetAddress::InetAddress(const char* ip, const char* port) {
 InetAddress::InetAddress(const sockaddr_in addr)
     : _M_addr(addr)
 { }
+
+InetAddress& InetAddress::operator= (const sockaddr_in& addr) {
+    _M_addr = addr;
+    return *this;
+}

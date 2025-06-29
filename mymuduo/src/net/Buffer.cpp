@@ -1,5 +1,9 @@
 #include "mymuduo/net/Buffer.h"
 
+#include <cassert>
+#include <sys/uio.h>
+#include <unistd.h>
+
 using namespace mymuduo;
 using namespace mymuduo::net;
 

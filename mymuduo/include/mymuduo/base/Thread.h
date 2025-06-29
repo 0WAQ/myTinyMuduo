@@ -1,29 +1,22 @@
 #ifndef THREAD_H
 #define THREAD_H
 
-#include <cstddef>
 #include <thread>
 #include <functional>
 #include <memory>
 #include <atomic>
 #include <string>
-#include <semaphore.h>
 
 #include "mymuduo/base/noncopyable.h"
 
 namespace mymuduo {
 
-class Thread : noncopyable
-{
+class Thread : noncopyable {
 public:
-
     explicit Thread(std::function<void()> func, const std::string &name = std::string{});
-
     explicit Thread(Thread&& other);
     Thread& operator= (Thread&& other);
-
     ~Thread();
-
 
     void start();
     void join();

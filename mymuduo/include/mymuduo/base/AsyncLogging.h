@@ -31,7 +31,6 @@ template<size_t SIZE>
 class Buffer : noncopyable {
 public:
     Buffer() : _M_cur(_M_data) { }
-    
     ~Buffer() { }
 
     void append(const char *buf, std::size_t len) {
@@ -77,11 +76,10 @@ public:
                     std::chrono::seconds flush_interval = std::chrono::seconds { 3 });
 
     AsyncLogging(std::unique_ptr<LogFile> log_file);
-
     ~AsyncLogging();
 
     /**
-     * @brief 会被前端线程写日志时调用
+     * @brief 会被前端线程调用
      */
     void append(const char *logline, std::size_t len);
     

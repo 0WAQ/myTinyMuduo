@@ -1,17 +1,12 @@
-#include "mymuduo/net/TcpClient.h"
 #include "mymuduo/base/Logger.h"
-#include "mymuduo/net/Connector.h"
-#include "mymuduo/net/EventLoop.h"
+#include "mymuduo/net/TcpClient.h"
 #include "mymuduo/net/InetAddress.h"
 #include "mymuduo/net/TcpConnection.h"
 #include "mymuduo/net/TcpServer.h"
-#include "mymuduo/net/callbacks.h"
 #include "mymuduo/net/SocketOps.h"
 
 #include <cassert>
-#include <cstdio>
 #include <functional>
-#include <mutex>
 
 using namespace mymuduo;
 using namespace mymuduo::net;

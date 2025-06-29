@@ -7,12 +7,9 @@
 #define EPOLLPOLLER_H
 
 #include <chrono>
-#include <cstdlib>
-#include <cerrno>
+#include <vector>
 #include <cstring>
 #include <sys/epoll.h>
-#include <vector>
-#include <unistd.h>
 
 #include "mymuduo/net/Poller.h"
 
@@ -25,20 +22,19 @@ class EventLoop;
 /**
  * @brief 封装EPollPoller
  */
-class EPollPoller : public Poller
-{
+class EPollPoller : public Poller {
+public:
     using ChannelList = std::vector<Channel*>;
 
 public:
-
     /**
      * @brief 调用epoll_create, 初始化epfd
      */
     EPollPoller(EventLoop *loop);
+    ~EPollPoller() override;
 
     /**
      * @brief 分发事件, 调用epoll_wait, 返回发生事件的合集
-     * @param activeChannels 发生的事件合集
      */
     TimeStamp poll(ChannelList *activeChannels, std::chrono::system_clock::duration timeout) override;
 
@@ -52,13 +48,7 @@ public:
      */
     void remove_channel(Channel *ch) override;
 
-    ~EPollPoller() override;
-
 private:
-
-    /**
-     * @brief 填充活跃的channel
-     */
     void fill_active_channels(int numEvents, ChannelList *activeChannels) const;
     
     /**

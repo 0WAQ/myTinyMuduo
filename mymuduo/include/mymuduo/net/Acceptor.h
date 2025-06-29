@@ -13,29 +13,15 @@
 
 namespace mymuduo {
 namespace net {
-namespace __detail {
-    /**
-     * @brief 创建非阻塞的sockfd
-     */
-    int create_non_blocking_fd();
-
-} // namespace __detail
 
 class EventLoop;
 
-class Acceptor : noncopyable
-{
+class Acceptor : noncopyable {
 public:
-
     using CreateConnCallback = std::function<void(int, InetAddress&)>;
 
 public:
-
-    /**
-     * @param loop 主事件循环
-     */
-    Acceptor(EventLoop* loop, const InetAddress &serv_addr, bool reuseport);
-
+    Acceptor(EventLoop* main_loop, const InetAddress &serv_addr, bool reuseport);
     ~Acceptor();
 
     void listen();
@@ -50,7 +36,6 @@ public:
     }
 
 private:
-
     EventLoop* _M_loop;
     InetAddress _M_serv_addr;
     Socket _M_serv_sock;

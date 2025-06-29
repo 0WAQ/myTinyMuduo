@@ -1,10 +1,10 @@
 #include "mymuduo/base/Logger.h"
-#include "mymuduo/base/TimeStamp.h"
 #include "mymuduo/net/TimerQueue.h"
 #include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/SocketOps.h"
 
 #include <sys/timerfd.h>
+#include <cassert>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -18,10 +18,9 @@ namespace __detail {
     int create_timerfd()
     {
         int tfd = ::timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
-        
         if(tfd < 0) {
-            LOG_ERROR("%s:%s:%d timerfd create error:%d.\n", 
-                __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+                __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         }
 
         return tfd;

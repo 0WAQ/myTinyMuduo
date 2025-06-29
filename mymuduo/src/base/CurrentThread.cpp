@@ -1,7 +1,6 @@
 #include "mymuduo/base/CurrentThread.h"
 
 #include <unistd.h>
-#include <ctime>
 #include <sys/syscall.h>
 
 namespace mymuduo

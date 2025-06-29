@@ -2,10 +2,6 @@
 #include "mymuduo/base/LogFile.h"
 #include "mymuduo/base/TimeStamp.h"
 
-#include <chrono>
-#include <memory>
-#include <string>
-#include <unistd.h>
 #include <cassert>
 
 using namespace mymuduo;

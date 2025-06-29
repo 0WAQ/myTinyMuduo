@@ -11,12 +11,11 @@
 
 namespace mymuduo {
 
-// steady_clock的时间精度为ns
+// system_clock 的时间精度为ns
 using TimePoint = std::chrono::system_clock::time_point;
 using TimeDuration = std::chrono::system_clock::duration;
 
-class TimeStamp
-{
+class TimeStamp {
 public:
 
     static const int kMilliSecondsPerSecond = 1000;
@@ -24,33 +23,17 @@ public:
     static const int knaneSecondsPerSecond  = 1000 * 1000 * 1000;
 
 public:
-
-    /**
-     * @brief 用零值初始化TimeStamp
-     */
-    TimeStamp();
-
-    /**
-     * @brief 用指定时间初始化对象
-     * @param sec TimePoint
-     */
+    explicit TimeStamp();
     explicit TimeStamp(TimePoint sec);
     explicit TimeStamp(TimeDuration dur);
 
-    /**
-     * @brief 获取当前时间戳
-     */
     static TimeStamp now();
 
     static TimeStamp invalid();
-
     bool valid();
 
     TimeDuration time_since_epoch();
-
-
     time_t to_time_t() const;
-
     TimePoint to_time_point() const;
 
     /**

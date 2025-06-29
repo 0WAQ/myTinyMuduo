@@ -6,32 +6,27 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
-#include "mymuduo/base/Thread.h"
-
 #include <vector>
 #include <string>
 #include <queue>
-#include <sys/syscall.h>
 #include <mutex>
-#include <unistd.h>
 #include <condition_variable>
 #include <functional>
 #include <atomic>
 
+#include "mymuduo/base/Thread.h"
+
 namespace mymuduo {
 
-class ThreadPool
-{
+class ThreadPool {
 public:
-
     ThreadPool(const std::string& type, size_t thread_num);
-
     ~ThreadPool();
 
     void stop();
 
     void push(std::function<void()> task);
-    
+
     const size_t size() const noexcept { return _M_threads.size(); }
 
 private:

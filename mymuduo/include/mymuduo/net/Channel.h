@@ -28,15 +28,13 @@ enum channelStatus {
 /**
  * 封装了sockfd感兴趣的event, 还绑定了poller返回的具体事节
  */
-class Channel : noncopyable
-{
+class Channel : noncopyable {
 public:
 
     using EventCallback = std::function<void()>;
     using ReadCallback = std::function<void(TimeStamp)>;
 
 public:
-
     /**
      * @brief 将fd与事件循环绑定
      */
@@ -98,7 +96,6 @@ public:
     EventLoop* owner_loop() { return _M_loop_ptr; }
 
 private:
-
     void update();
     void handle_event_with_guard(TimeStamp receiveTime);
 

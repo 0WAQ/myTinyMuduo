@@ -1,50 +1,38 @@
-#include "mymuduo/base/Logger.h"
 #include "mymuduo/net/InetAddress.h"
 #include "mymuduo/net/Socket.h"
 #include "mymuduo/net/SocketOps.h"
 
+#include <asm-generic/socket.h>
 #include <cerrno>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <unistd.h>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
 
+Socket::Socket(int fd)
+    : _M_fd(fd)
+{ }
+
+Socket::~Socket() {
+    if (_M_closed) {
+        return;
+    }
+    close();
+}
+
 // bind, listen, accept
-void Socket::bind(const InetAddress& serv_addr)
-{
-    if(::bind(_M_fd, serv_addr.addr(), sizeof(sockaddr)) < 0) {
-        LOG_ERROR("%s:%s:%d bind error:%d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
-        sockets::close(_M_fd);
-    }
+void Socket::bind(const InetAddress& serv_addr) {
+    sockets::bind(_M_fd, serv_addr.addr());
 }
 
-void Socket::listen(size_t max_connection)
-{
-    if(::listen(_M_fd, max_connection) != 0) {
-        LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
-        sockets::close(_M_fd);  
-    }
+void Socket::listen() {
+    sockets::listen(_M_fd);
 }
 
-int Socket::accept(InetAddress& clnt_addr)
-{
-    sockaddr_in addr;
-    socklen_t len = sizeof(sockaddr_in);
-    bzero(&addr, sizeof(sockaddr_in));
-
-    int clnt_fd = ::accept4(_M_fd, (sockaddr*)&addr, &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
-    
-    if(clnt_fd < 0) {
-        LOG_ERROR("%s:%s:%d accept error:%d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
-        return -1;
-    }
-
-    clnt_addr.set_addr(addr);
-    
-    return clnt_fd;
+int Socket::accept(InetAddress& clnt_addr) {
+    return sockets::accept(_M_fd, clnt_addr.addr());
 }
 
 void Socket::close() {
@@ -53,29 +41,22 @@ void Socket::close() {
 }
 
 void Socket::shutdown_write() {
-    if(::shutdown(_M_fd, SHUT_WR) < 0) {
-        LOG_ERROR("%s:%s:%d shutdown write error:%d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
-    }
+    sockets::shutdown_write(_M_fd);
 }
 
 void Socket::set_keep_alive(bool on) {
-    int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(opt));
+    sockets::setsockopt(_M_fd, SOL_SOCKET, SO_KEEPALIVE, on);
 }
 
 void Socket::set_reuse_addr(bool on) {
-    int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(opt));
+    sockets::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEADDR, on);
 }
 
 void Socket::set_reuse_port(bool on) {
-    int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(opt));
+    sockets::setsockopt(_M_fd, SOL_SOCKET, SO_REUSEPORT, on);
 }
 
 void Socket::set_tcp_nodelay(bool on) {
-    int opt = on ? 1 : 0;
-    ::setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(opt));
+    sockets::setsockopt(_M_fd, IPPROTO_TCP, TCP_NODELAY, on);
 }
 

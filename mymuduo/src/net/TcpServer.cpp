@@ -1,11 +1,11 @@
 #include "mymuduo/base/Logger.h"
 #include "mymuduo/net/callbacks.h"
 #include "mymuduo/net/TcpServer.h"
+#include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/TcpConnection.h"
 #include "mymuduo/net/SocketOps.h"
 
-#include <memory>
-#include <mutex>
+#include <cassert>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -15,7 +15,8 @@ namespace __detail {
 
     EventLoop* check_loop_not_null(EventLoop *loop) {
         if(!loop) {
-            LOG_ERROR("%s:%s:%d main loop is null!", __FILE__, __FUNCTION__, __LINE__);
+            LOG_ERROR("%s:%s:%d - main loop is null!\n", 
+                __FILE__, __FUNCTION__, __LINE__);
         }
         return loop;
     }

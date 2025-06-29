@@ -4,8 +4,7 @@
 #include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/SocketOps.h"
 
-#include <chrono>
-#include <cstdio>
+#include <cassert>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -22,8 +21,8 @@ int create_eventfd()
 {
     int efd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if(efd < 0) {
-        LOG_ERROR("%s:%s:%d eventfd create error:%d.\n", 
-            __FILE__, __FUNCTION__, __LINE__, errno);
+        LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+            __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
     else {
         LOG_DEBUG("create a new eventfd.\n");

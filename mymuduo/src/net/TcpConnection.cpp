@@ -1,10 +1,9 @@
 #include "mymuduo/base/Logger.h"
 #include "mymuduo/net/TcpConnection.h"
-#include "mymuduo/base/TimeStamp.h"
 #include "mymuduo/net/EventLoop.h"
 
 #include <cassert>
-#include <errno.h>
+#include <cerrno>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
@@ -17,7 +16,8 @@ namespace __detail {
      */
     static EventLoop* check_loop_not_null(EventLoop *loop) {
         if(!loop) {
-            LOG_ERROR("%s:%s:%d sub loop is null!", __FILE__, __FUNCTION__, __LINE__);
+            LOG_ERROR("%s:%s:%d sub loop is null!",
+                __FILE__, __FUNCTION__, __LINE__);
         }
         return loop;
     }
