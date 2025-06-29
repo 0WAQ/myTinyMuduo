@@ -38,9 +38,8 @@ namespace {
 TEST(LoggerTest, LogLevelFiltering) {
     run_in_process([] {
         std::string captured;
-        Logger* log = Logger::instance();
-        log->set_log_level(Logger::WARN);
-        ASSERT_TRUE(log->set_output([&](const char* data, size_t len) {
+        Logger::instance().set_log_level(Logger::WARN);
+        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
             captured.assign(data, len);
         }));
 
@@ -58,9 +57,8 @@ TEST(LoggerTest, LogLevelFiltering) {
 TEST(LoggerTest, WriteUseCustomBuffer) {
     run_in_process([] {
         std::string captured;
-        Logger* log = Logger::instance();
-        log->set_log_level(Logger::DEBUG);
-        ASSERT_TRUE(log->set_output([&](const char* data, size_t len) {
+        Logger::instance().set_log_level(Logger::DEBUG);
+        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
             captured.assign(data, len);
         }));
 
@@ -74,9 +72,8 @@ TEST(LoggerTest, WriteUseCustomBuffer) {
 // TAG
 TEST(LoggerTest, WriteToDevNull) {
     run_in_process([] {
-        Logger* log = Logger::instance();
-        log->set_log_level(Logger::DEBUG);
-        ASSERT_TRUE(log->set_output([&](const char* data, size_t len) {
+        Logger::instance().set_log_level(Logger::DEBUG);
+        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
             FILE* fp = std::fopen("/dev/null", "w+");
             std::fprintf(fp, data, len);
             std::fputc('\n', fp);
@@ -91,9 +88,8 @@ TEST(LoggerTest, WriteToDevNull) {
 TEST(LoggerTest, WriteToAsyncLogging) {
     run_in_process([&] {
         std::shared_ptr<AsyncLogging> async(new AsyncLogging("./.tmp", "LoggerTest"));
-        Logger* log = Logger::instance();
-        log->set_log_level(Logger::INFO);
-        ASSERT_TRUE(log->set_async(async));
+        Logger::instance().set_log_level(Logger::INFO);
+        ASSERT_TRUE(Logger::instance().set_async(async));
 
         for (int i = 0; i < 10; ++i) {
             LOG_DEBUG("this is debug%d\n", i);
@@ -108,9 +104,8 @@ TEST(LoggerTest, WriteToAsyncLogging) {
 TEST(LoggerTest, MultiThreadedLogging) {
     run_in_process([] {
         std::atomic<int> counter { 0 };
-        Logger* log = Logger::instance();
-        log->set_log_level(Logger::INFO);
-        ASSERT_TRUE(log->set_output([&](const char* data, size_t len) {
+        Logger::instance().set_log_level(Logger::INFO);
+        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
             ++counter;
         }));
 
@@ -118,7 +113,7 @@ TEST(LoggerTest, MultiThreadedLogging) {
         for (int i = 0; i < 10; ++i) {
             threads.emplace_back([&] {
                 for (int j = 0; j < 100; ++j) {
-                    LOG_INFO("Thread log %d", j);
+                    LOG_INFO("Thread Logger::instance() %d", j);
                 }
             });
         }

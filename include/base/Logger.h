@@ -7,7 +7,6 @@
 #define LOGGER_H
 
 #include <atomic>
-#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
@@ -17,12 +16,15 @@
 
 #include "base/AsyncLogging.h"
 #include "base/noncopyable.h"
+#include "base/singleton.h"
 
 namespace mymuduo {
 
-class Logger : noncopyable
+class Logger : public Singleton<Logger>, noncopyable
 {
 public:
+    friend class Singleton<Logger>;
+
     using OutputFunc = std::function<void(const char*, size_t)>;
 
     // 定义日志级别
@@ -34,8 +36,6 @@ public:
     };
 
 public:
-    static Logger* instance();
-
     void set_log_level(LogLevel level);
     bool set_output(OutputFunc func);
     bool set_async(const std::shared_ptr<AsyncLogging>& async);
@@ -47,14 +47,10 @@ public:
     const bool initialized() const noexcept { return _M_initialized; }
 
 private:
-    Logger();
-    Logger(const std::filesystem::path& path, const std::string& basename, int roll_size);
-
-private:
-    std::atomic<bool> _M_initialized;
+    std::atomic<bool> _M_initialized { false };
 
     // 日志等级
-    LogLevel _M_level;
+    LogLevel _M_level = INFO;
 
     // 日志输出函数
     OutputFunc _M_output_func;
@@ -67,9 +63,9 @@ private:
 
 #define LOG_BASE(level, format, ...)                                \
     do {                                                            \
-        mymuduo::Logger* log = mymuduo::Logger::instance();         \
-        if(log->initialized())                                      \
-            log->write(mymuduo::level, format, ##__VA_ARGS__);      \
+        using namespace mymuduo;                                    \
+        if(Logger::instance().initialized())                                       \
+            Logger::instance().write(mymuduo::level, format, ##__VA_ARGS__);       \
     } while(0)
 
 

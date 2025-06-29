@@ -9,20 +9,9 @@
 
 using namespace mymuduo;
 
-Logger* Logger::instance() {
-    // 懒汉模式, 在第一次调用时才创建对象
-    static Logger logger;   // c++11以后, 使用局部变量懒汉不用加锁
-    return &logger;
-}
-
-Logger::Logger()
-    : _M_initialized(false)
-    , _M_level(Logger::INFO)
-    , _M_output_func()
-{ }
 
 void Logger::set_log_level(LogLevel level) {
-    instance()->_M_level = level;
+    _M_level = level;
 }
 
 bool Logger::set_output(OutputFunc func) {

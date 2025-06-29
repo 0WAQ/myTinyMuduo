@@ -101,10 +101,9 @@ int main(int argc, char* argv[])
 
     // 使用异步日志系统
     std::shared_ptr<AsyncLogging> async(new AsyncLogging(argv[3], "EchoServer"));
-    
-    Logger* log = Logger::instance();
-    log->set_log_level(Logger::DEBUG);
-    log->set_async(async);
+
+    Logger::instance().set_log_level(Logger::DEBUG);
+    Logger::instance().set_async(async);
 
     EventLoop loop;
     InetAddress addr(argv[1], atoi(argv[2]));
