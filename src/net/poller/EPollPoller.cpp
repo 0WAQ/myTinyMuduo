@@ -154,6 +154,9 @@ void EPollPoller::update(int op, Channel* ch)
 }
 
 EPollPoller::~EPollPoller() {
-    ::close(_M_epoll_fd);
+    if (::close(_M_epoll_fd) < 0) {
+        LOG_ERROR("%s:%s:%d close error:%d.\n",
+            __FILE__, __FUNCTION__, __LINE__, errno);
+    }
 }
 

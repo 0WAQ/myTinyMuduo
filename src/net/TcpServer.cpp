@@ -12,10 +12,7 @@ using namespace mymuduo::net;
 namespace mymuduo::net {
 namespace __detail {
 
-    /**
-     * @brief 判断loop非空, 确保用户不会传入空的main_loop
-     */
-    static EventLoop* check_loop_not_null(EventLoop *loop) {
+    EventLoop* check_loop_not_null(EventLoop *loop) {
         if(!loop) {
             LOG_ERROR("%s:%s:%d main loop is null!", __FILE__, __FUNCTION__, __LINE__);
         }

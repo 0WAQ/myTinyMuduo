@@ -10,19 +10,15 @@ using namespace mymuduo;
 using namespace mymuduo::net;
 
 namespace mymuduo::net {
-namespace __detail
-{
-    /**
-     * @brief 创建非阻塞的sockfd
-     */
+namespace __detail {
     int create_non_blocking_fd()
     {
-        int listen_fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
-        if(listen_fd < 0) {
-            LOG_ERROR("%s:%s:%d listen_fd create error:%d.\n", 
+        int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+        if(sockfd < 0) {
+            LOG_ERROR("%s:%s:%d sockfd create error:%d.\n", 
                 __FILE__, __FUNCTION__, __LINE__, errno);
         }
-        return listen_fd;
+        return sockfd;
     }
 
 } // namespace __detail
@@ -79,7 +75,10 @@ void Acceptor::new_connection()
         _M_new_connection_callback(clnt_fd, clnt_addr);
     }
     else {
-        ::close(clnt_fd);
+        if (::close(clnt_fd) < 0) {
+            LOG_ERROR("%s:%s:%d close error:%d.\n",
+                __FILE__, __FUNCTION__, __LINE__, errno);
+        }
     }
 }
 

@@ -13,6 +13,13 @@
 
 namespace mymuduo {
 namespace net {
+namespace __detail {
+    /**
+     * @brief 创建非阻塞的sockfd
+     */
+    int create_non_blocking_fd();
+
+} // namespace __detail
 
 class EventLoop;
 

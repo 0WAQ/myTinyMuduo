@@ -92,7 +92,10 @@ TimerQueue::~TimerQueue()
 {
     _M_timer_channel.unset_all_events();
     _M_timer_channel.remove();
-    ::close(_M_timer_fd);
+    if (::close(_M_timer_fd) < 0) {
+        LOG_ERROR("%s:%s:%d close error:%d.\n",
+            __FILE__, __FUNCTION__, __LINE__, errno);
+    }
 }
 
 

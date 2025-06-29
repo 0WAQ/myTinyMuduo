@@ -23,6 +23,17 @@ namespace __detail {
     }
 
 } // namespace __detail
+
+void default_connection_callback(const TcpConnectionPtr& conn) {
+    LOG_DEBUG("%s -> %s is %s", conn->local_address().ip_port().c_str(),
+                    conn->peer_address().ip_port().c_str(),
+                    (conn->connected()) ? "UP" : "DOWN");
+}
+
+void default_message_callback(const TcpConnectionPtr& conn, Buffer* buf, TimeStamp t) {
+    buf->retrieve_all();
+}
+
 } // namespace mymuduo::net
 
 TcpConnection::TcpConnection(EventLoop *loop, size_t id, const std::string &name, int clntfd, 

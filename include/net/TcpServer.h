@@ -24,6 +24,13 @@
 
 namespace mymuduo {
 namespace net {
+namespace __detail {
+    /**
+     * @brief 判断loop非空, 确保用户不会传入空的main_loop
+     */
+    EventLoop* check_loop_not_null(EventLoop*);
+
+} // namespace __detail
 
 /**
  * @brief 对外的接口类
