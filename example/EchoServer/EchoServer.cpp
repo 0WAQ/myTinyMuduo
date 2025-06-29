@@ -1,37 +1,19 @@
-/**
- * 
- * 简易的EchoServer实现
- * 
- */
-#include "base/AsyncLogging.h"
-#include "net/Buffer.h"
-#include <memory>
-#include <net/TcpServer.h>
-#include <base/Logger.h>
-
-#include <iostream>
+#include <mymuduo/net/TcpServer.h>
+#include <mymuduo/base/Logger.h>
 
 using namespace mymuduo;
 using namespace mymuduo::net;
 
-/**
- * @brief 业务服务器: Echo
- */
-class EchoServer
-{
+class EchoServer {
 public:
-
-    using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
-
-    /**
-     * @brief 初始化EchoServer
-     */
-    EchoServer(EventLoop *loop, const InetAddress &addr, const std::string &name) :
-            loop_(loop), server_(loop, addr, name)
+    EchoServer(EventLoop *loop, const InetAddress &addr, const std::string &name)
+            : loop_(loop)
+            , server_(loop, addr, name)
     {
-        server_.set_connection_callback(std::bind(&EchoServer::onConnection, this, std::placeholders::_1));
-        server_.set_message_callback(std::bind(&EchoServer::onMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        
+        server_.set_connection_callback(std::bind(&EchoServer::onConnection, this,
+                    std::placeholders::_1));
+        server_.set_message_callback(std::bind(&EchoServer::onMessage, this,
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         server_.set_thread_num(3);
     }
 
@@ -39,20 +21,16 @@ public:
         server_.start();
     }
 
-    void onConnection(const TcpConnectionPtr &conn)
-    {
-        if(conn->connected())
-        {
+    void onConnection(const TcpConnectionPtr &conn) {
+        if(conn->connected()) {
             LOG_INFO("conn UP : %s\n", conn->peer_address().ip_port().c_str());
         }
-        else
-        {
+        else {
             LOG_INFO("conn DOWN : %s\n", conn->peer_address().ip_port().c_str());
         }
     }
 
-    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp time)
-    {
+    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp time) {
         std::string msg;
         if(buf->pick_datagram(msg)) {
             add_sep(buf, msg);
@@ -91,19 +69,17 @@ private:
     TcpServer server_;
 };
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     if(argc != 4) {
-        std::cout << "Usage: ./tcp_epoll <ip> <port> <log_dir>\n";
-        std::cout << "Example: ./tcp_epoll 127.0.0.1 5678 ../../log\n";
+        std::printf("Usage: ./tcp_epoll <ip> <port> <log_dir>\n");
+        std::printf("Example: ./tcp_epoll 127.0.0.1 5678 ../../log\n");
         return -1;
     }
 
-    // 使用异步日志系统
-    std::shared_ptr<AsyncLogging> async(new AsyncLogging(argv[3], "EchoServer"));
-
     Logger::instance().set_log_level(Logger::DEBUG);
-    Logger::instance().set_async(async);
+    Logger::instance().set_output([](const char* data, size_t len) {
+        std::fprintf(stdout, data, len);
+    });
 
     EventLoop loop;
     InetAddress addr(argv[1], atoi(argv[2]));
