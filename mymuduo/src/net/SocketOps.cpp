@@ -117,10 +117,6 @@ bool is_self_connect(int sockfd) {
         return laddr4->sin_port == raddr4->sin_port
             && laddr4->sin_addr.s_addr == raddr4->sin_addr.s_addr;
     }
-    else if (localaddr.sin_family == AF_INET6) {
-        return localaddr.sin_port == peeraddr.sin_port
-            && memcmp(&localaddr.sin_addr, &peeraddr.sin_addr, sizeof localaddr.sin_addr) == 0;
-    }
     else {
         return false;
     }
