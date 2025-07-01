@@ -29,6 +29,7 @@ public:
     void new_connection();
 
     bool listenning() const { return _M_listening; }
+    const Socket& socket() const { return _M_serv_sock; }
     const InetAddress& listen_addr() const { return _M_serv_addr; }
 
     void set_new_connection_callback(CreateConnCallback func) {

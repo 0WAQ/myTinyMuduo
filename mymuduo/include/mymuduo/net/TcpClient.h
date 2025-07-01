@@ -19,7 +19,6 @@ public:
 
 public:
     TcpClient(EventLoop* loop, const InetAddress& server_addr, const std::string& name);
-
     ~TcpClient();
 
     void connect();
@@ -28,7 +27,7 @@ public:
 
     EventLoop* loop() const { return _M_loop; }
     const std::string& name() const { return _M_name; }
-    bool retry() const { return _M_retry; }
+    const bool retry() const { return _M_retry; }
     void enable_retry() { _M_retry = true; }
     TcpConnectionPtr connection() {
         std::lock_guard<std::mutex> guard(_M_mutex);

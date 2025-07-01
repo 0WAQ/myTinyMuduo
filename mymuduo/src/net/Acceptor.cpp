@@ -24,7 +24,6 @@ Acceptor::Acceptor(EventLoop* main_loop, const InetAddress &serv_addr, bool reus
 
     // 设置acceptor_channel_ptr的执行函数为new_connection
     _M_acceptor_channel.set_read_callback(std::bind(&Acceptor::new_connection, this));
-
 }
 
 Acceptor::~Acceptor() {

@@ -4,6 +4,7 @@
 #include "mymuduo/net/TcpConnection.h"
 #include "mymuduo/net/TcpServer.h"
 #include "mymuduo/net/SocketOps.h"
+#include "mymuduo/net/callbacks.h"
 
 #include <cassert>
 #include <functional>
@@ -53,9 +54,11 @@ TcpClient::~TcpClient() {
     if (conn) {
         assert(_M_loop == conn->loop());
 
+        // 不要直接调用 destroyed 销毁连接, 应等待服务器将数据发送完毕
         CloseCallback cb = std::bind(&__detail::remove_connection, _M_loop, std::placeholders::_1);
         _M_loop->run_in_loop(std::bind(&TcpConnection::set_close_callback, conn, cb));
 
+        // 其它代码不持有 conn 对象的话直接强制关闭
         if (unique) {
             conn->force_close();
         }
