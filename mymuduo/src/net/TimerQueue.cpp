@@ -29,24 +29,24 @@ namespace __detail {
     /**
      * @brief 计算when到now的时间, 填充为timespec结构体
      */
-    struct timespec how_much_time_from_now(TimeStamp when)
+    struct timespec how_much_time_from_now(Timestamp when)
     {
         ssize_t microseconds = (when.time_since_epoch() - 
-                                TimeStamp::now().time_since_epoch()).count() / 1000;
+                                Timestamp::now().time_since_epoch()).count() / 1000;
         if(microseconds < 100) {
             microseconds = 100;
         }
 
         struct timespec ts;
-        ts.tv_sec = static_cast<time_t>(microseconds / TimeStamp::kMicroSecondsPerSecond);
-        ts.tv_nsec = static_cast<long>((microseconds % TimeStamp::kMicroSecondsPerSecond) * 1000);
+        ts.tv_sec = static_cast<time_t>(microseconds / Timestamp::kMicroSecondsPerSecond);
+        ts.tv_nsec = static_cast<long>((microseconds % Timestamp::kMicroSecondsPerSecond) * 1000);
         return ts;
     }
 
     /**
      * @brief
      */
-    void read_timerfd(int timerfd, TimeStamp now)
+    void read_timerfd(int timerfd, Timestamp now)
     {
         ssize_t read_bytes;
         ssize_t nlen = ::read(timerfd, &read_bytes, sizeof(read_bytes));
@@ -59,7 +59,7 @@ namespace __detail {
     /**
      * @brief 重置timerfd唤醒EventLoop线程的时间
      */
-    void reset_timerfd(int timerfd, TimeStamp expiration)
+    void reset_timerfd(int timerfd, Timestamp expiration)
     {
         struct itimerspec newVal;
         struct itimerspec oldVal;
@@ -96,7 +96,7 @@ TimerQueue::~TimerQueue()
 }
 
 
-TimerId TimerQueue::add_timer(TimeStamp when, TimeDuration interval, TimerCallback func)
+TimerId TimerQueue::add_timer(Timestamp when, TimeDuration interval, TimerCallback func)
 {
     Timer *timer = new Timer(when, interval, std::move(func));
     _M_loop->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop, this, timer));
@@ -133,7 +133,7 @@ void TimerQueue::cancel_in_loop(TimerId timerId)
 
     if(it != _M_active_timers.end())
     {
-        TimeStamp when = timerId.timer->expiration();
+        Timestamp when = timerId.timer->expiration();
         auto itt = _M_timers.find(when);
 
         // 按时间戳排序, 有可能具有相同时间戳的定时器, 所以需重复查找(不过单位为ns, 所以额外开销不大)
@@ -161,7 +161,7 @@ void TimerQueue::handle_read()
 {
     assert(_M_loop->is_loop_thread());
 
-    TimeStamp now = TimeStamp::now();
+    Timestamp now = Timestamp::now();
     __detail::read_timerfd(_M_timer_fd, now);
 
     // 获取超时定时器
@@ -181,7 +181,7 @@ void TimerQueue::handle_read()
     reset(expired, now);
 }
 
-TimerQueue::TimerVec TimerQueue::get_expired(TimeStamp now)
+TimerQueue::TimerVec TimerQueue::get_expired(Timestamp now)
 {
     assert(_M_timers.size() == _M_active_timers.size());
     
@@ -195,7 +195,7 @@ TimerQueue::TimerVec TimerQueue::get_expired(TimeStamp now)
     std::transform(
         _M_timers.begin(), end,
         std::back_inserter(expired),
-        [](std::pair<const TimeStamp, std::unique_ptr<Timer>>& p) {
+        [](std::pair<const Timestamp, std::unique_ptr<Timer>>& p) {
             return std::move(p.second);
         }
     );
@@ -211,7 +211,7 @@ TimerQueue::TimerVec TimerQueue::get_expired(TimeStamp now)
     return expired;
 }
 
-void TimerQueue::reset(TimerVec &expired, TimeStamp now)
+void TimerQueue::reset(TimerVec &expired, Timestamp now)
 {
     for(TimerPtr& it : expired)
     {   
@@ -224,7 +224,7 @@ void TimerQueue::reset(TimerVec &expired, TimeStamp now)
     }
 
     // 下一次超时时间
-    TimeStamp nextExpire;
+    Timestamp nextExpire;
 
     if(!_M_timers.empty()) {
         nextExpire = _M_timers.begin()->first;
@@ -241,7 +241,7 @@ bool TimerQueue::insert(TimerPtr timer)
     // 用于判断timer的超时时间是否更近
     bool earliest_changed = false;
 
-    TimeStamp when = timer->expiration();
+    Timestamp when = timer->expiration();
     TimerMap::iterator it = _M_timers.begin();
 
     // 若TimerMap为空 或者 timer到时时间更短, 标记为true

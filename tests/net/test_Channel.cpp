@@ -1,4 +1,4 @@
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/CurrentThread.h"
 #include "mymuduo/net/Channel.h"
 #include "mymuduo/net/EventLoop.h"
@@ -125,12 +125,12 @@ protected:
     }
 
     void print(const char *msg) {
-        static std::map<const char*, TimeStamp> lasts;
-        TimeStamp& last = lasts[msg];
-        TimeStamp now = TimeStamp::now();
+        static std::map<const char*, Timestamp> lasts;
+        Timestamp& last = lasts[msg];
+        Timestamp now = Timestamp::now();
 
         printf("\033[32m[   %s   ]\033[0m %s tid %d %s delay %f\n", "INFO", now.to_string().c_str(), CurrentThread::tid(),
-            msg, 1.0 * time_difference(now, last) / TimeStamp::knaneSecondsPerSecond);
+            msg, 1.0 * time_difference(now, last) / Timestamp::knaneSecondsPerSecond);
         
         last = now;
     }

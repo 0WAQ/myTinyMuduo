@@ -1,4 +1,4 @@
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/TimerId.h"
 #include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/EventLoopThread.h"
@@ -37,7 +37,7 @@ protected:
 
 protected:
     std::unique_ptr<EventLoop> _loop;
-    TimeStamp _lastRunTime;
+    Timestamp _lastRunTime;
     std::thread _thread;
 };
 
@@ -125,9 +125,9 @@ TEST_F(TimerQueueTest, TimerCancellation) {
 
 // TAG: 定时器精度测试
 TEST_F(TimerQueueTest, TimerPrecision) {
-    TimeStamp start = TimeStamp::now();
+    Timestamp start = Timestamp::now();
     _loop->run_after(200ms, [this, start] {
-        TimeStamp end = TimeStamp::now();
+        Timestamp end = Timestamp::now();
         int64_t duration = time_difference(end, start) / 1e6; // ns => ms
         EXPECT_NEAR(duration, 200, 20); // 允许 ±20ms 的误差
         _loop->quit();

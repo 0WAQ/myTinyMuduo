@@ -125,7 +125,7 @@ protected:
             }
         });
         
-        conn->set_message_callback([this](const TcpConnectionPtr& conn, Buffer* buf, TimeStamp time) {
+        conn->set_message_callback([this](const TcpConnectionPtr& conn, Buffer* buf, Timestamp time) {
             _serv_received_data += buf->retrieve_all_as_string();
             conn->send(_serv_received_data); // 回显数据
         });
@@ -199,7 +199,7 @@ TEST_F(TcpClientTest, SendsAndReceivesMessages) {
     start_client(port);
     
     std::string client_received;
-    _client->set_message_callback([&](const TcpConnectionPtr&, Buffer* buf, TimeStamp) {
+    _client->set_message_callback([&](const TcpConnectionPtr&, Buffer* buf, Timestamp) {
         client_received = buf->retrieve_all_as_string();
     });
     _client->connect();

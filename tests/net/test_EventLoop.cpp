@@ -1,4 +1,4 @@
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/EventLoop.h"
 
 #include <atomic>
@@ -138,7 +138,7 @@ TEST_F(EventLoopTest, CrossThreadTimer) {
     startAnotherLoop();
 
     std::atomic<bool> timerCalled { false };
-    auto start = TimeStamp::now();
+    auto start = Timestamp::now();
 
     // 主线程在其他线程的事件循环上设置定时器
     _another->run_after(200ms, [&] {
@@ -152,7 +152,7 @@ TEST_F(EventLoopTest, CrossThreadTimer) {
         usleep(10000);
     }
 
-    auto duration = time_difference(TimeStamp::now(), start);
+    auto duration = time_difference(Timestamp::now(), start);
     EXPECT_GE(duration, 190000);
     EXPECT_TRUE(timerCalled.load());
 }

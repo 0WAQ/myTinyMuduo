@@ -1,6 +1,6 @@
 #include "mymuduo/base/CurrentThread.h"
 #include "mymuduo/base/Logger.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/SocketOps.h"
 
@@ -208,15 +208,15 @@ void EventLoop::wakeup()
     }
 }
 
-TimerId EventLoop::run_at(TimeStamp time, TimerCallback func) {
+TimerId EventLoop::run_at(Timestamp time, TimerCallback func) {
     return _M_timer_queue->add_timer(time, 0ns, std::move(func));
 }
 
 TimerId EventLoop::run_after(TimeDuration delay, TimerCallback func) {
-    return run_at(TimeStamp::now() + delay, std::move(func));
+    return run_at(Timestamp::now() + delay, std::move(func));
 }
 TimerId EventLoop::run_every(TimeDuration interval, TimerCallback func) {
-    return _M_timer_queue->add_timer(TimeStamp::now() + interval, interval, std::move(func));
+    return _M_timer_queue->add_timer(Timestamp::now() + interval, interval, std::move(func));
 }
 
 void EventLoop::cancel(TimerId timerId) {

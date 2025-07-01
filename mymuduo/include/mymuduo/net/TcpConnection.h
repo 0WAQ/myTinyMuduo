@@ -11,7 +11,7 @@
 #include <memory>
 #include <atomic>
 
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/noncopyable.h"
 #include "mymuduo/net/callbacks.h"
 #include "mymuduo/net/Socket.h"
@@ -109,8 +109,8 @@ private:
     /**
      * @brief 四种事件
      */
-    void handle_read_ET(TimeStamp receieveTime);
-    void handle_read_LT(TimeStamp receieveTime);
+    void handle_read_ET(Timestamp receieveTime);
+    void handle_read_LT(Timestamp receieveTime);
     void handle_write();
     void handle_close();
     void handle_error();

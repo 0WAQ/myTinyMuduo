@@ -1,4 +1,4 @@
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/EventLoopThread.h"
 #include "mymuduo/net/TcpServer.h"
 #include "mymuduo/net/EventLoop.h"
@@ -47,7 +47,7 @@ protected:
                 }
             });
 
-            server->set_message_callback([this](const TcpConnectionPtr& conn, Buffer* buf, TimeStamp t) {
+            server->set_message_callback([this](const TcpConnectionPtr& conn, Buffer* buf, Timestamp t) {
                 _message_callback_called = true;
                 _message_received = buf->retrieve_all_as_string();
                 _cv.notify_one();

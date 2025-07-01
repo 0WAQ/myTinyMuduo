@@ -21,11 +21,11 @@ EPollPoller::EPollPoller(EventLoop* loop) :
     }
 }
 
-TimeStamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clock::duration timeout)
+Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clock::duration timeout)
 {
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
-    TimeStamp now = TimeStamp::now();
+    Timestamp now = Timestamp::now();
     int numEvents = ::epoll_wait(_M_epoll_fd
                         , _M_events_arr.data()
                         , static_cast<int>(_M_events_arr.size())

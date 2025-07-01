@@ -7,7 +7,7 @@
 #include <mutex>
 #include <filesystem>
 
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/noncopyable.h"
 
 namespace mymuduo {
@@ -71,9 +71,9 @@ private:
     int _M_count;   // 记录文件行数
 
     std::unique_ptr<std::mutex> _M_mutex_ptr;
-    TimeStamp _M_start_of_period;  // 
-    TimeStamp _M_last_roll;        // 上次滚动文件时间
-    TimeStamp _M_last_flush;       // 上次刷新文件时间
+    Timestamp _M_start_of_period;  // 
+    Timestamp _M_last_roll;        // 上次滚动文件时间
+    Timestamp _M_last_flush;       // 上次刷新文件时间
     std::unique_ptr<__detail::File> _M_file;
 
     const std::chrono::seconds kRollPerSeconds = std::chrono::seconds{60 * 60 * 24};

@@ -1,5 +1,5 @@
 #include "mymuduo/base/LogFile.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 
 #include <cassert>
 
@@ -67,9 +67,9 @@ LogFile::LogFile(const std::filesystem::path& filepath,
     , _M_check_every(check_every)
     , _M_count(0)
     , _M_mutex_ptr(thread_safe ? new std::mutex : nullptr)
-    , _M_start_of_period(TimeStamp {})
-    , _M_last_roll(TimeStamp {})
-    , _M_last_flush(TimeStamp {})
+    , _M_start_of_period(Timestamp {})
+    , _M_last_roll(Timestamp {})
+    , _M_last_flush(Timestamp {})
 {
     namespace fs = std::filesystem;
     if(!fs::exists(filepath) && !fs::create_directory(filepath)) {
@@ -118,10 +118,10 @@ void LogFile::append_unlocked(const char* logline, size_t len)
         {
             _M_count = 0;
 
-            auto now = TimeStamp::now();
+            auto now = Timestamp::now();
             std::chrono::seconds seconds = 
                     std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
-            TimeStamp thisPeriod(seconds / kRollPerSeconds * kRollPerSeconds);
+            Timestamp thisPeriod(seconds / kRollPerSeconds * kRollPerSeconds);
             if(thisPeriod != _M_start_of_period)
             {
                 roll_file();
@@ -137,7 +137,7 @@ void LogFile::append_unlocked(const char* logline, size_t len)
 
 bool LogFile::roll_file()
 {
-    auto now = TimeStamp::now();
+    auto now = Timestamp::now();
     time_t to_time_t = now.to_time_t();
 
     std::string filename = get_logfile_name(_M_filepath / _M_basename, &to_time_t);

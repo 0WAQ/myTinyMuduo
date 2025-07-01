@@ -1,6 +1,6 @@
 #include "mymuduo/base/AsyncLogging.h"
 #include "mymuduo/base/LogFile.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 
 #include <cassert>
 
@@ -129,7 +129,7 @@ void AsyncLogging::thread_func() {
         {
             char buf[256];
             snprintf(buf, sizeof(buf), "Dropped log message at %s, %zd larger buffers.\n",
-                     TimeStamp::now().to_string().c_str(), buffers_to_write.size() - 2);
+                     Timestamp::now().to_string().c_str(), buffers_to_write.size() - 2);
             fputs(buf, stderr);
             _M_log_file->append(buf, static_cast<int>(strlen(buf)));
             buffers_to_write.erase(buffers_to_write.begin() + 2, buffers_to_write.end());    

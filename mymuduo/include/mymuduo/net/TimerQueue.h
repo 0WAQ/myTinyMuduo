@@ -7,7 +7,7 @@
 #include <set>
 #include <map>
 
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/noncopyable.h"
 #include "mymuduo/net/Timer.h"
 #include "mymuduo/net/TimerId.h"
@@ -34,7 +34,7 @@ public:
     /**
      * @brief 创建一个timer并添加到定时器队列中
      */
-    TimerId add_timer(TimeStamp when, TimeDuration interval, TimerCallback func);
+    TimerId add_timer(Timestamp when, TimeDuration interval, TimerCallback func);
 
     /**
      * @brief 取消一个定时器
@@ -43,7 +43,7 @@ public:
 
 private:
 
-    using TimerMap = std::multimap<TimeStamp, std::unique_ptr<Timer>>;
+    using TimerMap = std::multimap<Timestamp, std::unique_ptr<Timer>>;
     using TimerVec = std::vector<TimerPtr>;
     using ActiveList = std::set<TimerId>;
     using CancelList = std::set<TimerId>;
@@ -62,12 +62,12 @@ private:
     /**
      * @brief 获取到期的所有定时器
      */
-    TimerVec get_expired(TimeStamp now);
+    TimerVec get_expired(Timestamp now);
 
     /**
      * @brief 重置超时定时器(若重复则insert, 否则删除), 设置timerfd下次唤醒线程时间
      */
-    void reset(TimerVec &expired, TimeStamp now);
+    void reset(TimerVec &expired, Timestamp now);
 
     /**
      * @brief 将timer添加到TimerMap和ActiveList中

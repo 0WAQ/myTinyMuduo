@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/noncopyable.h"
 
 namespace mymuduo {
@@ -34,7 +34,7 @@ public:
     bool has_channel(Channel *ch) const;
     
 
-    virtual TimeStamp poll(ChannelList *channels, std::chrono::system_clock::duration timeout = std::chrono::milliseconds::max()) = 0;
+    virtual Timestamp poll(ChannelList *channels, std::chrono::system_clock::duration timeout = std::chrono::milliseconds::max()) = 0;
     virtual void update_channel(Channel *ch) = 0;
     virtual void remove_channel(Channel *ch) = 0;
 

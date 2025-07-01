@@ -1,5 +1,5 @@
 #include "mymuduo/base/Logger.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/Connector.h"
 #include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/InetAddress.h"
@@ -45,7 +45,7 @@ protected:
     }
 
 protected:
-    uint16_t run_server(std::function<void(TimeStamp t)> func) {
+    uint16_t run_server(std::function<void(Timestamp t)> func) {
         std::promise<uint16_t> port_promise;
         auto port_future = port_promise.get_future();
 
@@ -64,7 +64,7 @@ protected:
             _serv_loop = std::make_shared<EventLoop>();
 
             Channel channel(_serv_loop.get(), listenfd);
-            channel.set_read_callback([&func, listenfd, this](TimeStamp t) {
+            channel.set_read_callback([&func, listenfd, this](Timestamp t) {
                 InetAddress clnt_addr;
                 int sockfd = sockets::accept(listenfd, clnt_addr.addr());
                 ASSERT_GT(sockfd, 0);
@@ -109,7 +109,7 @@ TEST_F(ConnectorTest, ConnectsToServer) {
     std::atomic<bool> serverConnected { false };
     std::atomic<bool> clientConnected { false };
 
-    uint16_t port = run_server([&](TimeStamp t) {
+    uint16_t port = run_server([&](Timestamp t) {
         serverConnected.store(true);
     });
 
@@ -143,7 +143,7 @@ TEST_F(ConnectorTest, RetryAfterConnectionFailure) {
         
         // 在最后一次重试前启动服务器
         if (retryCount == maxAttempts - 1) {
-            run_server([](TimeStamp t) {
+            run_server([](Timestamp t) {
 
             });
         }
@@ -177,7 +177,7 @@ TEST_F(ConnectorTest, StopPreventsConnection) {
     std::atomic<bool> serverConnected { false };
     std::atomic<bool> clientConnected { false };
 
-    auto port = run_server([&](TimeStamp t) {
+    auto port = run_server([&](Timestamp t) {
         serverConnected.store(true);
     });
 

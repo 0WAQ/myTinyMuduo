@@ -15,7 +15,7 @@ namespace mymuduo {
 using TimePoint = std::chrono::system_clock::time_point;
 using TimeDuration = std::chrono::system_clock::duration;
 
-class TimeStamp {
+class Timestamp {
 public:
 
     static const int kMilliSecondsPerSecond = 1000;
@@ -23,13 +23,13 @@ public:
     static const int knaneSecondsPerSecond  = 1000 * 1000 * 1000;
 
 public:
-    explicit TimeStamp();
-    explicit TimeStamp(TimePoint sec);
-    explicit TimeStamp(TimeDuration dur);
+    explicit Timestamp();
+    explicit Timestamp(TimePoint sec);
+    explicit Timestamp(TimeDuration dur);
 
-    static TimeStamp now();
+    static Timestamp now();
 
-    static TimeStamp invalid();
+    static Timestamp invalid();
     bool valid();
 
     TimeDuration time_since_epoch();
@@ -42,39 +42,39 @@ public:
      */
     std::string to_string() const;
 
-    TimeStamp operator+ (const TimeDuration &duration) {
-        return TimeStamp(TimePoint(this->time_since_epoch() + duration));
+    Timestamp operator+ (const TimeDuration &duration) {
+        return Timestamp(TimePoint(this->time_since_epoch() + duration));
     }
 
-    TimeStamp operator- (const TimeDuration &duration) {
-        return TimeStamp(TimePoint(this->time_since_epoch() - duration));
+    Timestamp operator- (const TimeDuration &duration) {
+        return Timestamp(TimePoint(this->time_since_epoch() - duration));
     }
 
-    TimeDuration operator- (const TimeStamp& other) {
+    TimeDuration operator- (const Timestamp& other) {
         return this->_M_sec - other._M_sec;
     }
 
-    bool operator< (const TimeStamp &rhs) const {
+    bool operator< (const Timestamp &rhs) const {
         return this->_M_sec < rhs._M_sec;
     }
 
-    bool operator> (const TimeStamp &rhs) const {
+    bool operator> (const Timestamp &rhs) const {
         return this->_M_sec > rhs._M_sec;
     }
 
-    bool operator== (const TimeStamp &rhs) const {
+    bool operator== (const Timestamp &rhs) const {
         return this->_M_sec == rhs._M_sec;
     }
 
-    bool operator<= (const TimeStamp &rhs) const {
+    bool operator<= (const Timestamp &rhs) const {
         return !(this->operator>(rhs));
     }
 
-    bool operator>= (const TimeStamp &rhs) const {
+    bool operator>= (const Timestamp &rhs) const {
         return !(this->operator<(rhs));
     }
 
-    bool operator!= (const TimeStamp &rhs) const {
+    bool operator!= (const Timestamp &rhs) const {
         return !(this->operator==(rhs));
     }
 
@@ -83,11 +83,11 @@ private:
     TimePoint _M_sec;
 };
 
-inline TimeStamp add_time(TimeStamp timestamp, TimeDuration dur) {
+inline Timestamp add_time(Timestamp timestamp, TimeDuration dur) {
     return timestamp + dur;
 }
 
-inline int64_t time_difference(TimeStamp high, TimeStamp low) {
+inline int64_t time_difference(Timestamp high, Timestamp low) {
     return (high - low).count();
 }
 

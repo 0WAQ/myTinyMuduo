@@ -30,7 +30,7 @@ void default_connection_callback(const TcpConnectionPtr& conn) {
                     (conn->connected()) ? "UP" : "DOWN");
 }
 
-void default_message_callback(const TcpConnectionPtr& conn, Buffer* buf, TimeStamp t) {
+void default_message_callback(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t) {
     buf->retrieve_all();
 }
 
@@ -121,7 +121,7 @@ void TcpConnection::destroyed()
     _M_channel->remove();    
 }
 
-void TcpConnection::handle_read_ET(TimeStamp receieveTime)
+void TcpConnection::handle_read_ET(Timestamp receieveTime)
 {
     assert(_M_loop->is_loop_thread());
 
@@ -161,7 +161,7 @@ void TcpConnection::handle_read_ET(TimeStamp receieveTime)
     }
 }
 
-void TcpConnection::handle_read_LT(TimeStamp receieveTime)
+void TcpConnection::handle_read_LT(Timestamp receieveTime)
 {
     assert(_M_loop->is_loop_thread());
 

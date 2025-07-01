@@ -75,7 +75,7 @@ private:
                  conn->peer_address().ip_port().c_str());
     }
 
-    void onMessage(const TcpConnectionPtr& conn, Buffer* buf, TimeStamp time) {
+    void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time) {
         std::string msg;
         if(buf->pick_datagram(msg)) {
             processMessage(buf, msg);  // 处理消息分界

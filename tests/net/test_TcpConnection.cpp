@@ -1,4 +1,4 @@
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/InetAddress.h"
 #include "mymuduo/net/Socket.h"
 #include "mymuduo/net/Channel.h"
@@ -31,7 +31,7 @@ using namespace mymuduo::net;
     })
 
 #define set_connection(conn)       set(conn, connection)
-#define set_message(conn)          set(conn, message, Buffer* buf, TimeStamp t)
+#define set_message(conn)          set(conn, message, Buffer* buf, Timestamp t)
 #define set_write_complete(conn)   set(conn, write_complete)
 #define set_close(conn)            set(conn, close)
 #define set_high_water_mark1(conn) set(conn, high_water_mark, size_t len);
@@ -156,7 +156,7 @@ TEST_F(TcpConnectionTest, LT_DataReceive) {
     set_all(conn);
     
     std::string msg { "TcpConnectionTest.LT_DataReceive" };
-    conn->set_message_callback([&](const TcpConnectionPtr& conn, Buffer* buf, TimeStamp t) {
+    conn->set_message_callback([&](const TcpConnectionPtr& conn, Buffer* buf, Timestamp t) {
         ASSERT_EQ(buf->readable(), msg.size());
         ASSERT_EQ(buf->retrieve_all_as_string(), msg);
         ++_message_callback_count;
@@ -251,7 +251,7 @@ TEST_F(TcpConnectionTest, ET_DataReceiveFull) {
     set_all(conn);
     
     std::string msg { "TcpConnectionTest.ET_DataReceiveFull" };
-    conn->set_message_callback([&](const TcpConnectionPtr& conn, Buffer* buf, TimeStamp t) {
+    conn->set_message_callback([&](const TcpConnectionPtr& conn, Buffer* buf, Timestamp t) {
         ASSERT_EQ(buf->readable(), msg.size());
         ASSERT_EQ(buf->retrieve_all_as_string(), msg);
         ++_message_callback_count;

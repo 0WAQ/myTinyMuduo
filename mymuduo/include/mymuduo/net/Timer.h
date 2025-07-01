@@ -4,7 +4,7 @@
 #include <atomic>
 
 #include "mymuduo/base/noncopyable.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/callbacks.h"
 #include "mymuduo/net/TimerId.h"
 
@@ -15,7 +15,7 @@ class Timer : noncopyable
 {
 public:
 
-    Timer(TimeStamp when, TimeDuration interval, TimerCallback cb);
+    Timer(Timestamp when, TimeDuration interval, TimerCallback cb);
 
     /**
      * @brief 运行定时任务
@@ -25,9 +25,9 @@ public:
     /**
      * @brief 重启定时器
      */
-    void restart(TimeStamp now);
+    void restart(Timestamp now);
 
-    TimeStamp expiration() const { return _M_expiration; }
+    Timestamp expiration() const { return _M_expiration; }
     bool repeat() const { return _M_repeat; }
     TimerId id() const { return _M_id; }
     ssize_t last_timerId() const { return _M_last_timerId; }
@@ -35,7 +35,7 @@ public:
 private:
 
     // 到期时间
-    TimeStamp _M_expiration;
+    Timestamp _M_expiration;
 
     // 间隔时间
     const TimeDuration _M_interval;

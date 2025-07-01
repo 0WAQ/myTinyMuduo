@@ -1,6 +1,6 @@
 #include "mymuduo/base/Logger.h"
 #include "mymuduo/base/AsyncLogging.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 
 #include <stdarg.h> // vastart va_end
 
@@ -54,7 +54,7 @@ void Logger::write(LogLevel level, const char* format, ...)
     append_with_level_title(level, msg);
     
     // 2.填充时间  
-    msg.append(TimeStamp::now().to_string() + ' ');
+    msg.append(Timestamp::now().to_string() + ' ');
 
     // 3.填充参数列表
     char buf[512] = {0};

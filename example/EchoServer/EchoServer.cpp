@@ -30,7 +30,7 @@ public:
         }
     }
 
-    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp time) {
+    void onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp time) {
         std::string msg;
         if(buf->pick_datagram(msg)) {
             add_sep(buf, msg);

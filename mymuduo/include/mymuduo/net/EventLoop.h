@@ -17,7 +17,7 @@
 #include <sys/eventfd.h> // 利用eventfd唤醒线程
 
 #include "mymuduo/base/noncopyable.h"
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/CurrentThread.h"
 #include "mymuduo/net/Poller.h"
 #include "mymuduo/net/TimerQueue.h"
@@ -83,7 +83,7 @@ public:
      */
     void wakeup();
 
-    TimerId run_at(TimeStamp time, TimerCallback func);
+    TimerId run_at(Timestamp time, TimerCallback func);
     TimerId run_after(TimeDuration delay, TimerCallback func);
     TimerId run_every(TimeDuration interval, TimerCallback func);
     void cancel(TimerId timerId);
@@ -147,7 +147,7 @@ private:
         std::unique_ptr<Poller> _M_poller;
         
         // poll()返回时的时间
-        TimeStamp _M_poller_return_time;
+        Timestamp _M_poller_return_time;
 
     /**
      * TimerQueue

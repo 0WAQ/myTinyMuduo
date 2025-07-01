@@ -10,7 +10,7 @@
 #include <memory>
 #include <sys/epoll.h>
 
-#include "mymuduo/base/TimeStamp.h"
+#include "mymuduo/base/Timestamp.h"
 #include "mymuduo/base/noncopyable.h"
 
 namespace mymuduo {
@@ -32,7 +32,7 @@ class Channel : noncopyable {
 public:
 
     using EventCallback = std::function<void()>;
-    using ReadCallback = std::function<void(TimeStamp)>;
+    using ReadCallback = std::function<void(Timestamp)>;
 
 public:
     /**
@@ -43,7 +43,7 @@ public:
     /**
      * @brief 事件发生后的处理函数, 会回调事件的函数
      */
-    void handle(TimeStamp receiveTime);
+    void handle(Timestamp receiveTime);
 
     /**
      * @brief 四种事件
@@ -97,7 +97,7 @@ public:
 
 private:
     void update();
-    void handle_event_with_guard(TimeStamp receiveTime);
+    void handle_event_with_guard(Timestamp receiveTime);
 
     static const int _M_read_events = EPOLLIN | EPOLLPRI;
     static const int _M_write_events = EPOLLOUT;
