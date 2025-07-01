@@ -1,8 +1,3 @@
-/**
- * 
- * TimeStamp头文件
- * 
- */
 #ifndef TIMESTAMP_H
 #define TIMESTAMP_H
 
@@ -28,13 +23,15 @@ public:
     explicit Timestamp(TimeDuration dur);
 
     static Timestamp now();
-
     static Timestamp invalid();
-    bool valid();
 
-    TimeDuration time_since_epoch();
-    time_t to_time_t() const;
-    TimePoint to_time_point() const;
+    bool valid() const { return time_since_epoch().count() != 0; }
+    TimeDuration time_since_epoch() const { return _M_sec.time_since_epoch(); }
+    TimePoint to_time_point() const { return _M_sec; }
+    time_t to_time_t() const {
+        return std::time_t(std::chrono::duration_cast<std::chrono::seconds>
+                                (_M_sec.time_since_epoch()).count());
+    }
 
     /**
      * @brief 将时间戳转换为字符串对应的格式
