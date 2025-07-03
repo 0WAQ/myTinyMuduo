@@ -1,5 +1,5 @@
-#ifndef CONNECTOR_H
-#define CONNECTOR_H
+#ifndef MYMUDUO_NET_CONNECTOR_H
+#define MYMUDUO_NET_CONNECTOR_H
 
 #include <atomic>
 #include <memory>
@@ -76,4 +76,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // CONNECTOR_H
+#endif // MYMUDUO_NET_CONNECTOR_H

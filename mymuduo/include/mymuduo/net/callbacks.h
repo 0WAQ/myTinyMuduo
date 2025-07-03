@@ -1,5 +1,5 @@
-#ifndef CALLBACKS_H
-#define CALLBACKS_H
+#ifndef MYMUDUO_NET_CALLBACKS_H
+#define MYMUDUO_NET_CALLBACKS_H
 
 #include <functional>
 #include <memory>
@@ -31,4 +31,4 @@ void default_message_callback(const TcpConnectionPtr& conn, Buffer* buf, Timesta
 } // namespace net
 } // namespace mymuduo
 
-#endif // CALLBACKS_H
+#endif // MYMUDUO_NET_CALLBACKS_H

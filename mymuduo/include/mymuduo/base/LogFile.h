@@ -1,5 +1,5 @@
-#ifndef LOGFILE_H
-#define LOGFILE_H
+#ifndef MYMUDUO_BASE_LOGFILE_H
+#define MYMUDUO_BASE_LOGFILE_H
 
 #include <chrono>
 #include <string>
@@ -79,4 +79,4 @@ private:
 
 } // namespace mymuduo
 
-#endif // LOGFILE_H
+#endif // MYMUDUO_BASE_LOGFILE_H

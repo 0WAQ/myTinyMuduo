@@ -1,5 +1,5 @@
-#ifndef INETADDRESS_H
-#define INETADDRESS_H
+#ifndef MYMUDUO_NET_INETADDRESS_H
+#define MYMUDUO_NET_INETADDRESS_H
 
 #include <netinet/in.h>
 #include <string>
@@ -31,4 +31,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // INETADDRESS_H
+#endif // MYMUDUO_NET_INETADDRESS_H

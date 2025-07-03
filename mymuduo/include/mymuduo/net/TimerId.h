@@ -1,5 +1,5 @@
-#ifndef TIMERID_H
-#define TIMERID_H
+#ifndef MYMUDUO_NET_TIMERID_H
+#define MYMUDUO_NET_TIMERID_H
 
 #include <sys/types.h>
 
@@ -31,4 +31,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // TIMERID_H
+#endif // MYMUDUO_NET_TIMERID_H

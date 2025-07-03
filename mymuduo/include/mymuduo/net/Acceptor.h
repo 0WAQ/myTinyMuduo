@@ -1,10 +1,5 @@
-/**
- * 
- * Acceptor头文件
- * 
- */
-#ifndef ACCEPTOR_H
-#define ACCEPTOR_H
+#ifndef MYMUDUO_NET_ACCEPTOR_H
+#define MYMUDUO_NET_ACCEPTOR_H
 
 #include "mymuduo/base/noncopyable.h"
 #include "mymuduo/net/InetAddress.h"
@@ -52,4 +47,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // ACCEPTOR_H
+#endif // MYMUDUO_NET_ACCEPTOR_H

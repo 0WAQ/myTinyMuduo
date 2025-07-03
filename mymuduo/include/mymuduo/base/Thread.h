@@ -1,5 +1,5 @@
-#ifndef THREAD_H
-#define THREAD_H
+#ifndef MYMUDUO_BASE_THREAD_H
+#define MYMUDUO_BASE_THREAD_H
 
 #include <thread>
 #include <functional>
@@ -47,4 +47,4 @@ private:
 
 } // namespace mymuduo
 
-#endif // THREAD_H
+#endif // MYMUDUO_BASE_THREAD_H

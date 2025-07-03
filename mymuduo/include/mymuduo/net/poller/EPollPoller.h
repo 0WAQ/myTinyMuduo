@@ -1,10 +1,5 @@
-/**
- * 
- * Epoll头文件
- * 
- */
-#ifndef EPOLLPOLLER_H
-#define EPOLLPOLLER_H
+#ifndef MYMUDUO_NET_TIMESTAMP_H
+#define MYMUDUO_NET_TIMESTAMP_H
 
 #include <chrono>
 #include <vector>
@@ -19,17 +14,11 @@ namespace net {
 class Channel;
 class EventLoop;
 
-/**
- * @brief 封装EPollPoller
- */
 class EPollPoller : public Poller {
 public:
     using ChannelList = std::vector<Channel*>;
 
 public:
-    /**
-     * @brief 调用epoll_create, 初始化epfd
-     */
     EPollPoller(EventLoop *loop);
     ~EPollPoller() override;
 
@@ -69,4 +58,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // EPOLLPOLLER_H
+#endif // MYMUDUO_NET_TIMESTAMP_H

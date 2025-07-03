@@ -1,5 +1,5 @@
-#ifndef EVENTLOOPTHREAD_H
-#define EVENTLOOPTHREAD_H
+#ifndef MYMUDUO_NET_EVENTLOOPTHREAD_H
+#define MYMUDUO_NET_EVENTLOOPTHREAD_H
 
 #include <chrono>
 #include <condition_variable>
@@ -72,4 +72,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // EVENTLOOPTHREAD_H
+#endif // MYMUDUO_NET_EVENTLOOPTHREAD_H

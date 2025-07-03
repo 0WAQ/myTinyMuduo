@@ -1,10 +1,5 @@
-/**
- * 
- * Channel头文件
- * 
- */
-#ifndef CHANNEL_H
-#define CHANNEL_H
+#ifndef MYMUDUO_NET_CHANNEL_H
+#define MYMUDUO_NET_CHANNEL_H
 
 #include <functional>
 #include <memory>
@@ -135,4 +130,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // CHANNEL_H
+#endif // MYMUDUO_NET_CHANNEL_H

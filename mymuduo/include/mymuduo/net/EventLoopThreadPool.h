@@ -1,5 +1,5 @@
-#ifndef EVENTLOOPTHREADPOOL_H
-#define EVENTLOOPTHREADPOOL_H
+#ifndef MYMUDUO_NET_EVENTLOOPTHREADPOOL_H
+#define MYMUDUO_NET_EVENTLOOPTHREADPOOL_H
 
 #include <atomic>
 #include <memory>
@@ -64,4 +64,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // EVENTLOOPTHREADPOOL_H
+#endif // MYMUDUO_NET_EVENTLOOPTHREADPOOL_H

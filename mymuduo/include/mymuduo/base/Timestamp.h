@@ -1,5 +1,5 @@
-#ifndef TIMESTAMP_H
-#define TIMESTAMP_H
+#ifndef MYMUDUO_BASE_TIMESTAMP_H
+#define MYMUDUO_BASE_TIMESTAMP_H
 
 #include <string>
 #include <chrono>
@@ -90,4 +90,4 @@ inline int64_t time_difference(Timestamp high, Timestamp low) {
 
 } // namespace mymuduo
 
-#endif // TIMESTAMP_H
+#endif // MYMUDUO_BASE_TIMESTAMP_H

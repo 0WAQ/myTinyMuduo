@@ -1,10 +1,5 @@
-/**
- * 
- * Buffer头文件
- * 
- */
-#ifndef BUFFER_H
-#define BUFFER_H
+#ifndef MYMUDUO_NET_BUFFER_H
+#define MYMUDUO_NET_BUFFER_H
 
 #include <string>
 #include <cstring>
@@ -104,4 +99,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // BUFFER_H
+#endif // MYMUDUO_NET_BUFFER_H

@@ -1,10 +1,5 @@
-/**
- * 
- * Connection头文件
- * 
- */
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#ifndef MYMUDUO_NET_CONNECTION_H
+#define MYMUDUO_NET_CONNECTION_H
 
 #include <unistd.h>
 #include <sys/syscall.h>
@@ -164,4 +159,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // CONNECTION_H
+#endif // MYMUDUO_NET_CONNECTION_H

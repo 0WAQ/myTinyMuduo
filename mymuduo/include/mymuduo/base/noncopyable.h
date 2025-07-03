@@ -1,5 +1,5 @@
-#ifndef NONCOPYABLE_H
-#define NONCOPYABLE_H
+#ifndef MYMUDUO_BASE_NONCOPYABLE_H
+#define MYMUDUO_BASE_NONCOPYABLE_H
 
 namespace mymuduo {
 
@@ -18,4 +18,4 @@ protected:
 
 } // namespace mymuduo
 
-#endif // NONCOPYABLE_H
+#endif // MYMUDUO_BASE_NONCOPYABLE_H

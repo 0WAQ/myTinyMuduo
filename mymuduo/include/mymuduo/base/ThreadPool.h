@@ -1,8 +1,4 @@
-/**
- * 
- * ThreadPool头文件
- * 
- */
+
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 

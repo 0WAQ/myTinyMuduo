@@ -1,5 +1,5 @@
-#ifndef TIMERQUEUE_H
-#define TIMERQUEUE_H
+#ifndef MYMUDUO_NET_TIMERQUEUE_H
+#define MYMUDUO_NET_TIMERQUEUE_H
 
 #include <vector>
 #include <memory>
@@ -19,49 +19,29 @@ namespace net {
 
 class EventLoop;
 
-class TimerQueue : noncopyable
-{
+class TimerQueue : noncopyable {
 public:
-
     using TimerPtr = std::unique_ptr<Timer>;
 
 public:
-
     explicit TimerQueue(EventLoop *loop);
-    
     ~TimerQueue();
 
-    /**
-     * @brief 创建一个timer并添加到定时器队列中
-     */
     TimerId add_timer(Timestamp when, TimeDuration interval, TimerCallback func);
-
-    /**
-     * @brief 取消一个定时器
-     */
     void cancel(TimerId timerId);
 
 private:
-
     using TimerMap = std::multimap<Timestamp, std::unique_ptr<Timer>>;
     using TimerVec = std::vector<TimerPtr>;
     using ActiveList = std::set<TimerId>;
     using CancelList = std::set<TimerId>;
 
 private:
-
     void add_timer_in_loop(Timer *timer);
-
     void cancel_in_loop(TimerId timerId);
 
-    /**
-     * @brief 
-     */
     void handle_read();
 
-    /**
-     * @brief 获取到期的所有定时器
-     */
     TimerVec get_expired(Timestamp now);
 
     /**
@@ -75,7 +55,6 @@ private:
     bool insert(TimerPtr timer);
 
 private:
-
     // 定时队列所属的事件循环
     EventLoop *_M_loop;
 
@@ -99,4 +78,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // TIMERQUEUE_H
+#endif // MYMUDUO_NET_TIMERQUEUE_H

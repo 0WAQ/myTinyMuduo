@@ -1,5 +1,5 @@
-#ifndef ASYNCLOGGING_H
-#define ASYNCLOGGING_H
+#ifndef MYMUDUO_BASE_ASYNCLOGGING_H
+#define MYMUDUO_BASE_ASYNCLOGGING_H
 
 #include <chrono>
 #include <cstddef>
@@ -108,4 +108,4 @@ private:
 
 } // namespace mymuduo
 
-#endif // ASYNCLOGGING_H
+#endif // MYMUDUO_BASE_ASYNCLOGGING_H

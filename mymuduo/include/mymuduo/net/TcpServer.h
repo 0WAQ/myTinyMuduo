@@ -1,10 +1,5 @@
-/**
- * 
- * TcpServer头文件
- * 
- */
-#ifndef TCPSERVER_H
-#define TCPSERVER_H
+#ifndef MYMUDUO_NET_TCPSERVER_H
+#define MYMUDUO_NET_TCPSERVER_H
 
 #include <condition_variable>
 #include <unordered_map>
@@ -107,4 +102,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // TCPSERVER_H
+#endif // MYMUDUO_NET_TCPSERVER_H

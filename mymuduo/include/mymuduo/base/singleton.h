@@ -1,5 +1,5 @@
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef MYMUDUO_BASE_SINGLETON_H
+#define MYMUDUO_BASE_SINGLETON_H
 
 #include <utility>
 
@@ -28,4 +28,4 @@ private:
 
 } // namespace mymuduo
 
-#endif // SINGLETON_H
+#endif // MYMUDUO_BASE_SINGLETON_H

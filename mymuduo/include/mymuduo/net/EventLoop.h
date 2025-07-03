@@ -1,10 +1,5 @@
-/**
- * 
- * EventLoop头文件
- * 
- */
-#ifndef EVENTLOOP_H
-#define EVENTLOOP_H
+#ifndef MYMUDUO_NET_EVENTLOOP_H
+#define MYMUDUO_NET_EVENTLOOP_H
 
 #include <chrono>
 #include <cstddef>
@@ -165,4 +160,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // EVENTLOOP_H
+#endif // MYMUDUO_NET_EVENTLOOP_H

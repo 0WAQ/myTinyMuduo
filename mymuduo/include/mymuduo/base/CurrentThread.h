@@ -1,5 +1,5 @@
-#ifndef CURRENTTHREAD_H
-#define CURRENTTHREAD_H
+#ifndef MYMUDUO_BASE_CURRENTTHREAD_H
+#define MYMUDUO_BASE_CURRENTTHREAD_H
 
 namespace mymuduo {
 namespace CurrentThread {
@@ -26,4 +26,4 @@ namespace __detail {
 } // namespace CurrentThread
 } // namespace mymuduo
 
-#endif // CURRENTTHREAD_H
+#endif // MYMUDUO_BASE_CURRENTTHREAD_H

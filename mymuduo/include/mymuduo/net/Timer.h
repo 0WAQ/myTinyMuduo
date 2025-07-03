@@ -1,5 +1,5 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef MYMUDUO_NET_TIMER_H
+#define MYMUDUO_NET_TIMER_H
 
 #include <atomic>
 
@@ -11,20 +11,11 @@
 namespace mymuduo {
 namespace net {
 
-class Timer : noncopyable
-{
+class Timer : noncopyable {
 public:
-
     Timer(Timestamp when, TimeDuration interval, TimerCallback cb);
 
-    /**
-     * @brief 运行定时任务
-     */
     void run() { _M_func(); }
-    
-    /**
-     * @brief 重启定时器
-     */
     void restart(Timestamp now);
 
     Timestamp expiration() const { return _M_expiration; }
@@ -33,7 +24,6 @@ public:
     ssize_t last_timerId() const { return _M_last_timerId; }
 
 private:
-
     // 到期时间
     Timestamp _M_expiration;
 
@@ -55,4 +45,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // TIMER_H
+#endif // MYMUDUO_NET_TIMER_H

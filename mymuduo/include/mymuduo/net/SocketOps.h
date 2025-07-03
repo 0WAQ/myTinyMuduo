@@ -1,5 +1,5 @@
-#ifndef SOCKETOPS_H
-#define SOCKETOPS_H
+#ifndef MYMUDUO_NET_SOCKETOPS_H
+#define MYMUDUO_NET_SOCKETOPS_H
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -30,4 +30,4 @@ bool is_self_connect(int sockfd);
 } // namespace net
 } // namespace mymuduo
 
-#endif // SOCKETOPS_H
+#endif // MYMUDUO_NET_SOCKETOPS_H

@@ -1,10 +1,5 @@
-/**
- * 
- * Logger头文件
- * 
- */
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef MYMUDUO_BASE_LOGGER_H
+#define MYMUDUO_BASE_LOGGER_H
 
 #include <atomic>
 #include <functional>
@@ -82,4 +77,4 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif // LOGGER_H
+#endif // MYMUDUO_BASE_LOGGER_H

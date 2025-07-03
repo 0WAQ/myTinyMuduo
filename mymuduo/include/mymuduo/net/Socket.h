@@ -1,10 +1,5 @@
-/**
- * 
- * Socket头文件
- * 
- */
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef MYMUDUO_NET_SOCKET_H
+#define MYMUDUO_NET_SOCKET_H
 
 #include <netinet/tcp.h>
 
@@ -15,9 +10,6 @@ namespace net {
 
 class InetAddress;
 
-/**
- *  封装socket
- */
 class Socket : noncopyable
 {
 public:
@@ -52,4 +44,4 @@ private:
 } // namespace net
 } // namespace mymuduo
 
-#endif // SOCKET_H
+#endif // MYMUDUO_NET_SOCKET_H
