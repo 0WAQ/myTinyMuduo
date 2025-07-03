@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <memory>
 #include <condition_variable>
+#include <algorithm>
 #include <mutex>
 #include <unistd.h>
 
