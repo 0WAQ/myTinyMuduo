@@ -1,3 +1,4 @@
+#include "mymuduo/base/Logger.h"
 #include "mymuduo/net/EventLoop.h"
 #include "mymuduo/net/EventLoopThread.h"
 
@@ -65,7 +66,7 @@ TEST(EventLoopThreadTimeoutTest, TimeoutStart) {
     // 超时启动
     {
         std::unique_ptr<EventLoopThread> loop_thread { new EventLoopThread };
-        ASSERT_DEATH(   // 可能会失败
+        EXPECT_DEATH(   // 可能会失败
             {
                 // 设置1ns超时 - 实际上线程创建需要更长时间
                 loop = loop_thread->start_loop(1ns);
@@ -124,5 +125,9 @@ int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+    Logger::instance().set_log_level(Logger::ERROR);
+    Logger::instance().set_output([](const char* data, size_t len) {
+        std::fprintf(stderr, data, len);
+    });
     return RUN_ALL_TESTS();
 }

@@ -1,3 +1,4 @@
+#include "mymuduo/base/Logger.h"
 #include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/InetAddress.h"
 #include "mymuduo/net/Socket.h"
@@ -10,8 +11,10 @@
 #include <asm-generic/socket.h>
 #include <csignal>
 #include <cstddef>
+#include <cstdio>
 #include <fcntl.h>
 #include <functional>
+#include <gtest/gtest-death-test.h>
 #include <memory>
 #include <string>
 #include <sys/socket.h>
@@ -80,7 +83,9 @@ protected:
     }
 
     void TearDown() override {
-        sockets::close(_socketfd[1]);
+        if (!closed) {
+            sockets::close(_socketfd[1]);
+        }
     }
 
 protected:
@@ -106,6 +111,7 @@ protected:
 
 protected:
     int _socketfd[2];
+    bool closed = false;
     std::shared_ptr<EventLoop> _loop;
     std::shared_ptr<TcpConnection> _conn;
 
@@ -222,7 +228,7 @@ TEST_F(TcpConnectionTest, LT_DataSend) {
 
     std::string msg { "TcpConnectionTest.LT_DataSend" };    
     conn->send(msg);
-    _loop->loop_once();     // 处理 write_complete_callback 任务
+    _loop->loop_once(10ms);     // 处理 write_complete_callback 任务
 
     ASSERT_EQ(1, _connection_callback_count);
     ASSERT_EQ(0, _message_callback_count);
@@ -451,6 +457,7 @@ TEST_F(TcpConnectionTest, HandlerWriteError) {
     ASSERT_EQ(0, _high_water_mark_callback_count);
     
     // 提前关闭 serv_sock
+    closed = true;
     sockets::close(_socketfd[1]);
     
     std::string msg { "TcpConnectionTest.HandlerWriteError" };
@@ -469,5 +476,9 @@ TEST_F(TcpConnectionTest, HandlerWriteError) {
 int main(int argc, char** argv) {
     ::signal(SIGPIPE, SIG_IGN);
     ::testing::InitGoogleTest(&argc, argv);
+    Logger::instance().set_log_level(Logger::ERROR);
+    Logger::instance().set_output([](const char* data, size_t len) {
+        std::fprintf(stderr, data, len);
+    });
     return RUN_ALL_TESTS();
 }

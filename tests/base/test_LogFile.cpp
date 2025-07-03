@@ -21,7 +21,11 @@ protected:
     LogFileTest()
         : _temp_dir(fs::temp_directory_path() / "LogFileTestDir")
         , _basename(::testing::UnitTest::GetInstance()->current_test_info()->name())
-    { }
+    {
+        if (fs::exists(_temp_dir)) {
+            fs::remove_all(_temp_dir);
+        }
+    }
 
     void TearDown() override {
         fs::remove_all(_temp_dir);

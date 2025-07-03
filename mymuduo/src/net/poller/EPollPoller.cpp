@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <cerrno>
+#include <chrono>
 #include <cstring>
 
 using namespace mymuduo;
@@ -23,13 +24,15 @@ EPollPoller::EPollPoller(EventLoop* loop) :
 
 Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clock::duration timeout)
 {
+    using namespace std::chrono;
+
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
     Timestamp now = Timestamp::now();
-    int numEvents = ::epoll_wait(_M_epoll_fd
-                        , _M_events_arr.data()
+    int numEvents = ::epoll_wait(_M_epoll_fd, _M_events_arr.data()
                         , static_cast<int>(_M_events_arr.size())
-                        , timeout == std::chrono::system_clock::duration::max() ? -1 : timeout.count());    
+                        , timeout == system_clock::duration::max() 
+                                    ? -1 : duration_cast<milliseconds>(timeout).count());    
     int savedErrno = errno;  // errno为全局
 
     if(numEvents > 0) 

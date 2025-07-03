@@ -13,6 +13,7 @@
 #include <functional>
 #include <gtest/gtest.h>
 #include <netinet/in.h>
+#include <pthread.h>
 #include <semaphore>
 
 using namespace mymuduo;
@@ -295,11 +296,12 @@ TEST_F(TcpClientTest, DestructsWithConnection) {
         return _client->connection() != nullptr;
     }));
 
+    TcpConnectionPtr conn = _client->connection();
     _client.reset();
 
-    TcpConnectionPtr conn = _client->connection();
+    // client被析构后连接仍然有效
     ASSERT_TRUE(wait_for([&] {
-        return !conn->connected();
+        return conn->connected();
     }));
     
     stop_server();

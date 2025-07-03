@@ -45,12 +45,18 @@ AsyncLogging::~AsyncLogging() {
 }
 
 void AsyncLogging::start() {
+    if (_M_running.load()) {
+        return;
+    }
     _M_running.store(true);
     _M_thread.start();
     _M_sem.acquire();  // 使用信号量等待后端线程完成日志文件的初始化
 }
 
 void AsyncLogging::stop() {
+    if (!_M_running.load()) {
+        return;
+    }
     _M_running.store(false);
     _M_cond.notify_one();
 

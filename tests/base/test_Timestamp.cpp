@@ -1,5 +1,7 @@
 #include "mymuduo/base/Timestamp.h"
 
+#include <cstdio>
+#include <cstring>
 #include <string>
 #include <thread>
 #include <chrono>
@@ -144,10 +146,17 @@ TEST(TimestampTest, TimeTConversion) {
 TEST(TimestampTest, ToString) {
     Timestamp now = Timestamp::now();
     
+    using namespace std::chrono;
+    auto dur = now.time_since_epoch();
+    auto sec = duration_cast<seconds>(dur);
+    auto micro = duration_cast<microseconds>(dur - sec);
+
     std::time_t t = std::time(nullptr);
     std::tm tm = *std::localtime(&t);
-    char buf[80];
+    char buf[128];
     std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm);
+    std::snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+            ".%06lld", static_cast<long long>(micro.count()));
 
     EXPECT_EQ(now.to_string(), std::string(buf));
 }

@@ -1,3 +1,4 @@
+#include "mymuduo/base/Logger.h"
 #include "mymuduo/base/Timestamp.h"
 #include "mymuduo/net/EventLoop.h"
 
@@ -106,7 +107,7 @@ TEST_F(EventLoopTest, CrossThreadOperation) {
 TEST_F(EventLoopTest, SingleThreadMultiLoop) {
     ASSERT_DEATH(   // 会创建一个子进程
         {
-            EventLoop secondLoop;   // 会退出
+            EventLoop secondLoop;   // DEATH
         },
         "Another EventLoop 0x[0-9a-fA-F]+ exists in this thread [0-9]+\n"
     );
@@ -161,5 +162,9 @@ TEST_F(EventLoopTest, CrossThreadTimer) {
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
+    Logger::instance().set_log_level(Logger::ERROR);
+    Logger::instance().set_output([](const char* data, size_t len) {
+        std::fprintf(stderr, data, len);
+    });
     return RUN_ALL_TESTS();
 }
