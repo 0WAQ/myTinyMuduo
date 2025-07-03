@@ -9,39 +9,37 @@ namespace __detail {
 File::File(std::string filename) :
         _M_written(0)
 {
-    _M_fp = ::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
-
+    _M_fp = std::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
     assert(_M_fp != nullptr);
     ::setbuffer(_M_fp, _M_buf, sizeof(_M_buf));
 }
 
 File::~File() {
-    ::fclose(_M_fp);
+    if (_M_fp) {
+        std::fclose(_M_fp);
+        _M_fp = nullptr;
+    }
 }
 
 void File::append(const char* logline, size_t len) {
     size_t written = 0;
-
     while(written != len) {
         size_t remain = len - written;
         size_t n = write(logline + written, remain);
-
         if(n != remain) {
-            int err = ::ferror(_M_fp);
+            int err = std::ferror(_M_fp);
             if(err) {
-                ::fprintf(stderr, "File::append() failed %d.\n", err);
+                std::fprintf(stderr, "File::append() failed %d.\n", err);
                 break;
             }
         }
-
         written += n;
     }
-
     _M_written += written;
 }
 
 void File::flush() {
-    ::fflush(_M_fp);
+    std::fflush(_M_fp);
 }
 
 size_t File::write(const char* logline, size_t len) {
@@ -67,21 +65,19 @@ LogFile::LogFile(const std::filesystem::path& filepath,
     , _M_check_every(check_every)
     , _M_count(0)
     , _M_mutex_ptr(thread_safe ? new std::mutex : nullptr)
-    , _M_start_of_period(Timestamp {})
-    , _M_last_roll(Timestamp {})
-    , _M_last_flush(Timestamp {})
+    , _M_start_of_period(Timestamp())
+    , _M_last_roll(Timestamp())
+    , _M_last_flush(Timestamp())
 {
     namespace fs = std::filesystem;
     if(!fs::exists(filepath) && !fs::create_directory(filepath)) {
         fprintf(stderr, "can't create log_path directory.");
         exit(-1);
     }
-
     roll_file();
 }
 
-void LogFile::append(const char* logline, int len)
-{
+void LogFile::append(const char* logline, int len) {
     if(_M_mutex_ptr) {
         std::lock_guard<std::mutex> guard{ *_M_mutex_ptr };
         append_unlocked(logline, len);
@@ -91,43 +87,36 @@ void LogFile::append(const char* logline, int len)
     }
 }
 
-void LogFile::flush()
-{
+void LogFile::flush() {
     if(_M_mutex_ptr) {
         std::lock_guard<std::mutex> guard{ *_M_mutex_ptr };
         _M_file->flush();
-    }
-    else {
+    } else {
         _M_file->flush();
     }
 }
 
-void LogFile::append_unlocked(const char* logline, size_t len)
-{
+void LogFile::append_unlocked(const char* logline, size_t len) {
+    using std::chrono::seconds;
+    using std::chrono::duration_cast;
+
     _M_file->append(logline, len);
 
-    if(_M_file->written() > _M_roll_size)
-    {
+    if(_M_file->written() > _M_roll_size) {
         roll_file();
     }
-    else
-    {
-        _M_count++;
-
-        if(_M_count >= _M_check_every)
-        {
+    else {
+        ++_M_count;
+        if(_M_count >= _M_check_every) {    // 每 check_every 次检查是否需要刷新或者滚动
             _M_count = 0;
 
-            auto now = Timestamp::now();
-            std::chrono::seconds seconds = 
-                    std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
-            Timestamp thisPeriod(seconds / kRollPerSeconds * kRollPerSeconds);
-            if(thisPeriod != _M_start_of_period)
-            {
+            // 检测是否跨天
+            Timestamp now = Timestamp::now();
+            Timestamp this_period((now.time_since_epoch() / kRollTime) * kRollTime);
+            if(this_period != _M_start_of_period) {
                 roll_file();
             }
-            else if(now - _M_last_flush > _M_flush_interval)
-            {
+            else if(now - _M_last_flush > _M_flush_interval) {
                 _M_last_flush = now;
                 _M_file->flush();
             }
@@ -135,52 +124,47 @@ void LogFile::append_unlocked(const char* logline, size_t len)
     }
 }
 
-bool LogFile::roll_file()
-{
-    auto now = Timestamp::now();
-    time_t to_time_t = now.to_time_t();
-
-    std::string filename = get_logfile_name(_M_filepath / _M_basename, &to_time_t);
-
+bool LogFile::roll_file() {
+    Timestamp now = Timestamp::now();
+    std::string filename = get_logfile_name(_M_filepath / _M_basename, now);
     if(now > _M_last_roll) {
         _M_last_roll = now;
         _M_last_flush = now;
-        _M_start_of_period = now;
-
+        _M_start_of_period = Timestamp(now.time_since_epoch() / kRollTime * kRollTime);
         _M_file.reset(new __detail::File(filename));
         return true;
     }
     return false;
 }
 
-std::string LogFile::get_logfile_name(const std::string& path_name, time_t *now)
-{
+std::string LogFile::get_logfile_name(const std::string& path_and_name, Timestamp& now) {
     std::string filename;
-    filename.reserve(path_name.size() + 64);
-    filename = path_name;
+    filename.reserve(path_and_name.size() + 64);
+    filename = path_and_name;
+    filename += '.';
 
+    // 1. 时间戳
+    filename += now.to_string();
+    filename += '.';
+
+
+    // 2. 主机名
     std::string hostname;
-    char buf[256];
-    if(::gethostname(buf, sizeof(buf)) == 0) {
-        hostname = buf;
-    }
-    else {
+    hostname.reserve(256);
+    if(::gethostname(hostname.data(), hostname.size()) != 0) {
         hostname = "unknownhost";
     }
+    hostname.shrink_to_fit();
 
-    char timebuf[32];
-    struct tm tm;
-    *now = time(NULL);
-    localtime_r(now, &tm);
-    strftime(timebuf, sizeof(timebuf), ".%Y%m%d-%H%M%S.", &tm);
-
-    filename += timebuf;
     filename += hostname;
+    filename += '.';
 
+
+    // 3. 进程号
     char pidbuf[32];
-    snprintf(pidbuf, sizeof(pidbuf), ".%d", ::getpid());
-    filename += pidbuf;
+    snprintf(pidbuf, sizeof(pidbuf), "%d", ::getpid());
 
+    filename += pidbuf;
     filename += ".log";
 
     return filename;
