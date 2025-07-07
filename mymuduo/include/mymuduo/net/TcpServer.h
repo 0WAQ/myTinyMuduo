@@ -53,15 +53,15 @@ public:
      * @brief 设置从EventLoop线程的数量, 需在启动前调用
      */
     void set_thread_num(int num_threads) {
-        _M_loop_threads->set_thread_num(num_threads);
+        _loop_threads->set_thread_num(num_threads);
     }
 
-    void set_connection_callback(ConnectionCallback func) { _M_connection_callback = std::move(func); }
-    void set_message_callback(MessageCallback func) { _M_message_callback = std::move(func); }
-    void set_write_complete_callback(WriteCompleteCallback func) { _M_write_complete_callback = std::move(func); }
-    void set_thread_init_callback(ThreadInitCallback func) { _M_thread_init_callback = std::move(func); }
+    void set_connection_callback(ConnectionCallback func) { _connection_callback = std::move(func); }
+    void set_message_callback(MessageCallback func) { _message_callback = std::move(func); }
+    void set_write_complete_callback(WriteCompleteCallback func) { _write_complete_callback = std::move(func); }
+    void set_thread_init_callback(ThreadInitCallback func) { _thread_init_callback = std::move(func); }
 
-    const InetAddress& listen_addr() const { return _M_acceptor->listen_addr(); }    
+    const InetAddress& listen_addr() const { return _acceptor->listen_addr(); }    
 
 private:
     using ConnectionMap = std::unordered_map<size_t, TcpConnectionPtr>;
@@ -71,32 +71,32 @@ private:
     void remove_connection_in_loop(const TcpConnectionPtr &conn);
 
 private:
-    const std::string _M_name;      // 服务器名称
-    const std::string _M_ip_port;   // 服务器地址信息
+    const std::string _name;      // 服务器名称
+    const std::string _ip_port;   // 服务器地址信息
 
     // 主事件循环
-    EventLoop *_M_main_loop;
-    std::unique_ptr<Acceptor> _M_acceptor;
+    EventLoop *_main_loop;
+    std::unique_ptr<Acceptor> _acceptor;
 
     // 从事件循环
-    std::shared_ptr<EventLoopThreadPool> _M_loop_threads;
-    ConnectionMap _M_connections;
+    std::shared_ptr<EventLoopThreadPool> _loop_threads;
+    ConnectionMap _connections;
 
-    std::condition_variable _M_connections_cond;
-    std::mutex _M_connections_mutex;
+    std::condition_variable _connections_cond;
+    std::mutex _connections_mutex;
 
-    size_t _M_next;    // 连接的编号, 从1开始
+    size_t _next;    // 连接的编号, 从1开始
 
-    std::atomic<int> _M_started;
-    std::atomic<bool> _M_stopping;
+    std::atomic<int> _started;
+    std::atomic<bool> _stopping;
 
-    bool _M_is_ET;
+    bool _is_ET;
 
-    ConnectionCallback _M_connection_callback;
-    MessageCallback _M_message_callback;
-    WriteCompleteCallback _M_write_complete_callback;
-    HighWaterMarkCallback _M_high_water_mark_callback;
-    ThreadInitCallback _M_thread_init_callback;
+    ConnectionCallback _connection_callback;
+    MessageCallback _message_callback;
+    WriteCompleteCallback _write_complete_callback;
+    HighWaterMarkCallback _high_water_mark_callback;
+    ThreadInitCallback _thread_init_callback;
 };
 
 } // namespace net

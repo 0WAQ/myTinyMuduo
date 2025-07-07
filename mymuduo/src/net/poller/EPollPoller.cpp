@@ -13,10 +13,10 @@ using namespace mymuduo::net;
 
 EPollPoller::EPollPoller(EventLoop* loop) : 
         Poller(loop),
-        _M_epoll_fd(::epoll_create1(EPOLL_CLOEXEC)) ,
-        _M_events_arr(_M_max_events)
+        _epoll_fd(::epoll_create1(EPOLL_CLOEXEC)) ,
+        _events_arr(_max_events)
 {
-    if(_M_epoll_fd < 0) {
+    if(_epoll_fd < 0) {
         LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
@@ -29,8 +29,8 @@ Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clo
     LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
 
     Timestamp now = Timestamp::now();
-    int numEvents = ::epoll_wait(_M_epoll_fd, _M_events_arr.data()
-                        , static_cast<int>(_M_events_arr.size())
+    int numEvents = ::epoll_wait(_epoll_fd, _events_arr.data()
+                        , static_cast<int>(_events_arr.size())
                         , timeout == system_clock::duration::max() 
                                     ? -1 : duration_cast<milliseconds>(timeout).count());    
     int savedErrno = errno;  // errno为全局
@@ -44,8 +44,8 @@ Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clo
 
         // 实际返回的numEvents和能够容纳的事件数相同, 那么扩容为原来的2倍
         // 采用的是LT模式, 即使该次容量不够导致没有上报, 之后也会调用
-        if(numEvents == _M_events_arr.size() * 2) {
-            _M_events_arr.resize(_M_events_arr.size() * 2);
+        if(numEvents == _events_arr.size() * 2) {
+            _events_arr.resize(_events_arr.size() * 2);
         }
     }
     else if(numEvents < 0)
@@ -72,8 +72,8 @@ void EPollPoller::fill_active_channels(int numEvents, ChannelList *activeChannel
 {
     for(int i = 0; i < numEvents; i++)
     {
-        Channel *ch = static_cast<Channel*>(_M_events_arr[i].data.ptr);
-        ch->set_happened_events(_M_events_arr[i].events);
+        Channel *ch = static_cast<Channel*>(_events_arr[i].data.ptr);
+        ch->set_happened_events(_events_arr[i].events);
         activeChannels->emplace_back(ch);
     }
 }
@@ -89,11 +89,11 @@ void EPollPoller::update_channel(Channel* ch)
         int fd = ch->fd();
 
         if(status == kNew) { // 若为新的channel, 将其注册到map中
-            _M_channel_map[fd] = ch;
+            _channel_map[fd] = ch;
         }
         else { // status == kDeleted, 即channel已注册, 但未被监听
-            assert(_M_channel_map.find(fd) != _M_channel_map.end());
-            assert(_M_channel_map[fd] == ch);
+            assert(_channel_map.find(fd) != _channel_map.end());
+            assert(_channel_map[fd] == ch);
         }
 
         ch->set_status(kAdded);
@@ -125,7 +125,7 @@ void EPollPoller::remove_channel(Channel* ch)
     }
 
     // 将其取消注册
-    _M_channel_map.erase(ch->fd());
+    _channel_map.erase(ch->fd());
     ch->set_status(kNew);
 }
 
@@ -137,7 +137,7 @@ void EPollPoller::update(int op, Channel* ch)
     ev.data.ptr = ch;
     ev.events = ch->get_monitored_events();
 
-    if(epoll_ctl(_M_epoll_fd, op, ch->fd(), &ev) == -1) {
+    if(epoll_ctl(_epoll_fd, op, ch->fd(), &ev) == -1) {
         switch (op)
         {
         case EPOLL_CTL_ADD:
@@ -159,7 +159,7 @@ void EPollPoller::update(int op, Channel* ch)
 }
 
 EPollPoller::~EPollPoller() {
-    if (::close(_M_epoll_fd) < 0) {
+    if (::close(_epoll_fd) < 0) {
         LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
             __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }

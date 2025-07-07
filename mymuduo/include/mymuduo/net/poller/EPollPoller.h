@@ -48,11 +48,11 @@ private:
 private:
     using EventList = std::vector<epoll_event>;
 
-    static const int _M_max_events = 16;    // 发生事件的最大数量
+    static const int _max_events = 16;    // 发生事件的最大数量
     
-    int _M_epoll_fd = -1;       // epollfd
+    int _epoll_fd = -1;       // epollfd
 
-    EventList _M_events_arr;    // 发生事件的合集
+    EventList _events_arr;    // 发生事件的合集
 };
 
 } // namespace net

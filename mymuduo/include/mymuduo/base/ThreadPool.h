@@ -23,25 +23,25 @@ public:
 
     void push(std::function<void()> task);
 
-    const size_t size() const noexcept { return _M_threads.size(); }
+    const size_t size() const noexcept { return _threads.size(); }
 
 private:
     // 线程池中的线程
-    std::vector<Thread> _M_threads;
+    std::vector<Thread> _threads;
 
     // 任务队列
-    std::queue<std::function<void()>> _M_task_queue;
+    std::queue<std::function<void()>> _task_queue;
     // 任务队列同步的互斥锁
-    std::mutex _M_mutex;
+    std::mutex _mutex;
 
     // 任务队列同步的条件变量
-    std::condition_variable _M_condition;
+    std::condition_variable _condition;
 
     // 在析构函数中, 将其值设置为ture, 全部的线程将退出
-    std::atomic<bool> _M_stop;
+    std::atomic<bool> _stop;
 
     // 线程种类
-    std::string _M_thread_type; // 取值为IO, WORK
+    std::string _thread_type; // 取值为IO, WORK
 };
 
 } // namespace mymuduo

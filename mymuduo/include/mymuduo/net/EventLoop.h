@@ -53,7 +53,7 @@ public:
     /**
      * @brief 判断当前线程是否为subLoops
      */
-    bool is_loop_thread() { return _M_tid == CurrentThread::tid(); }
+    bool is_loop_thread() { return _tid == CurrentThread::tid(); }
 
     /**
      * 无论是run_in_loop还是queue_in_loop都要保证任务在IO线程中执行
@@ -86,13 +86,13 @@ public:
     /**
      * @brief 转调用Poller中的相应函数
      */
-    void update_channel(Channel* ch) { _M_poller->update_channel(ch); }
-    void remove_channel(Channel* ch) { _M_poller->remove_channel(ch); }
-    bool has_channel(Channel* ch) { return _M_poller->has_channel(ch); }
+    void update_channel(Channel* ch) { _poller->update_channel(ch); }
+    void remove_channel(Channel* ch) { _poller->remove_channel(ch); }
+    bool has_channel(Channel* ch) { return _poller->has_channel(ch); }
 
-    const pid_t tid() const { return _M_tid; }
-    const bool looping() const { return _M_looping.load(); }
-    const size_t task_queue_size() const { return _M_task_queue.size(); }
+    const pid_t tid() const { return _tid; }
+    const bool looping() const { return _looping.load(); }
+    const size_t task_queue_size() const { return _task_queue.size(); }
 
 private:
 
@@ -116,44 +116,44 @@ private:
      * EventLoop
      */
     
-        std::atomic<bool> _M_looping = false;
-        std::atomic<bool> _M_quit    = false;
+        std::atomic<bool> _looping = false;
+        std::atomic<bool> _quit    = false;
 
         // 标志当前loop是否正在执行任务(特指从任务队列中取出的任务)
-        std::atomic<bool> _M_calling_pending_functors = false;
+        std::atomic<bool> _calling_pending_functors = false;
         
         // 与EventLoop绑定的线程tid
-        const pid_t _M_tid;
+        const pid_t _tid;
         
         // 用于唤醒subLoop
-        int _M_wakeup_fd; // 用于唤醒事件循环的eventfd
-        std::unique_ptr<Channel> _M_wakeup_channel; // 用于将eventfd加入到epoll
+        int _wakeup_fd; // 用于唤醒事件循环的eventfd
+        std::unique_ptr<Channel> _wakeup_channel; // 用于将eventfd加入到epoll
 
 
         // IO线程的任务队列, 用来其它线程的任务
-        std::vector<Functor> _M_task_queue;
-        std::mutex _M_queue_mutex;   // 任务队列的互斥锁
+        std::vector<Functor> _task_queue;
+        std::mutex _queue_mutex;   // 任务队列的互斥锁
 
     /**
      * Poller
      */
 
         // 该事件循环包含的Poller分发器
-        std::unique_ptr<Poller> _M_poller;
+        std::unique_ptr<Poller> _poller;
         
         // poll()返回时的时间
-        Timestamp _M_poller_return_time;
+        Timestamp _poller_return_time;
 
     /**
      * TimerQueue
      */
-        std::unique_ptr<TimerQueue> _M_timer_queue;
+        std::unique_ptr<TimerQueue> _timer_queue;
 
     /**
      * Channel
      */
 
-        ChannelList _M_activeChannels;
+        ChannelList _activeChannels;
 
 };
 

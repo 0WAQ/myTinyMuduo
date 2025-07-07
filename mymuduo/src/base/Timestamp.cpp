@@ -6,15 +6,15 @@
 using namespace mymuduo;
 
 Timestamp::Timestamp()
-    : _M_sec(TimePoint())
+    : _sec(TimePoint())
 { }
 
 Timestamp::Timestamp(TimePoint sec)
-    : _M_sec(sec)
+    : _sec(sec)
 { }
 
 Timestamp::Timestamp(TimeDuration dur)
-    : _M_sec(TimePoint() + dur)
+    : _sec(TimePoint() + dur)
 { }
 
 Timestamp Timestamp::now() {
@@ -28,7 +28,7 @@ Timestamp Timestamp::invalid() {
 std::string Timestamp::to_string() const {
     using namespace std::chrono;
 
-    auto duration = _M_sec.time_since_epoch();
+    auto duration = _sec.time_since_epoch();
     auto sec = duration_cast<seconds>(duration);
     auto micro = duration_cast<microseconds>(duration - sec);
 

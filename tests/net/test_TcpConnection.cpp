@@ -55,7 +55,7 @@ namespace net {
 class TcpConnectionAccessor {
 public:
     static std::unique_ptr<Socket>& socket(TcpConnectionPtr& conn) {
-        return std::ref(conn->_M_sock);
+        return std::ref(conn->_sock);
     }
 };
 

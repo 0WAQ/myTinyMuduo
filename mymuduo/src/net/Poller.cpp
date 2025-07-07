@@ -4,11 +4,11 @@
 using namespace mymuduo;
 using namespace mymuduo::net;
 
-Poller::Poller(EventLoop *loop) : _M_owner_loop(loop) { }
+Poller::Poller(EventLoop *loop) : _owner_loop(loop) { }
 
 bool Poller::has_channel(Channel *ch) const
 {
-    auto it = _M_channel_map.find(ch->fd());
-    return it != _M_channel_map.end() && it->second == ch;
+    auto it = _channel_map.find(ch->fd());
+    return it != _channel_map.end() && it->second == ch;
 }
 

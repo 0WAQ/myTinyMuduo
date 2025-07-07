@@ -25,38 +25,38 @@ public:
     void disconnect();
     void stop();
 
-    EventLoop* loop() const { return _M_loop; }
-    const std::string& name() const { return _M_name; }
-    const bool retry() const { return _M_retry; }
-    void enable_retry() { _M_retry = true; }
+    EventLoop* loop() const { return _loop; }
+    const std::string& name() const { return _name; }
+    const bool retry() const { return _retry; }
+    void enable_retry() { _retry = true; }
     TcpConnectionPtr connection() {
-        std::lock_guard<std::mutex> guard(_M_mutex);
-        return _M_connection;
+        std::lock_guard<std::mutex> guard(_mutex);
+        return _connection;
     }
 
-    void set_connection_callback(ConnectionCallback cb) { _M_connection_callback = std::move(cb); }
-    void set_message_callback(MessageCallback cb) { _M_message_callback = std::move(cb); }
-    void set_write_complete_callback(WriteCompleteCallback cb) { _M_write_complete_callback = std::move(cb); }
+    void set_connection_callback(ConnectionCallback cb) { _connection_callback = std::move(cb); }
+    void set_message_callback(MessageCallback cb) { _message_callback = std::move(cb); }
+    void set_write_complete_callback(WriteCompleteCallback cb) { _write_complete_callback = std::move(cb); }
 
 private:
     void new_connection(int sockfd);
     void remove_connection(const TcpConnectionPtr& conn);
 
 private:
-    EventLoop* _M_loop;
-    ConnectorPtr _M_connector;
-    TcpConnectionPtr _M_connection;
-    const std::string _M_name;
+    EventLoop* _loop;
+    ConnectorPtr _connector;
+    TcpConnectionPtr _connection;
+    const std::string _name;
 
-    std::atomic<bool> _M_retry;
-    std::atomic<bool> _M_connect;
+    std::atomic<bool> _retry;
+    std::atomic<bool> _connect;
 
-    int _M_next_id;
-    std::mutex _M_mutex;
+    int _next_id;
+    std::mutex _mutex;
 
-    ConnectionCallback _M_connection_callback;
-    MessageCallback _M_message_callback;
-    WriteCompleteCallback _M_write_complete_callback;
+    ConnectionCallback _connection_callback;
+    MessageCallback _message_callback;
+    WriteCompleteCallback _write_complete_callback;
 };
 
 } // namespace net

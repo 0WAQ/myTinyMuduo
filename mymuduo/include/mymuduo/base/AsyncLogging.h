@@ -30,34 +30,34 @@ const std::size_t kLargeBuffer = 4000*1000;
 template<size_t SIZE>
 class Buffer : noncopyable {
 public:
-    Buffer() : _M_cur(_M_data) { }
+    Buffer() : _cur(_data) { }
     ~Buffer() { }
 
     void append(const char *buf, std::size_t len) {
         if(available() >= len) {
-            memcpy(_M_cur, buf, len);
-            _M_cur += len;
+            memcpy(_cur, buf, len);
+            _cur += len;
         }
     }
 
-    constexpr char* begin() const { return _M_data; }
-    const char* end() const { return _M_data + sizeof(_M_data); }
-    const char* data() const { return _M_data; }
-    size_t size() const { return static_cast<size_t>(_M_cur - _M_data); }
+    constexpr char* begin() const { return _data; }
+    const char* end() const { return _data + sizeof(_data); }
+    const char* data() const { return _data; }
+    size_t size() const { return static_cast<size_t>(_cur - _data); }
     size_t length() const { return size(); }
-    size_t available() const { return static_cast<size_t>(end() - _M_cur); }
+    size_t available() const { return static_cast<size_t>(end() - _cur); }
     static constexpr size_t capacity() { return SIZE; }
-    bool empty() const { return _M_data == _M_cur; }
-    std::string to_string() const { return std::string(_M_data, size()); }
+    bool empty() const { return _data == _cur; }
+    std::string to_string() const { return std::string(_data, size()); }
 
-    char* curr() { return _M_cur; }
-    void add(size_t len) { _M_cur += len; }
-    void reset() { _M_cur = _M_data; }
-    void bzero() { ::bzero(_M_data, sizeof(_M_data)); }
+    char* curr() { return _cur; }
+    void add(size_t len) { _cur += len; }
+    void reset() { _cur = _data; }
+    void bzero() { ::bzero(_data, sizeof(_data)); }
 
 private:
-    char _M_data[SIZE];
-    char *_M_cur;
+    char _data[SIZE];
+    char *_cur;
 };
 
 } // namespace __detail
@@ -90,20 +90,20 @@ private:
     void thread_func();
 
 private:
-    std::atomic<bool> _M_running;
+    std::atomic<bool> _running;
 
-    const std::chrono::seconds _M_flush_interval;    // 刷新缓冲区的间隔时间
-    std::unique_ptr<LogFile> _M_log_file;
+    const std::chrono::seconds _flush_interval;    // 刷新缓冲区的间隔时间
+    std::unique_ptr<LogFile> _log_file;
 
-    Thread _M_thread;               // 后端线程
+    Thread _thread;               // 后端线程
    
-    std::counting_semaphore<1> _M_sem; // 用于等待后端线程的初始化
-    std::mutex _M_mutex;               // 在append上加锁(有多个前端线程), 用于保护下面四个变量
-    std::condition_variable _M_cond;   // 后端线程阻塞在该条件变量上
+    std::counting_semaphore<1> _sem; // 用于等待后端线程的初始化
+    std::mutex _mutex;               // 在append上加锁(有多个前端线程), 用于保护下面四个变量
+    std::condition_variable _cond;   // 后端线程阻塞在该条件变量上
 
-    BufferPtr _M_curr_buffer;       // 当前缓冲
-    BufferPtr _M_next_buffer;       // 预备缓冲
-    BufferVector _M_buffers;        // 已写满的缓冲, 由后端线程落入磁盘
+    BufferPtr _curr_buffer;       // 当前缓冲
+    BufferPtr _next_buffer;       // 预备缓冲
+    BufferVector _buffers;        // 已写满的缓冲, 由后端线程落入磁盘
 };
 
 } // namespace mymuduo

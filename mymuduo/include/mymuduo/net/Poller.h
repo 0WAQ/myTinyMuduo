@@ -43,10 +43,10 @@ public:
 protected:
     using ChannelMap = std::unordered_map<int, Channel*>;    // key: sockfd
 
-    ChannelMap _M_channel_map;
+    ChannelMap _channel_map;
 
 private:
-    EventLoop* _M_owner_loop;
+    EventLoop* _owner_loop;
 
 };
 

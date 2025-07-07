@@ -34,11 +34,11 @@ public:
     void set_tcp_nodelay(bool on);  // 不启用naggle算法
     void set_keep_alive(bool on);   // 保持连接
 
-    int fd() const { return _M_fd; }
+    int fd() const { return _fd; }
 
 private:
-    const int _M_fd;
-    bool _M_closed = false;
+    const int _fd;
+    bool _closed = false;
 };
 
 } // namespace net

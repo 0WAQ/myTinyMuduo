@@ -36,11 +36,11 @@ public:
     void append(const char* data, std::size_t size);
     void append(const std::string& msg);
 
-    char* begin() { return &*_M_buf.begin(); }
-    const char* cbegin() const { return &*_M_buf.begin(); }
+    char* begin() { return &*_buf.begin(); }
+    const char* cbegin() const { return &*_buf.begin(); }
 
-    char* end() { return &*_M_buf.end(); }
-    const char* cend() const { return &*_M_buf.end(); }
+    char* end() { return &*_buf.end(); }
+    const char* cend() const { return &*_buf.end(); }
 
     // 从 readable 区域中删除
     std::string erase(std::size_t size);
@@ -73,27 +73,27 @@ public:
     /**
      * @brief 获取缓冲区三个区域的大小
      */
-    std::size_t prependable() { return _M_read_idx; }
-    std::size_t readable()    { return _M_write_idx - _M_read_idx; }
-    std::size_t writable()    { return _M_buf.size() - _M_write_idx; }
-    SepType sep() { return _M_sep; }
-    void set_sep(SepType sep) { _M_sep = sep; }
+    std::size_t prependable() { return _read_idx; }
+    std::size_t readable()    { return _write_idx - _read_idx; }
+    std::size_t writable()    { return _buf.size() - _write_idx; }
+    SepType sep() { return _sep; }
+    void set_sep(SepType sep) { _sep = sep; }
 
 private:
     // prependable的初始大小, 也是 read_idx 和 write_idx 的初始值
-    std::size_t _M_initial_prependable;
+    std::size_t _initial_prependable;
 
     // writable的初始大小
-    std::size_t _M_initial_writable;
+    std::size_t _initial_writable;
 
-    std::size_t _M_read_idx;
-    std::size_t _M_write_idx;
+    std::size_t _read_idx;
+    std::size_t _write_idx;
 
     // 自动扩容的vector<char>
-    std::vector<char> _M_buf;
+    std::vector<char> _buf;
 
     // 分割类型
-    SepType _M_sep = None;
+    SepType _sep = None;
 };
 
 } // namespace net

@@ -36,28 +36,28 @@ public:
 
     std::vector<EventLoop*> get_all_loops();
 
-    void set_thread_num(int num) { _M_num_threads = num; }
-    int num_threads() { return _M_num_threads; }
-    bool started() const { return _M_started; }
-    const std::string name() const { return _M_name; }
+    void set_thread_num(int num) { _num_threads = num; }
+    int num_threads() { return _num_threads; }
+    bool started() const { return _started; }
+    const std::string name() const { return _name; }
 
 private:
 
     // 该类并不拥有main_loop, 是由上层传递而来
-    EventLoop *_M_main_loop;
+    EventLoop *_main_loop;
 
     // 从EventLoop线程与其对应的EventLoop对象
-    std::vector<std::unique_ptr<EventLoopThread>> _M_threads;
-    std::vector<EventLoop*> _M_sub_loops;
+    std::vector<std::unique_ptr<EventLoopThread>> _threads;
+    std::vector<EventLoop*> _sub_loops;
 
-    std::string _M_name;
+    std::string _name;
 
-    std::atomic<bool> _M_started;
-    std::atomic<bool> _M_exited;
+    std::atomic<bool> _started;
+    std::atomic<bool> _exited;
 
-    int _M_num_threads;
+    int _num_threads;
 
-    std::atomic<int> _M_next;    // 下一个连接所属的EventLoop的索引
+    std::atomic<int> _next;    // 下一个连接所属的EventLoop的索引
 
 };
 

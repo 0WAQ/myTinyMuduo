@@ -21,28 +21,28 @@ public:
     void start();
     void join();
 
-    bool started() const noexcept { return _M_started.load(); }
-    bool joined() const noexcept { return _M_joined.load(); }
-    bool joinable() const noexcept { return _M_thread->joinable(); }
-    pid_t tid() const noexcept { return _M_tid; }
-    const std::string& name() const noexcept { return _M_name; }
-    static const int num_created() noexcept { return _M_num_created; }
+    bool started() const noexcept { return _started.load(); }
+    bool joined() const noexcept { return _joined.load(); }
+    bool joinable() const noexcept { return _thread->joinable(); }
+    pid_t tid() const noexcept { return _tid; }
+    const std::string& name() const noexcept { return _name; }
+    static const int num_created() noexcept { return _num_created; }
 
 private:
     void set_default_name();
 
 private:
-    std::atomic<bool> _M_started;
-    std::atomic<bool> _M_joined;
+    std::atomic<bool> _started;
+    std::atomic<bool> _joined;
 
-    pid_t _M_tid;
-    std::unique_ptr<std::thread> _M_thread;
+    pid_t _tid;
+    std::unique_ptr<std::thread> _thread;
 
-    std::function<void()> _M_func;
+    std::function<void()> _func;
 
-    std::string _M_name;
+    std::string _name;
 
-    static std::atomic<size_t> _M_num_created;
+    static std::atomic<size_t> _num_created;
 };
 
 } // namespace mymuduo

@@ -8,56 +8,56 @@ using namespace mymuduo;
 using namespace mymuduo::net;
 
 Buffer::Buffer(std::size_t prependable_size, std::size_t writable_size) : 
-            _M_initial_prependable(prependable_size), _M_initial_writable(writable_size), 
-            _M_read_idx(_M_initial_prependable), _M_write_idx(_M_initial_prependable),
-            _M_buf(_M_initial_prependable + _M_initial_writable)
+            _initial_prependable(prependable_size), _initial_writable(writable_size), 
+            _read_idx(_initial_prependable), _write_idx(_initial_prependable),
+            _buf(_initial_prependable + _initial_writable)
 { }
 
 Buffer::Buffer(const Buffer& other)
-    : _M_initial_prependable(other._M_initial_prependable)
-    , _M_initial_writable(other._M_initial_writable)
-    , _M_read_idx(other._M_read_idx)
-    , _M_write_idx(other._M_write_idx)
-    , _M_buf(other._M_buf)
-    , _M_sep(other._M_sep)
+    : _initial_prependable(other._initial_prependable)
+    , _initial_writable(other._initial_writable)
+    , _read_idx(other._read_idx)
+    , _write_idx(other._write_idx)
+    , _buf(other._buf)
+    , _sep(other._sep)
 { }
 
 Buffer::Buffer(Buffer&& other) noexcept
-    : _M_initial_prependable(other._M_initial_prependable)
-    , _M_initial_writable(other._M_initial_writable)
-    , _M_read_idx(other._M_read_idx)
-    , _M_write_idx(other._M_write_idx)
-    , _M_buf(std::move(other._M_buf))
-    , _M_sep(other._M_sep)
+    : _initial_prependable(other._initial_prependable)
+    , _initial_writable(other._initial_writable)
+    , _read_idx(other._read_idx)
+    , _write_idx(other._write_idx)
+    , _buf(std::move(other._buf))
+    , _sep(other._sep)
 {
-    other._M_initial_prependable = other._M_initial_writable = 0;
-    other._M_read_idx = other._M_write_idx = 0;
-    other._M_sep = None;
+    other._initial_prependable = other._initial_writable = 0;
+    other._read_idx = other._write_idx = 0;
+    other._sep = None;
 }
 
 Buffer& Buffer::operator= (const Buffer& other) {
-    _M_initial_prependable = other._M_initial_prependable;
-    _M_initial_writable = other._M_initial_writable;
-    _M_read_idx = other._M_read_idx;
-    _M_write_idx = other._M_write_idx;
-    _M_buf = other._M_buf;
-    _M_sep = other._M_sep;
+    _initial_prependable = other._initial_prependable;
+    _initial_writable = other._initial_writable;
+    _read_idx = other._read_idx;
+    _write_idx = other._write_idx;
+    _buf = other._buf;
+    _sep = other._sep;
     return *this;
 }
 
 Buffer& Buffer::operator= (Buffer&& other) {
-    _M_initial_prependable = other._M_initial_prependable;
-    _M_initial_writable = other._M_initial_writable;
-    _M_read_idx = other._M_read_idx;
-    _M_write_idx = other._M_write_idx;
-    _M_buf = std::move(other._M_buf);
-    _M_sep = other._M_sep;
+    _initial_prependable = other._initial_prependable;
+    _initial_writable = other._initial_writable;
+    _read_idx = other._read_idx;
+    _write_idx = other._write_idx;
+    _buf = std::move(other._buf);
+    _sep = other._sep;
     return *this;
 }
 
 void Buffer::append_with_sep(const char* data, std::size_t size)
 {
-    switch (_M_sep)
+    switch (_sep)
     {
         case 0: // 无分割符
         {
@@ -92,7 +92,7 @@ void Buffer::append(const char* data, std::size_t size)
 {
     assert(data != nullptr);
     ensure_writable(size);
-    std::copy(data, data + size, begin() + _M_write_idx);
+    std::copy(data, data + size, begin() + _write_idx);
     has_written(size);
 }
 
@@ -107,14 +107,14 @@ std::string Buffer::erase(std::size_t size)
         return {};
     }
 
-    std::string res(begin() + _M_read_idx, size);
+    std::string res(begin() + _read_idx, size);
 
     // 将索引向后移动
-    _M_read_idx += size;
+    _read_idx += size;
 
     // 若移动后, payload大小为0, 则重置索引
     if(readable() == 0) {
-        _M_read_idx = _M_write_idx = _M_initial_prependable;
+        _read_idx = _write_idx = _initial_prependable;
     }
 
     return res;
@@ -126,25 +126,25 @@ bool Buffer::pick_datagram(std::string& msg)
     if(readable() == 0)
         return false;
 
-    switch (_M_sep)
+    switch (_sep)
     {
         case 0:
         {
-            msg = std::string{begin() + _M_read_idx, begin() + _M_write_idx};
+            msg = std::string{begin() + _read_idx, begin() + _write_idx};
             erase(readable());
             break;
         }
         case 1:
         {
             std::size_t len = 0; // 获取报文头部的长度
-            memcpy(&len, _M_buf.data() + _M_read_idx, 4);
+            memcpy(&len, _buf.data() + _read_idx, 4);
 
             // 若payload的长度小于报文(有分包现象), 则不完整, 等待
             if(readable() < len + 4)
                 return false;
 
             // 跳过报文头, 只取报文内容
-            msg = {begin() + _M_read_idx + 4, len};
+            msg = {begin() + _read_idx + 4, len};
             erase(len + 4); // 将该报文从缓冲区中删除
 
             break;
@@ -152,7 +152,7 @@ bool Buffer::pick_datagram(std::string& msg)
         case 2:
         {
             std::size_t len = std::string::npos;
-            for(std::size_t i = _M_read_idx; i + 3 < _M_write_idx; i++) {
+            for(std::size_t i = _read_idx; i + 3 < _write_idx; i++) {
                 if(std::string{begin() + i, begin() + i + 4} == "\r\n\r\n") {
                     len = i;
                     break;
@@ -160,12 +160,12 @@ bool Buffer::pick_datagram(std::string& msg)
             }
 
             // 没有找到分割符 或者 报文不完整
-            if(len == std::string::npos || readable() < len - _M_read_idx + 4)
+            if(len == std::string::npos || readable() < len - _read_idx + 4)
                 return false;
 
             // 将报文放到msg中
-            msg = {begin() + _M_read_idx, begin() + len};
-            erase(len - _M_read_idx + 4);
+            msg = {begin() + _read_idx, begin() + len};
+            erase(len - _read_idx + 4);
 
             break;
         }
@@ -183,16 +183,16 @@ void Buffer::ensure_writable(std::size_t size)
 }
 
 void Buffer::has_written(std::size_t size) {
-    _M_write_idx += size;
+    _write_idx += size;
 }
 
 void Buffer::resize(std::size_t len)
 {
     // 当writable和读空下来的prependable不够时, 重新分配
-    if(writable() + prependable() < len + _M_initial_prependable) 
+    if(writable() + prependable() < len + _initial_prependable) 
     {
         // 重新分配空间
-        _M_buf.resize(_M_write_idx + len);
+        _buf.resize(_write_idx + len);
     }
     else // 空下来的大小足够分配
     {
@@ -200,12 +200,12 @@ void Buffer::resize(std::size_t len)
         std::size_t readable_bytes = readable();
         
         // 将payload移动到初始位置
-        std::copy(begin() + _M_read_idx, begin() + _M_write_idx, 
-                  begin() + _M_initial_prependable);
+        std::copy(begin() + _read_idx, begin() + _write_idx, 
+                  begin() + _initial_prependable);
 
         // 更新两个索引的位置        
-        _M_read_idx = _M_initial_prependable;
-        _M_write_idx = _M_read_idx + readable_bytes;
+        _read_idx = _initial_prependable;
+        _write_idx = _read_idx + readable_bytes;
     }
 }
 
@@ -220,7 +220,7 @@ std::size_t Buffer::read_fd(int fd, int* save_errno)
     const std::size_t write_bytes = writable();
 
     // 利用readv分散读, 会优先将缓冲区写满, 剩余的会写到buf中
-    iov[0].iov_base = begin() + _M_write_idx;
+    iov[0].iov_base = begin() + _write_idx;
     iov[0].iov_len = write_bytes;
 
     iov[1].iov_base = extrabuf;
@@ -237,12 +237,12 @@ std::size_t Buffer::read_fd(int fd, int* save_errno)
     // 只会读到缓冲区中
     else if(nlen <= write_bytes) 
     {
-        _M_write_idx += nlen;
+        _write_idx += nlen;
     }
     // 还会读到extrabuf中
     else 
     {
-        _M_write_idx = _M_buf.size();
+        _write_idx = _buf.size();
         // 将extrabuf中的数据追加至缓冲区中(会触发resize)
         append_with_sep(extrabuf, nlen - write_bytes);
     }
@@ -253,14 +253,14 @@ std::size_t Buffer::write_fd(int fd, int* save_errno)
 {
     // 将缓冲区的payload全部发送出去
     std::size_t read_size = readable();
-    ssize_t len = ::write(fd, begin() + _M_read_idx, read_size);
+    ssize_t len = ::write(fd, begin() + _read_idx, read_size);
 
     if(len < 0) {
         *save_errno = errno;
     } 
     // 调整索引
     else {
-        _M_read_idx += len;
+        _read_idx += len;
     }
 
     return len;
@@ -269,7 +269,7 @@ std::size_t Buffer::write_fd(int fd, int* save_errno)
 void Buffer::retrieve(size_t len)
 {
     if(len < readable()) {
-        _M_read_idx += len;
+        _read_idx += len;
     }
     else {
         retrieve_all();
@@ -277,11 +277,11 @@ void Buffer::retrieve(size_t len)
 }
 
 void Buffer::retrieve_all() {
-    _M_read_idx = _M_write_idx = _M_initial_prependable;
+    _read_idx = _write_idx = _initial_prependable;
 }
 
 std::string Buffer::retrieve_as_string(size_t len) {
-    std::string res(begin() + _M_read_idx, len);
+    std::string res(begin() + _read_idx, len);
     retrieve(len);
     return res;
 }

@@ -26,11 +26,11 @@ public:
     static Timestamp invalid();
 
     bool valid() const { return time_since_epoch().count() != 0; }
-    TimeDuration time_since_epoch() const { return _M_sec.time_since_epoch(); }
-    TimePoint to_time_point() const { return _M_sec; }
+    TimeDuration time_since_epoch() const { return _sec.time_since_epoch(); }
+    TimePoint to_time_point() const { return _sec; }
     time_t to_time_t() const {
         return std::time_t(std::chrono::duration_cast<std::chrono::seconds>
-                                (_M_sec.time_since_epoch()).count());
+                                (_sec.time_since_epoch()).count());
     }
 
     /**
@@ -48,19 +48,19 @@ public:
     }
 
     TimeDuration operator- (const Timestamp& other) {
-        return this->_M_sec - other._M_sec;
+        return this->_sec - other._sec;
     }
 
     bool operator< (const Timestamp &rhs) const {
-        return this->_M_sec < rhs._M_sec;
+        return this->_sec < rhs._sec;
     }
 
     bool operator> (const Timestamp &rhs) const {
-        return this->_M_sec > rhs._M_sec;
+        return this->_sec > rhs._sec;
     }
 
     bool operator== (const Timestamp &rhs) const {
-        return this->_M_sec == rhs._M_sec;
+        return this->_sec == rhs._sec;
     }
 
     bool operator<= (const Timestamp &rhs) const {
@@ -77,7 +77,7 @@ public:
 
 private:
     // 从1970起
-    TimePoint _M_sec;
+    TimePoint _sec;
 };
 
 inline Timestamp add_time(Timestamp timestamp, TimeDuration dur) {

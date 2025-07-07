@@ -7,17 +7,17 @@ namespace mymuduo {
 namespace __detail {
 
 File::File(std::string filename) :
-        _M_written(0)
+        _written(0)
 {
-    _M_fp = std::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
-    assert(_M_fp != nullptr);
-    ::setbuffer(_M_fp, _M_buf, sizeof(_M_buf));
+    _fp = std::fopen(filename.c_str(), "ae");  // 'e'表示 O_CLOEXEC
+    assert(_fp != nullptr);
+    ::setbuffer(_fp, _buf, sizeof(_buf));
 }
 
 File::~File() {
-    if (_M_fp) {
-        std::fclose(_M_fp);
-        _M_fp = nullptr;
+    if (_fp) {
+        std::fclose(_fp);
+        _fp = nullptr;
     }
 }
 
@@ -27,7 +27,7 @@ void File::append(const char* logline, size_t len) {
         size_t remain = len - written;
         size_t n = write(logline + written, remain);
         if(n != remain) {
-            int err = std::ferror(_M_fp);
+            int err = std::ferror(_fp);
             if(err) {
                 std::fprintf(stderr, "File::append() failed %d.\n", err);
                 break;
@@ -35,15 +35,15 @@ void File::append(const char* logline, size_t len) {
         }
         written += n;
     }
-    _M_written += written;
+    _written += written;
 }
 
 void File::flush() {
-    std::fflush(_M_fp);
+    std::fflush(_fp);
 }
 
 size_t File::write(const char* logline, size_t len) {
-    return ::fwrite_unlocked(logline, 1, len, _M_fp);
+    return ::fwrite_unlocked(logline, 1, len, _fp);
 }
 
 } // namespace __detail
@@ -58,16 +58,16 @@ LogFile::LogFile(const std::filesystem::path& filepath,
                  std::chrono::seconds flush_interval, 
                  int check_every
                 )
-    : _M_filepath(filepath)
-    , _M_basename(basename)
-    , _M_roll_size(roll_size)
-    , _M_flush_interval(flush_interval)
-    , _M_check_every(check_every)
-    , _M_count(0)
-    , _M_mutex_ptr(thread_safe ? new std::mutex : nullptr)
-    , _M_start_of_period(Timestamp())
-    , _M_last_roll(Timestamp())
-    , _M_last_flush(Timestamp())
+    : _filepath(filepath)
+    , _basename(basename)
+    , _roll_size(roll_size)
+    , _flush_interval(flush_interval)
+    , _check_every(check_every)
+    , _count(0)
+    , _mutex_ptr(thread_safe ? new std::mutex : nullptr)
+    , _start_of_period(Timestamp())
+    , _last_roll(Timestamp())
+    , _last_flush(Timestamp())
 {
     namespace fs = std::filesystem;
     if(!fs::exists(filepath) && !fs::create_directory(filepath)) {
@@ -78,8 +78,8 @@ LogFile::LogFile(const std::filesystem::path& filepath,
 }
 
 void LogFile::append(const char* logline, int len) {
-    if(_M_mutex_ptr) {
-        std::lock_guard<std::mutex> guard{ *_M_mutex_ptr };
+    if(_mutex_ptr) {
+        std::lock_guard<std::mutex> guard{ *_mutex_ptr };
         append_unlocked(logline, len);
     }
     else {
@@ -88,11 +88,11 @@ void LogFile::append(const char* logline, int len) {
 }
 
 void LogFile::flush() {
-    if(_M_mutex_ptr) {
-        std::lock_guard<std::mutex> guard{ *_M_mutex_ptr };
-        _M_file->flush();
+    if(_mutex_ptr) {
+        std::lock_guard<std::mutex> guard{ *_mutex_ptr };
+        _file->flush();
     } else {
-        _M_file->flush();
+        _file->flush();
     }
 }
 
@@ -100,25 +100,25 @@ void LogFile::append_unlocked(const char* logline, size_t len) {
     using std::chrono::seconds;
     using std::chrono::duration_cast;
 
-    _M_file->append(logline, len);
+    _file->append(logline, len);
 
-    if(_M_file->written() > _M_roll_size) {
+    if(_file->written() > _roll_size) {
         roll_file();
     }
     else {
-        ++_M_count;
-        if(_M_count >= _M_check_every) {    // 每 check_every 次检查是否需要刷新或者滚动
-            _M_count = 0;
+        ++_count;
+        if(_count >= _check_every) {    // 每 check_every 次检查是否需要刷新或者滚动
+            _count = 0;
 
             // 检测是否跨天
             Timestamp now = Timestamp::now();
             Timestamp this_period((now.time_since_epoch() / kRollTime) * kRollTime);
-            if(this_period != _M_start_of_period) {
+            if(this_period != _start_of_period) {
                 roll_file();
             }
-            else if(now - _M_last_flush > _M_flush_interval) {
-                _M_last_flush = now;
-                _M_file->flush();
+            else if(now - _last_flush > _flush_interval) {
+                _last_flush = now;
+                _file->flush();
             }
         }
     }
@@ -126,12 +126,12 @@ void LogFile::append_unlocked(const char* logline, size_t len) {
 
 bool LogFile::roll_file() {
     Timestamp now = Timestamp::now();
-    std::string filename = get_logfile_name(_M_filepath / _M_basename, now);
-    if(now > _M_last_roll) {
-        _M_last_roll = now;
-        _M_last_flush = now;
-        _M_start_of_period = Timestamp(now.time_since_epoch() / kRollTime * kRollTime);
-        _M_file.reset(new __detail::File(filename));
+    std::string filename = get_logfile_name(_filepath / _basename, now);
+    if(now > _last_roll) {
+        _last_roll = now;
+        _last_flush = now;
+        _start_of_period = Timestamp(now.time_since_epoch() / kRollTime * kRollTime);
+        _file.reset(new __detail::File(filename));
         return true;
     }
     return false;

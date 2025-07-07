@@ -36,17 +36,17 @@ public:
     void append_with_level_title(LogLevel level, std::string& msg);
     void write(LogLevel level, const char* format, ...);
 
-    const LogLevel log_level() const noexcept { return _M_level; };
-    const bool initialized() const noexcept { return _M_initialized; }
+    const LogLevel log_level() const noexcept { return _level; };
+    const bool initialized() const noexcept { return _initialized; }
 
 private:
-    std::atomic<bool> _M_initialized { false };
+    std::atomic<bool> _initialized { false };
 
     // 日志等级
-    LogLevel _M_level = INFO;
+    LogLevel _level = INFO;
 
     // 日志输出函数
-    OutputFunc _M_output_func;
+    OutputFunc _output_func;
 };
 
 } // namespace mymuduo

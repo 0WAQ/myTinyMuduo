@@ -41,11 +41,11 @@ public:
     void restart();
     void stop();
 
-    const InetAddress& server_addr() const { return _M_server_addr; }
-    const bool connecting() const { return _M_connect.load(); }
+    const InetAddress& server_addr() const { return _server_addr; }
+    const bool connecting() const { return _connect.load(); }
 
-    void set_new_connection_callback(NewConnectionCallback cb) { _M_new_connection_callback = std::move(cb); }
-    void set_retry_callback(RetryCallback cb) { _M_retry_callback = std::move(cb); }
+    void set_new_connection_callback(NewConnectionCallback cb) { _new_connection_callback = std::move(cb); }
+    void set_retry_callback(RetryCallback cb) { _retry_callback = std::move(cb); }
 
 private:
 
@@ -63,14 +63,14 @@ private:
     void reset_channel();
 
 private:
-    EventLoop* _M_loop;
-    InetAddress _M_server_addr;
-    std::unique_ptr<Channel> _M_channel;
-    State _M_state;
-    TimeDuration _M_retry_delay;
-    std::atomic<bool> _M_connect;
-    NewConnectionCallback _M_new_connection_callback;
-    RetryCallback _M_retry_callback;
+    EventLoop* _loop;
+    InetAddress _server_addr;
+    std::unique_ptr<Channel> _channel;
+    State _state;
+    TimeDuration _retry_delay;
+    std::atomic<bool> _connect;
+    NewConnectionCallback _new_connection_callback;
+    RetryCallback _retry_callback;
 };
 
 } // namespace net

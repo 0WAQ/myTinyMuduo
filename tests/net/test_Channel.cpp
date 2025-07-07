@@ -30,36 +30,36 @@ class PeriodicTimer {
 public:
 
     PeriodicTimer(EventLoop *loop, TimeDuration interval, const TimerCallback &cb)
-        : _M_loop(loop), _M_timerfd(create_timerfd()), _M_timer_channel(loop, _M_timerfd),
-            _M_interval(interval), _M_callback(cb)
+        : _loop(loop), _timerfd(create_timerfd()), _timer_channel(loop, _timerfd),
+            _interval(interval), _callback(cb)
     {
-        _M_timer_channel.set_read_callback(std::bind(&PeriodicTimer::handle_read, this));
-        _M_timer_channel.set_read_events();
+        _timer_channel.set_read_callback(std::bind(&PeriodicTimer::handle_read, this));
+        _timer_channel.set_read_events();
     }
 
     void start() {
         struct itimerspec spec;
         bzero(&spec, sizeof(spec));
-        spec.it_interval = to_timespec(_M_interval);
+        spec.it_interval = to_timespec(_interval);
         spec.it_value = spec.it_interval;
 
-        int ret = ::timerfd_settime(_M_timerfd, 0, &spec, NULL);
+        int ret = ::timerfd_settime(_timerfd, 0, &spec, NULL);
         ASSERT_TRUE(ret == 0) << "timerfd_settime() failed: " << strerror(errno);
     }
 
     ~PeriodicTimer() {
-        _M_timer_channel.unset_all_events();
-        _M_timer_channel.remove();
-        sockets::close(_M_timerfd);
+        _timer_channel.unset_all_events();
+        _timer_channel.remove();
+        sockets::close(_timerfd);
     }
 
 private:
 
     void handle_read() {
-        ASSERT_TRUE(_M_loop->is_loop_thread());
-        read_timerfd(_M_timerfd);
-        if(_M_callback) {
-            _M_callback();
+        ASSERT_TRUE(_loop->is_loop_thread());
+        read_timerfd(_timerfd);
+        if(_callback) {
+            _callback();
         }
     }
 
@@ -93,14 +93,14 @@ private:
 
 
 private:
-    EventLoop *_M_loop;
+    EventLoop *_loop;
     
-    const int _M_timerfd;
-    Channel _M_timer_channel;
+    const int _timerfd;
+    Channel _timer_channel;
 
-    const TimeDuration _M_interval;
+    const TimeDuration _interval;
 
-    TimerCallback _M_callback;
+    TimerCallback _callback;
 };
 
 class ChannelTest: public ::testing::Test {

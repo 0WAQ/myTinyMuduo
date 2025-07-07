@@ -15,15 +15,15 @@ public:
         return ins;
     }
 
+    Singleton(const Singleton<T>&) = delete;
+    Singleton& operator= (const Singleton<T>&) = delete;
+
     ~Singleton() = default;
 
 protected:
     template <typename... Args>
     explicit Singleton(Args&&... args) { }
 
-private:
-    Singleton(const Singleton<T>&) = delete;
-    Singleton& operator= (const Singleton<T>&) = delete;
 };
 
 } // namespace mymuduo

@@ -82,22 +82,22 @@ public:
     /**
      * @brief 用户可以设置的回调函数
      */
-    void set_connection_callback(ConnectionCallback func) { _M_connection_callback = std::move(func); }
-    void set_message_callback(MessageCallback func) { _M_message_callback = std::move(func); }
-    void set_write_complete_callback(WriteCompleteCallback func) { _M_write_complete_callback = std::move(func); }
-    void set_close_callback(CloseCallback func) { _M_close_callback = std::move(func); }
-    void set_high_water_mark_callback(HighWaterMarkCallback func) { _M_high_water_mark_callback = std::move(func); }
+    void set_connection_callback(ConnectionCallback func) { _connection_callback = std::move(func); }
+    void set_message_callback(MessageCallback func) { _message_callback = std::move(func); }
+    void set_write_complete_callback(WriteCompleteCallback func) { _write_complete_callback = std::move(func); }
+    void set_close_callback(CloseCallback func) { _close_callback = std::move(func); }
+    void set_high_water_mark_callback(HighWaterMarkCallback func) { _high_water_mark_callback = std::move(func); }
     
-    void set_high_water_mark(size_t high_water_mark) { _M_high_water_mark = high_water_mark; }
-    const size_t high_water_mark() const { return _M_high_water_mark; }
-    int fd() const { return _M_sock->fd(); }
-    size_t id() const { return _M_id; }
-    const std::string& name() const { return _M_name; }
-    const InetAddress& local_address() { return _M_local_addr; }
-    const InetAddress& peer_address() { return _M_peer_addr; }
-    EventLoop* loop() const { return _M_loop; }
-    const int state() const { return _M_state.load(); }
-    bool connected() const { return _M_state == kConnected; }
+    void set_high_water_mark(size_t high_water_mark) { _high_water_mark = high_water_mark; }
+    const size_t high_water_mark() const { return _high_water_mark; }
+    int fd() const { return _sock->fd(); }
+    size_t id() const { return _id; }
+    const std::string& name() const { return _name; }
+    const InetAddress& local_address() { return _local_addr; }
+    const InetAddress& peer_address() { return _peer_addr; }
+    EventLoop* loop() const { return _loop; }
+    const int state() const { return _state.load(); }
+    bool connected() const { return _state == kConnected; }
 
 private:
 
@@ -117,43 +117,43 @@ private:
 
 private:
 
-        std::atomic<int> _M_state;
-        bool _M_reading;
-        size_t _M_high_water_mark;      // 水位标志
+        std::atomic<int> _state;
+        bool _reading;
+        size_t _high_water_mark;      // 水位标志
 
         // 从事件循环
-        EventLoop* _M_loop;
+        EventLoop* _loop;
 
-        std::string _M_name;
+        std::string _name;
 
-        const size_t _M_id;      // 连接的编号
+        const size_t _id;      // 连接的编号
 
     /**
      * 
      */
         // Socket及其信息
-        std::unique_ptr<Socket> _M_sock;
-        std::unique_ptr<Channel> _M_channel;
+        std::unique_ptr<Socket> _sock;
+        std::unique_ptr<Channel> _channel;
 
-        InetAddress _M_local_addr;
-        InetAddress _M_peer_addr;
+        InetAddress _local_addr;
+        InetAddress _peer_addr;
 
     /**
      * 用户缓冲区
      */
 
-        Buffer _M_input_buffer;
-        Buffer _M_output_buffer;
+        Buffer _input_buffer;
+        Buffer _output_buffer;
 
     /**
      * 回调函数
      */
 
-        ConnectionCallback _M_connection_callback;
-        MessageCallback _M_message_callback;
-        WriteCompleteCallback _M_write_complete_callback;
-        CloseCallback _M_close_callback;
-        HighWaterMarkCallback _M_high_water_mark_callback;
+        ConnectionCallback _connection_callback;
+        MessageCallback _message_callback;
+        WriteCompleteCallback _write_complete_callback;
+        CloseCallback _close_callback;
+        HighWaterMarkCallback _high_water_mark_callback;
 };
 
 } // namespace net

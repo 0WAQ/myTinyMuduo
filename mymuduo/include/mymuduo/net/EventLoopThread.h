@@ -39,10 +39,10 @@ public:
 
     void stop_loop();
 
-    const bool started() const { return _M_thread.started(); }
-    const bool running() const { return _M_running.load(); }
-    const bool exited() const { return _M_exited.load(); }
-    EventLoop* get_loop() { return _M_loop; }
+    const bool started() const { return _thread.started(); }
+    const bool running() const { return _running.load(); }
+    const bool exited() const { return _exited.load(); }
+    EventLoop* get_loop() { return _loop; }
 
 private:
 
@@ -54,19 +54,19 @@ private:
 private:
 
     // EventLoop对应的线程结构
-    Thread _M_thread;
+    Thread _thread;
 
     // Thread的loop
-    EventLoop *_M_loop;
+    EventLoop *_loop;
 
-    std::atomic<bool> _M_running;
-    std::atomic<bool> _M_exited;
+    std::atomic<bool> _running;
+    std::atomic<bool> _exited;
 
-    std::mutex _M_mutex;
+    std::mutex _mutex;
 
-    std::condition_variable _M_cond;
+    std::condition_variable _cond;
 
-    ThreadInitCallback _M_init_callback;
+    ThreadInitCallback _init_callback;
 };
 
 } // namespace net
