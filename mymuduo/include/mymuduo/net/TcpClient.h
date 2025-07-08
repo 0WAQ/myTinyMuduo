@@ -6,7 +6,14 @@
 
 #include "mymuduo/base/noncopyable.h"
 #include "mymuduo/net/callbacks.h"
+#include "mymuduo/net/EventLoop.h"
+#include "mymuduo/net/EventLoopThread.h"
+#include "mymuduo/net/EventLoopThreadPool.h"
+#include "mymuduo/net/TcpConnection.h"
+#include "mymuduo/net/Acceptor.h"
 #include "mymuduo/net/Connector.h"
+#include "mymuduo/net/TcpConnection.h"
+#include "mymuduo/net/InetAddress.h"
 
 namespace mymuduo {
 namespace net {

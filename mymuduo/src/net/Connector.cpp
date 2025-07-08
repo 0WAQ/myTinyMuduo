@@ -59,8 +59,10 @@ void Connector::restart() {
 }
 
 void Connector::stop() {
-    _connect.store(false);
-    _loop->queue_in_loop(std::bind(&Connector::stop_in_loop, this));
+    if (_connect.load()) {
+        _connect.store(false);
+        _loop->queue_in_loop(std::bind(&Connector::stop_in_loop, this));
+    }
 }
 
 

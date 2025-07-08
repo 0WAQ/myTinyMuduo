@@ -10,9 +10,10 @@ set(CMAKE_VERBOSE_MAKEFILE off)
 set(CMAKE_C_COMPILER /usr/bin/clang)
 set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 添加子项目
 add_subdirectory(./mymuduo)
-add_subdirectory(./example)
+add_subdirectory(./examples)
 add_subdirectory(./tests)
