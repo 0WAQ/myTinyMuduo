@@ -39,7 +39,7 @@ EventLoop* EventLoopThread::start_loop(std::chrono::nanoseconds timeout) {
                 {
                     // 超时处理
                     if (!_loop) {
-                        LOG_ERROR("EventLoopThread start_loop timeout after %ld ns\n",
+                        LOG_ERROR("EventLoopThread start_loop timeout after {} ns",
                             timeout.count());
                         return nullptr;
                     }

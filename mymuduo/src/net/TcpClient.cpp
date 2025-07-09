@@ -36,12 +36,12 @@ TcpClient::TcpClient(EventLoop* loop, const InetAddress& server_addr, const std:
     , _connection_callback(default_connection_callback)
     , _message_callback(default_message_callback)
 {
-    LOG_INFO("TcpClient::TcpClient[%s] - connector [%x]", _name.c_str(), _connector.get());
+    LOG_INFO("TcpClient::TcpClient[{}] - connector [{}].", _name, (void*)_connector.get());
     _connector->set_new_connection_callback(std::bind(&TcpClient::new_connection, this, std::placeholders::_1));
 }
 
 TcpClient::~TcpClient() {
-    LOG_INFO("TcpClient::~TcpClient[%s] - connector [%x]", _name.c_str(), _connector.get());
+    LOG_INFO("TcpClient::~TcpClient[{}] - connector [{}].", _name, (void*)_connector.get());
 
     TcpConnectionPtr conn;
     bool unique = false;
@@ -125,7 +125,7 @@ void TcpClient::remove_connection(const TcpConnectionPtr& conn) {
 
     _loop->queue_in_loop(std::bind(&TcpConnection::destroyed, conn));
     if (_retry && _connect) {
-        LOG_INFO("TcpClient::connect[%s] - Reconnection to %s\n", _name.c_str(), _connector->server_addr().ip_port().c_str());
+        LOG_INFO("TcpClient::connect[{}] - Reconnection to {}", _name, _connector->server_addr().ip_port());
         _connector->restart();
     }
 }

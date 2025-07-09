@@ -11,7 +11,7 @@ Acceptor::Acceptor(EventLoop* main_loop, const InetAddress &serv_addr, bool reus
     , _serv_sock(sockets::create_non_blocking_fd()), _listening(false)
     , _acceptor_channel(_loop, _serv_sock.fd())
 {
-    LOG_DEBUG("Acceptor create nonblocking socket, [fd = %d].\n", _serv_sock.fd());
+    LOG_DEBUG("Acceptor create nonblocking socket, [fd = {}].", _serv_sock.fd());
 
     // 设置serv_sock的属性
     _serv_sock.set_keep_alive(true);
@@ -45,10 +45,10 @@ void Acceptor::new_connection()
 
     int clntfd = _serv_sock.accept(clnt_addr);
     if(clntfd < 0) {
-        LOG_ERROR("%s:%s:%d accprt errot - errno = %d %s.\n", 
+        LOG_ERROR("{}:{}:{} accprt errot - errno = {} {}.", 
             __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         if(errno == EMFILE) {
-            LOG_ERROR("%s:%s:%d clntfd reached limit! - errno = %d %s.\n", 
+            LOG_ERROR("{}:{}:{} clntfd reached limit! - errno = {} {}.", 
                 __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         }
     }

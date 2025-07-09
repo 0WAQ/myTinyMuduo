@@ -25,11 +25,11 @@ Connector::Connector(EventLoop* loop, const InetAddress& server_addr)
     , _state(kDisConnected)
     , _retry_delay(kInitRetryDelay)
 {
-    LOG_DEBUG("ctor[%x]\n", this);
+    LOG_DEBUG("ctor[{}]", (void*)this);
 }
 
 Connector::~Connector() {
-    LOG_DEBUG("dtor[%x]\n", this);
+    LOG_DEBUG("dtor[{}]", (void*)this);
     assert(!_channel);
 }
 
@@ -46,7 +46,7 @@ void Connector::start_in_loop() {
         connect();
     }
     else {
-        LOG_DEBUG("do not connect\n");
+        LOG_DEBUG("do not connect");
     }
 }
 
@@ -103,12 +103,12 @@ void Connector::connect() {
     case EBADF:
     case EFAULT:
     case ENOTSOCK:
-        LOG_ERROR("connect error in Connector::start_in_loop %d\n", saved_errno);
+        LOG_ERROR("connect error in Connector::start_in_loop {}", saved_errno);
         sockets::close(sockfd);
         break;
 
     default:
-        LOG_ERROR("Unexpected error in Connector::start_in_loop %d\n", saved_errno);
+        LOG_ERROR("Unexpected error in Connector::start_in_loop {}", saved_errno);
         sockets::close(sockfd);
         break;
     }
@@ -126,17 +126,17 @@ void Connector::do_connect(int sockfd) {
 }
 
 void Connector::handle_write() {
-    LOG_DEBUG("Connector::handle_write %d\n", _state);
+    LOG_DEBUG("Connector::handle_write {}", (int)_state);
 
     if (_state == kConnecting) {
         int sockfd = remove_and_reset_channel();
         int err = sockets::get_socket_error(sockfd);
         if (err != 0) {
-            LOG_WARN("Connector::handle_write - SO_ERROR = %d %s\n", err, strerror(err));
+            LOG_WARN("Connector::handle_write - SO_ERROR = {} {}", err, strerror(err));
             retry(sockfd);
         }
         else if(sockets::is_self_connect(sockfd)) {
-            LOG_WARN("Connector::handle_write - Self connect\n");
+            LOG_WARN("Connector::handle_write - Self connect");
             retry(sockfd);
         }
         else {  // 连接成功
@@ -158,7 +158,7 @@ void Connector::handle_error() {
     if (_state == kConnecting) {
         int sockfd = remove_and_reset_channel();
         int err = sockets::get_socket_error(sockfd);
-        LOG_DEBUG("SO_ERROR = %d %s\n", err, strerror(err));
+        LOG_DEBUG("SO_ERROR = {} {}", err, strerror(err));
         retry(sockfd);
     }
 }
@@ -170,8 +170,8 @@ void Connector::retry(int sockfd) {
     if (_connect) {
         using namespace std::chrono;
 
-        LOG_INFO("Connector::retry - Retry connecting to %s in %dms.\n",
-                        _server_addr.ip_port().c_str(),
+        LOG_INFO("Connector::retry - Retry connecting to {} in {} ms.",
+                        _server_addr.ip_port(),
                         duration_cast<milliseconds>(_retry_delay).count());
 
         if (_retry_callback) {
@@ -183,7 +183,7 @@ void Connector::retry(int sockfd) {
         _retry_delay = std::min(_retry_delay * 2, kMaxRetryDelay);
     }
     else {
-        LOG_DEBUG("do not connect.\n");
+        LOG_DEBUG("do not connect.");
     }
 }
 

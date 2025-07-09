@@ -26,6 +26,7 @@ public:
         INFO,       // 普通信息
         WARN,       // 警告信息
         ERROR,      // 报错
+        UNKN,       // 未知
         NUM_LOG_LEVELS
     };
 
@@ -34,8 +35,7 @@ public:
     bool set_output(OutputFunc func);
     bool set_async(const std::shared_ptr<AsyncLogging>& async);
 
-    void append_with_level_title(LogLevel level, std::string& msg);
-    void write(LogLevel level, const char* format, ...);
+    void write(LogLevel level, std::string&& fmt);
 
     const LogLevel log_level() const noexcept { return _level; };
     const bool initialized() const noexcept { return _initialized; }
@@ -55,25 +55,25 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define LOG_BASE(level, format, ...)                                \
-    do {                                                            \
-        using namespace mymuduo;                                    \
-        if(Logger::instance().initialized())                                       \
-            Logger::instance().write(mymuduo::level, format, ##__VA_ARGS__);       \
+#define LOG_BASE(level, fmt, ...)                                                       \
+    do {                                                                                \
+        using namespace mymuduo;                                                        \
+        if(Logger::instance().initialized())                                            \
+            Logger::instance().write(mymuduo::level, std::format(fmt, ##__VA_ARGS__));  \
     } while(0)
 
 
 #ifndef RELEASE
-    #define LOG_DEBUG(format, ...) LOG_BASE(Logger::DEBUG, format, ##__VA_ARGS__)
+    #define LOG_DEBUG(fmt, ...) LOG_BASE(Logger::DEBUG, fmt, ##__VA_ARGS__)
 #else
-    #define LOG_DEBUG(format, ...)
+    #define LOG_DEBUG(fmt, ...)
 #endif
 
-#define LOG_INFO(format, ...)  LOG_BASE(Logger::INFO, format, ##__VA_ARGS__)
-#define LOG_WARN(format, ...)  LOG_BASE(Logger::WARN, format, ##__VA_ARGS__)
-#define LOG_ERROR(format, ...) \
+#define LOG_INFO(fmt, ...)  LOG_BASE(Logger::INFO, fmt, ##__VA_ARGS__)
+#define LOG_WARN(fmt, ...)  LOG_BASE(Logger::WARN, fmt, ##__VA_ARGS__)
+#define LOG_ERROR(fmt, ...) \
             do { \
-                LOG_BASE(Logger::ERROR, format, ##__VA_ARGS__); exit(-1); \
+                LOG_BASE(Logger::ERROR, fmt, ##__VA_ARGS__); exit(-1); \
             } while(0)
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -17,7 +17,7 @@ EPollPoller::EPollPoller(EventLoop* loop) :
         _events_arr(_max_events)
 {
     if(_epoll_fd < 0) {
-        LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+        LOG_ERROR("{}:{}:{} - errno = {} {}.", 
             __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
 }
@@ -26,7 +26,7 @@ Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clo
 {
     using namespace std::chrono;
 
-    LOG_DEBUG("func:%s => fd total count=%d\n", __FUNCTION__, activeChannels->size());
+    LOG_DEBUG("func:{} => fd total count={}", __FUNCTION__, activeChannels->size());
 
     Timestamp now = Timestamp::now();
     int numEvents = ::epoll_wait(_epoll_fd, _events_arr.data()
@@ -37,7 +37,7 @@ Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clo
 
     if(numEvents > 0) 
     {
-        LOG_DEBUG("%d events happened.\n", numEvents);
+        LOG_DEBUG("{} events happened.", numEvents);
         
         // 通过epoll_event中的data获取channel指针(在add channel时设置)
         fill_active_channels(numEvents, activeChannels);
@@ -57,12 +57,12 @@ Timestamp EPollPoller::poll(ChannelList *activeChannels, std::chrono::system_clo
         // 为解决这个问题, 当epoll_wait返回-1时, 需忽略由于接受调试信号而产生的"错误"返回.
         if(savedErrno != EINTR) {
             errno = savedErrno;
-            LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+            LOG_ERROR("{}:{}:{} - errno = {} {}.", 
                 __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         }
     }
     else {
-        LOG_DEBUG("%s timeout!\n", __FUNCTION__);
+        LOG_DEBUG("{} timeout!", __FUNCTION__);
     }
 
     return now;
@@ -82,7 +82,7 @@ void EPollPoller::update_channel(Channel* ch)
 {    
     channelStatus status = ch->get_status();
 
-    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->fd(), ch->get_happened_events(), status);
+    LOG_INFO("func:{} => fd={} events={} status={}", __FUNCTION__, ch->fd(), ch->get_happened_events(), (int)status);
 
     if(status == kNew || status == kDeleted) // 未注册或者已注册未监听
     {
@@ -117,7 +117,7 @@ void EPollPoller::remove_channel(Channel* ch)
 {
     channelStatus status = ch->get_status();
 
-    LOG_INFO("func:%s => fd=%d events=%d status=%d\n", __FUNCTION__, ch->fd(), ch->get_happened_events(), status);
+    LOG_INFO("func:{} => fd={} events={} status={}", __FUNCTION__, ch->fd(), ch->get_happened_events(), (int)status);
 
     // 若channel已经被监听, 那么删除
     if(status == kAdded) {
@@ -141,17 +141,17 @@ void EPollPoller::update(int op, Channel* ch)
         switch (op)
         {
         case EPOLL_CTL_ADD:
-            LOG_ERROR("%s:%s:%d epoll_ctl() add failed - errno = %d %s.\n", 
+            LOG_ERROR("{}:{}:{} epoll_ctl() add failed - errno = {} {}.", 
                 __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
             break;
 
         case EPOLL_CTL_MOD:
-            LOG_ERROR("%s:%s:%d epoll_ctl() modify failed - errno = %d %s.\n", 
+            LOG_ERROR("{}:{}:{} epoll_ctl() modify failed - errno = {} {}.", 
                 __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
             break;
         
         case EPOLL_CTL_DEL:
-            LOG_ERROR("%s:%s:%d epoll_ctl() remove failed - errno = %d %s.\n", 
+            LOG_ERROR("{}:{}:{} epoll_ctl() remove failed - errno = {} {}.", 
                 __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
             break;
         }
@@ -160,7 +160,7 @@ void EPollPoller::update(int op, Channel* ch)
 
 EPollPoller::~EPollPoller() {
     if (::close(_epoll_fd) < 0) {
-        LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+        LOG_ERROR("{}:{}:{} - errno = {} {}.", 
             __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
 }

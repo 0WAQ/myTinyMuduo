@@ -19,7 +19,7 @@ namespace __detail {
     {
         int tfd = ::timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
         if(tfd < 0) {
-            LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+            LOG_ERROR("{}:{}:{} - errno = {} {}.", 
                 __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
         }
 
@@ -50,9 +50,9 @@ namespace __detail {
     {
         ssize_t read_bytes;
         ssize_t nlen = ::read(timerfd, &read_bytes, sizeof(read_bytes));
-        LOG_DEBUG("TimerQueue::handle_read() %ld.\n", read_bytes);
+        LOG_DEBUG("TimerQueue::handle_read() {}.", read_bytes);
         if(nlen != sizeof(read_bytes)) {
-            LOG_WARN("TimerQueue::handle_read() reads %ld nytes instead of 8.\n", nlen);
+            LOG_WARN("TimerQueue::handle_read() reads {} nytes instead of 8.", nlen);
         }
     }
 
@@ -70,7 +70,7 @@ namespace __detail {
         newVal.it_value = how_much_time_from_now(expiration);
         int ret = ::timerfd_settime(timerfd, 0, &newVal, &oldVal);
         if(ret) {
-            LOG_WARN("timerfd_settime().\n");
+            LOG_WARN("timerfd_settime().");
         }
     }
 

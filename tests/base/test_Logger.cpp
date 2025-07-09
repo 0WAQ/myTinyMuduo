@@ -43,9 +43,9 @@ TEST(LoggerTest, LogLevelFiltering) {
             captured.assign(data, len);
         }));
 
-        LOG_DEBUG("should not appear");
-        LOG_INFO("should not appear");
-        LOG_WARN("should appear");
+        LOG_DEBUG("should not appear.");
+        LOG_INFO("should not appear.");
+        LOG_WARN("should appear.");
 
         EXPECT_TRUE(captured.find("should appear") != std::string::npos);
         EXPECT_TRUE(captured.find("[WARN ]") != std::string::npos);
@@ -62,7 +62,7 @@ TEST(LoggerTest, WriteUseCustomBuffer) {
             captured.assign(data, len);
         }));
 
-        LOG_INFO("Custom sink test %d", 42);
+        LOG_INFO("Custom sink test {}.", 42);
         EXPECT_TRUE(captured.find("Custom sink test 42") != std::string::npos);
         EXPECT_TRUE(captured.find("[INFO ]") != std::string::npos);
     });
@@ -92,9 +92,9 @@ TEST(LoggerTest, WriteToAsyncLogging) {
         ASSERT_TRUE(Logger::instance().set_async(async));
 
         for (int i = 0; i < 10; ++i) {
-            LOG_DEBUG("this is debug%d\n", i);
-            LOG_INFO("this is info%d\n", i);
-            LOG_WARN("this is warn%d\n", i);
+            LOG_DEBUG("this is debug{}", i);
+            LOG_INFO("this is info{}", i);
+            LOG_WARN("this is warn{}", i);
         }
     });
 }
@@ -113,7 +113,7 @@ TEST(LoggerTest, MultiThreadedLogging) {
         for (int i = 0; i < 10; ++i) {
             threads.emplace_back([&] {
                 for (int j = 0; j < 100; ++j) {
-                    LOG_INFO("Thread Logger::instance() %d", j);
+                    LOG_INFO("Thread Logger::instance() {}.", j);
                 }
             });
         }

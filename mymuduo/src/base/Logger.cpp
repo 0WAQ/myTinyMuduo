@@ -2,16 +2,15 @@
 #include "mymuduo/base/AsyncLogging.h"
 #include "mymuduo/base/Timestamp.h"
 
-#include <stdarg.h> // vastart va_end
-
 using namespace mymuduo;
 
 const char* LogLevelName[Logger::NUM_LOG_LEVELS] = 
 {
-    "DEBUG",
-    "INFO",
-    "WARN",
-    "ERROR"
+    "[DEBUG]: ",
+    "[INFO ]: ",
+    "[WARN ]: ",
+    "[ERROR]: ",
+    "[UNKN ]: "
 };
 
 
@@ -46,40 +45,22 @@ bool Logger::set_async(const std::shared_ptr<AsyncLogging>& async) {
     return true;
 }
 
-void Logger::append_with_level_title(LogLevel level, std::string& msg) 
-{
-    switch (level) {
-    case DEBUG: msg.append("[DEBUG]: "); break;
-    case INFO:  msg.append("[INFO ]: "); break;
-    case WARN:  msg.append("[WARN ]: "); break;
-    case ERROR: msg.append("[ERROR]: "); break;
-    default:    msg.append("[UNKN ]: "); break;
-    }
-}
-
-void Logger::write(LogLevel level, const char* format, ...)
+void Logger::write(LogLevel level, std::string&& fmt)
 {
     if (_level > level) {
         return;
     }
-
     std::string msg;
 
     // 1.填充标题头
-    append_with_level_title(level, msg);
+    msg.append(LogLevelName[level]);
     
     // 2.填充时间  
     msg.append(Timestamp::now().to_string() + ' ');
 
     // 3.填充参数列表
-    char buf[512] = {0};
-    {
-        va_list args;   // 可变参列表
-        va_start(args, format);
-        vsnprintf(buf, sizeof(buf), format, args);
-        va_end(args);
-    }
-    msg.append(buf, strlen(buf));
+    msg.append(fmt);
+    msg.append("\n");
 
     // 4. 输出日志
     _output_func(msg.data(), msg.size());

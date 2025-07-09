@@ -16,7 +16,7 @@ namespace __detail {
      */
     static EventLoop* check_loop_not_null(EventLoop *loop) {
         if(!loop) {
-            LOG_ERROR("%s:%s:%d sub loop is null!",
+            LOG_ERROR("{}:{}:{} sub loop is null!",
                 __FILE__, __FUNCTION__, __LINE__);
         }
         return loop;
@@ -25,8 +25,8 @@ namespace __detail {
 } // namespace __detail
 
 void default_connection_callback(const TcpConnectionPtr& conn) {
-    LOG_DEBUG("%s -> %s is %s", conn->local_address().ip_port().c_str(),
-                    conn->peer_address().ip_port().c_str(),
+    LOG_DEBUG("{} -> {} is {}", conn->local_address().ip_port(),
+                    conn->peer_address().ip_port(),
                     (conn->connected()) ? "UP" : "DOWN");
 }
 
@@ -69,12 +69,12 @@ TcpConnection::TcpConnection(EventLoop *loop, size_t id, const std::string &name
     // MARK: 默认不监听写事件, 否则在LT模式下, 只要内核缓冲区可读, 就会一直触发谢事件!!!
     //       只有当用户缓冲区中有数据时才会监听写事件
 
-    LOG_INFO("TcpConnection::ctor[%s] at fd=%d in thread#%d.\n", _name.c_str(), clntfd, CurrentThread::tid());
+    LOG_INFO("TcpConnection::ctor[{}] at fd={} in thread#{}.", _name, clntfd, CurrentThread::tid());
 }
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO("TcpConnection::dtor[%s] at fd=%d in thread#%d.\n", _name.c_str(), _channel->fd(), CurrentThread::tid());
+    LOG_INFO("TcpConnection::dtor[{}] at fd={} in thread#{}.", _name, _channel->fd(), CurrentThread::tid());
 }
 
 void TcpConnection::established()
@@ -93,7 +93,7 @@ void TcpConnection::established()
     _channel->tie(shared_from_this()); // 将该Connection与Channel绑定
     _channel->set_read_events();
 
-    LOG_INFO("TcpConnection::established[%s] at fd=%d in thread#%d.\n", _name.c_str(), _channel->fd(), CurrentThread::tid());
+    LOG_INFO("TcpConnection::established[{}] at fd={} in thread#{}.", _name, _channel->fd(), CurrentThread::tid());
     
     if(_connection_callback) {
         _connection_callback(shared_from_this());
@@ -105,7 +105,7 @@ void TcpConnection::destroyed()
     // MARK: 每个类成员函数内都有一个隐式的this指针(若继承自enable_shared_from_this则为shared_ptr)
 
     assert(_loop->is_loop_thread());
-    LOG_INFO("TcpConnection::destroyed[%s] at fd=%d in thread#%d.\n", _name.c_str(), _channel->fd(), CurrentThread::tid());
+    LOG_INFO("TcpConnection::destroyed[{}] at fd={} in thread#{}.", _name, _channel->fd(), CurrentThread::tid());
 
     if(_state == kConnected)
     {
@@ -135,14 +135,14 @@ void TcpConnection::handle_read_ET(Timestamp receieveTime)
         // 数据读取成功
         if(nlen > 0) 
         {
-            LOG_DEBUG("TcpConnection::handle_read[fd=%d], read %ld bytes to input_buffer\n", 
+            LOG_DEBUG("TcpConnection::handle_read[fd={}], read {} bytes to input_buffer", 
                         _channel->fd(), nlen);
             continue;
         }
         // 读取时被中断
         else if(nlen == -1 && errno == EINTR) 
         {
-            LOG_WARN("%s:%s:%d read_fd:%d was interrupted.\n", 
+            LOG_WARN("{}:{}:{} read_fd:{} was interrupted.", 
                 __FILE__, __FUNCTION__, __LINE__, save_error);
             continue;
         }
@@ -170,16 +170,16 @@ void TcpConnection::handle_read_LT(Timestamp receieveTime)
 
     if(nlen > 0) {
         // MARK: 还要将接受到数据的缓冲区也交给上层服务器
-        LOG_INFO("TcpConnection::handle_read[%s] at fd=%d in thread#%d.\n", _name.c_str(), _channel->fd(), CurrentThread::tid());
+        LOG_INFO("TcpConnection::handle_read[{}] at fd={} in thread#{}.", _name, _channel->fd(), CurrentThread::tid());
         _message_callback(shared_from_this(), &_input_buffer, receieveTime);
     }
     else if(nlen == 0) {
-        LOG_INFO("TcpConnection::handle_close[%s] at fd=%d in thread#%d.\n", _name.c_str(), _channel->fd(), CurrentThread::tid());
+        LOG_INFO("TcpConnection::handle_close[{}] at fd={} in thread#{}.", _name, _channel->fd(), CurrentThread::tid());
         handle_close();
     }
     else {
         errno = save_error;
-        LOG_ERROR("TcpConnection::handle_error[%s] at fd=%d in thread#%d.\n", _name.c_str(), _channel->fd(), CurrentThread::tid());
+        LOG_ERROR("TcpConnection::handle_error[{}] at fd={} in thread#{}.", _name, _channel->fd(), CurrentThread::tid());
         handle_error();
     }
 }
@@ -196,7 +196,7 @@ void TcpConnection::handle_write()
         // 因为操作系统的原因(tcp滑动窗口), 数据不一定能全部接收, 剩下的数据等待下一次写事件触发
 
         if(nlen < 0) {
-            LOG_WARN("%s:%s:%d TcpConnection::handle_write() error:%d.\n", 
+            LOG_WARN("{}:{}:{} TcpConnection::handle_write() error:{}.", 
                 __FILE__, __FUNCTION__, __LINE__, save_error);
         }
         else // 数据发送成功
@@ -220,7 +220,7 @@ void TcpConnection::handle_write()
     }
     else
     {
-        LOG_WARN("TcpConnection fd=%d is down, no more writin.\n", _channel->fd());
+        LOG_WARN("TcpConnection fd={} is down, no more writin.", _channel->fd());
     }
 }
 
@@ -230,7 +230,7 @@ void TcpConnection::handle_close()
     assert(_loop->is_loop_thread());
     assert(_state == kConnected || _state == kDisConnecting);
 
-    LOG_INFO("fd=%d state=%d.\n", _channel->fd(), (int)_state);
+    LOG_INFO("fd={} state={}.", _channel->fd(), (int)_state);
 
     _state = kDisConnected;
 
@@ -275,7 +275,7 @@ void TcpConnection::send(const std::string& message)
     }
     else
     {
-        LOG_DEBUG("TcpConnection %p had been disconnected or connecting.\n");
+        LOG_DEBUG("TcpConnection {} had been disconnected or connecting.", fd());
     }
 
 }
@@ -286,7 +286,7 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
     
     if(_state == kDisConnected)
     {
-        LOG_WARN("disconnected, give up writing.\n");
+        LOG_WARN("disconnected, give up writing.");
         return;
     }
     
@@ -313,7 +313,7 @@ void TcpConnection::send_in_loop(const void *data, size_t len)
             nwrote = 0;
             if(errno != EWOULDBLOCK)
             {
-                LOG_WARN("TcpConnection::send_in_loop write to %d failed.\n", fd());
+                LOG_WARN("TcpConnection::send_in_loop write to {} failed.", fd());
                 if(errno == EPIPE || errno == ECONNRESET) {
                     fault_error = true;
                 }

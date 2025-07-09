@@ -9,7 +9,7 @@ ThreadPool::ThreadPool(const std::string& type, size_t thread_num)
     for(size_t i = 0; i < thread_num; i++) {
         _threads.emplace_back(
             [this]() {
-                LOG_DEBUG("%s thread(%d) created.\n", _thread_type.c_str(), syscall(SYS_gettid));
+                LOG_DEBUG("{} thread({}) created.", _thread_type, syscall(SYS_gettid));
 
                 while(true) {
                     std::function<void()> task;
@@ -49,7 +49,7 @@ ThreadPool::ThreadPool(const std::string& type, size_t thread_num)
 
 ThreadPool::~ThreadPool() {
     if (!_stop.load()) {
-        LOG_WARN("ThreadPool(%x) is destroyed without calling stop().", this);
+        LOG_WARN("ThreadPool({}) is destroyed without calling stop().", (void*)this);
         this->stop();
     }
 }

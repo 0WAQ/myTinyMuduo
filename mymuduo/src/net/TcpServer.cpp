@@ -15,7 +15,7 @@ namespace __detail {
 
     EventLoop* check_loop_not_null(EventLoop *loop) {
         if(!loop) {
-            LOG_ERROR("%s:%s:%d - main loop is null!\n", 
+            LOG_ERROR("{}:{}:{} - main loop is null!", 
                 __FILE__, __FUNCTION__, __LINE__);
         }
         return loop;
@@ -39,7 +39,7 @@ TcpServer::TcpServer(EventLoop *main_loop, const InetAddress &serv_addr,
 
 TcpServer::~TcpServer() {
     if (!_stopping) {
-        LOG_WARN("TcpServer(%x) is destroyed without calling stop().", this);
+        LOG_WARN("TcpServer({}) is destroyed without calling stop().", (void*)this);
         this->stop();
     }
 }
@@ -94,8 +94,8 @@ void TcpServer::new_connection(int clntfd, const InetAddress &clnt_addr)
     snprintf(buf, sizeof(buf), "-%s#%lu", _ip_port.c_str(), id);
     std::string connName = _name + buf;
     
-    LOG_INFO("TcpServer::new_connection [%s] - new connection [%s] from %s.\n",
-        _name.c_str(), connName.c_str(), clnt_addr.ip_port().c_str());
+    LOG_INFO("TcpServer::new_connection [{}] - new connection [{}] from {}.",
+        _name, connName, clnt_addr.ip_port());
 
     InetAddress local_addr(sockets::get_local_addr(clntfd));
 
@@ -133,8 +133,8 @@ void TcpServer::remove_connection(const TcpConnectionPtr &conn)
 
 void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
 {
-    LOG_INFO("TcpServer::remove_connection_in_loop [%s] - connection %s.\n",
-                _name.c_str(), conn->name().c_str());
+    LOG_INFO("TcpServer::remove_connection_in_loop [{}] - connection {}.",
+                _name, conn->name());
     
     // MARK: 在 主Reactor线程 中删除该对象
     size_t id = conn->id();

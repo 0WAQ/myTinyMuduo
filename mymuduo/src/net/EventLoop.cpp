@@ -21,11 +21,11 @@ int create_eventfd()
 {
     int efd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if(efd < 0) {
-        LOG_ERROR("%s:%s:%d - errno = %d %s.\n", 
+        LOG_ERROR("{}:{}:{} - errno = {} {}.", 
             __FILE__, __FUNCTION__, __LINE__, errno, strerror(errno));
     }
     else {
-        LOG_DEBUG("create a new eventfd.\n");
+        LOG_DEBUG("create a new eventfd.");
     }
 
     return efd;
@@ -41,7 +41,7 @@ EventLoop::EventLoop() :
         _wakeup_fd(__detail::create_eventfd()), 
         _wakeup_channel(new Channel(this, _wakeup_fd))
 {
-    LOG_DEBUG("EventLoop created %p in thread %d.\n", this, _tid);
+    LOG_DEBUG("EventLoop created {} in thread {}.", (void*)this, _tid);
 
     /**
      * one loop per thread:
@@ -51,7 +51,7 @@ EventLoop::EventLoop() :
         t_loop_in_this_thread = this;
     }
     else {
-        LOG_ERROR("Another EventLoop %p exists in this thread %d\n", t_loop_in_this_thread, _tid);
+        LOG_ERROR("Another EventLoop {} exists in this thread {}.", (void*)t_loop_in_this_thread, _tid);
     }
 
     // 监听efd的读事件, 用于异步唤醒subloop线程
@@ -74,7 +74,7 @@ EventLoop::~EventLoop()
 // 运行事件循环
 void EventLoop::loop(std::chrono::system_clock::duration timeout)
 {
-    LOG_DEBUG("EventLoop %p start looping, thread is %d.\n", this, CurrentThread::tid());
+    LOG_DEBUG("EventLoop {} start looping, thread is {}.", (void*)this, CurrentThread::tid());
 
     assert(!_looping);
     assert(is_loop_thread());
@@ -94,14 +94,14 @@ void EventLoop::loop(std::chrono::system_clock::duration timeout)
         do_pending_functors();
     }
 
-    LOG_INFO("EventLoop %p stop looping.\n", this);
+    LOG_INFO("EventLoop {} stop looping.", (void*)this);
 
     _looping = false;
 }
 
 void EventLoop::loop_once(std::chrono::system_clock::duration timeout)
 {
-    LOG_DEBUG("EventLoop %p excute once, thread is %d.\n", this, CurrentThread::tid());
+    LOG_DEBUG("EventLoop {} excute once, thread is {}.", (void*)this, CurrentThread::tid());
 
     assert(!_looping);
     assert(is_loop_thread());
@@ -120,7 +120,7 @@ void EventLoop::loop_once(std::chrono::system_clock::duration timeout)
     _looping = false;
 
 
-    LOG_INFO("EventLoop %p stop looping.\n", this);
+    LOG_INFO("EventLoop {} stop looping.", (void*)this);
 }
 
 void EventLoop::quit() 
@@ -140,12 +140,12 @@ void EventLoop::quit()
 
 void EventLoop::handle_read()
 {
-    LOG_INFO("IO thread is waked up, thread is %d.\n", syscall(SYS_gettid));
+    LOG_INFO("IO thread is waked up, thread is {}.", syscall(SYS_gettid));
 
     uint64_t one;
     ssize_t len = ::read(_wakeup_fd, &one, sizeof(one)); // 读出来, 否则在LT中会一直触发
     if(len != sizeof(one)) {
-        LOG_WARN("EventLoop::handle_eventfd() reads %d bytes instead of 8.\n", len);
+        LOG_WARN("EventLoop::handle_eventfd() reads {} bytes instead of 8.", len);
     }
 }
 
@@ -204,7 +204,7 @@ void EventLoop::wakeup()
     uint64_t one = 1;
     size_t len = ::write(_wakeup_fd, &one, sizeof(one));
     if(len != sizeof(one)) {
-        LOG_ERROR("EventLoop::wakeup() writes %ld bytes instead of 8.\n", len);
+        LOG_ERROR("EventLoop::wakeup() writes {} bytes instead of 8.", len);
     }
 }
 
