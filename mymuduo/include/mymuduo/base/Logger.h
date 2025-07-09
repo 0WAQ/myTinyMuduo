@@ -26,6 +26,7 @@ public:
         INFO,       // 普通信息
         WARN,       // 警告信息
         ERROR,      // 报错
+        NUM_LOG_LEVELS
     };
 
 public:

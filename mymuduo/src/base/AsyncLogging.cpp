@@ -38,30 +38,28 @@ AsyncLogging::AsyncLogging(std::unique_ptr<LogFile> log_file)
 }
 
 AsyncLogging::~AsyncLogging() {
-    if (!_running) {
-        return;
+    if (_running.load()) {
+        stop();
     }
-    stop();
 }
 
 void AsyncLogging::start() {
-    if (_running.load()) {
-        return;
+    if (!_running.exchange(true)) {
+        _thread.start();
+        _sem.acquire();  // 使用信号量等待后端线程完成日志文件的初始化
     }
-    _running.store(true);
-    _thread.start();
-    _sem.acquire();  // 使用信号量等待后端线程完成日志文件的初始化
 }
 
 void AsyncLogging::stop() {
-    if (!_running.load()) {
-        return;
-    }
-    _running.store(false);
-    _cond.notify_one();
-
-    if (_thread.joinable()) {
-        _thread.join();
+    if (_running.exchange(false)) {
+        {
+            std::lock_guard<std::mutex> guard { _mutex };
+            _cond.notify_one(); // 在持有锁的情况下 notify, 确保能够唤醒
+        }
+     
+        if (_thread.joinable()) {
+            _thread.join();
+        }
     }
 }
 
@@ -106,7 +104,7 @@ void AsyncLogging::thread_func() {
     
     _sem.release();
 
-    while(_running) {
+    while(_running.load()) {
         assert(new_buffer1 && new_buffer1->size() == 0);
         assert(new_buffer2 && new_buffer2->size() == 0);
         assert(buffers_to_write.empty());
@@ -116,7 +114,11 @@ void AsyncLogging::thread_func() {
 
             // 如果暂且没有待落盘的缓冲区, 则释放锁并且等待flush_interval秒
             if(_buffers.empty()) {
-                _cond.wait_for(lock, std::chrono::seconds{ _flush_interval });
+                _cond.wait_for(lock,
+                        std::chrono::seconds{ _flush_interval },
+                        [this] {
+                            return !_running.load();
+                        });
             }
 
             _buffers.emplace_back(std::move(_curr_buffer));

@@ -21,8 +21,8 @@
 namespace mymuduo {
 namespace __detail {
 
-const std::size_t kSmallBuffer = 4000;
-const std::size_t kLargeBuffer = 4000*1000;
+const std::size_t kSmallBuffer = 4*1024;
+const std::size_t kLargeBuffer = 4000*1024;
 
 /**
  * @brief 异步日志系统的缓冲区

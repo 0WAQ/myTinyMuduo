@@ -2,7 +2,7 @@
 .cache/
 .tmp/
 build/
-log/
+benchmarks/*.json
 lib/
 bin/
 .wfuzztmp

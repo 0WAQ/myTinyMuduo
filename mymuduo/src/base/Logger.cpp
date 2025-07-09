@@ -6,6 +6,14 @@
 
 using namespace mymuduo;
 
+const char* LogLevelName[Logger::NUM_LOG_LEVELS] = 
+{
+    "DEBUG",
+    "INFO",
+    "WARN",
+    "ERROR"
+};
+
 
 void Logger::set_log_level(LogLevel level) {
     _level = level;
@@ -24,6 +32,13 @@ bool Logger::set_async(const std::shared_ptr<AsyncLogging>& async) {
     if (_initialized.load()) {
         return false;
     }
+
+    if (!async) {
+        _initialized.store(false);
+        _output_func = [](const char* data, size_t len) { };
+        return false;
+    }
+
     _initialized.store(true);
     _output_func = std::bind(&AsyncLogging::append, async.get(),
                         std::placeholders::_1, std::placeholders::_2);
