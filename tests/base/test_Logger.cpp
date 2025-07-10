@@ -38,10 +38,10 @@ namespace {
 TEST(LoggerTest, LogLevelFiltering) {
     run_in_process([] {
         std::string captured;
-        Logger::instance().set_log_level(Logger::WARN);
-        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
+        Logger::set_log_level(Logger::WARN);
+        Logger::set_output([&](const char* data, size_t len) {
             captured.assign(data, len);
-        }));
+        });
 
         LOG_DEBUG("should not appear.");
         LOG_INFO("should not appear.");
@@ -57,10 +57,10 @@ TEST(LoggerTest, LogLevelFiltering) {
 TEST(LoggerTest, WriteUseCustomBuffer) {
     run_in_process([] {
         std::string captured;
-        Logger::instance().set_log_level(Logger::DEBUG);
-        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
+        Logger::set_log_level(Logger::DEBUG);
+        Logger::set_output([&](const char* data, size_t len) {
             captured.assign(data, len);
-        }));
+        });
 
         LOG_INFO("Custom sink test {}.", 42);
         EXPECT_TRUE(captured.find("Custom sink test 42") != std::string::npos);
@@ -72,12 +72,12 @@ TEST(LoggerTest, WriteUseCustomBuffer) {
 // TAG
 TEST(LoggerTest, WriteToDevNull) {
     run_in_process([] {
-        Logger::instance().set_log_level(Logger::DEBUG);
-        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
-            FILE* fp = std::fopen("/dev/null", "w+");
+        FILE* fp = std::fopen("/dev/null", "w+");
+        Logger::set_log_level(Logger::DEBUG);
+        Logger::set_output([&](const char* data, size_t len) {
             std::fprintf(fp, data, len);
             std::fputc('\n', fp);
-        }));
+        });
 
         LOG_INFO("This goes to /dev/null");
     });
@@ -88,8 +88,11 @@ TEST(LoggerTest, WriteToDevNull) {
 TEST(LoggerTest, WriteToAsyncLogging) {
     run_in_process([&] {
         std::shared_ptr<AsyncLogging> async(new AsyncLogging("./.tmp", "LoggerTest"));
-        Logger::instance().set_log_level(Logger::INFO);
-        ASSERT_TRUE(Logger::instance().set_async(async));
+        Logger::set_log_level(Logger::INFO);
+        Logger::set_output([&async](const char* data, size_t len) {
+            async->append(data, len);
+        });
+        async->start();
 
         for (int i = 0; i < 10; ++i) {
             LOG_DEBUG("this is debug{}", i);
@@ -104,10 +107,10 @@ TEST(LoggerTest, WriteToAsyncLogging) {
 TEST(LoggerTest, MultiThreadedLogging) {
     run_in_process([] {
         std::atomic<int> counter { 0 };
-        Logger::instance().set_log_level(Logger::INFO);
-        ASSERT_TRUE(Logger::instance().set_output([&](const char* data, size_t len) {
+        Logger::set_log_level(Logger::INFO);
+        Logger::set_output([&](const char* data, size_t len) {
             ++counter;
-        }));
+        });
 
         std::vector<std::thread> threads;
         for (int i = 0; i < 10; ++i) {

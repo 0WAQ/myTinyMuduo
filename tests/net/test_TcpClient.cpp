@@ -405,9 +405,6 @@ TEST_F(TcpClientTest, HandlesConnectionFailure) {
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
-    Logger::instance().set_log_level(Logger::ERROR);
-    Logger::instance().set_output([](const char* data, size_t len) {
-        std::fprintf(stdout, data, len);
-    });
+    Logger::set_log_level(Logger::ERROR);
     return RUN_ALL_TESTS();
 }

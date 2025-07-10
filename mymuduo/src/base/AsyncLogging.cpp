@@ -114,11 +114,7 @@ void AsyncLogging::thread_func() {
 
             // 如果暂且没有待落盘的缓冲区, 则释放锁并且等待flush_interval秒
             if(_buffers.empty()) {
-                _cond.wait_for(lock,
-                        std::chrono::seconds{ _flush_interval },
-                        [this] {
-                            return !_running.load();
-                        });
+                _cond.wait_for(lock, std::chrono::seconds{ _flush_interval });
             }
 
             _buffers.emplace_back(std::move(_curr_buffer));

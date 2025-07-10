@@ -94,10 +94,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    Logger::instance().set_log_level(Logger::WARN);
-    Logger::instance().set_output([](const char* data, size_t len) {
-        std::fprintf(stdout, data, len);
-    });
+    Logger::set_log_level(Logger::WARN);
 
     InetAddress servAddr(argv[1], atoi(argv[2]));
     auto client = std::make_unique<EchoClient>(servAddr);

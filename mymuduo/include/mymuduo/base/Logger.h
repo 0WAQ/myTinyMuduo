@@ -1,24 +1,18 @@
 #ifndef MYMUDUO_BASE_LOGGER_H
 #define MYMUDUO_BASE_LOGGER_H
 
-#include <atomic>
-#include <functional>
-#include <memory>
-#include <string>
+#include "mymuduo/base/LogFormat.h"
+#include "mymuduo/base/Timestamp.h"
 
-#include "mymuduo/base/AsyncLogging.h"
-#include "mymuduo/base/noncopyable.h"
-#include "mymuduo/base/singleton.h"
+#include <functional>
 
 namespace mymuduo {
 
-class Logger : noncopyable
-             , public Singleton<Logger>
+class Logger
 {
 public:
-    friend class Singleton<Logger>;
-
-    using OutputFunc = std::function<void(const char*, size_t)>;
+    using OutputFunc = std::function<void(const char*, size_t len)>;
+    using FlushFunc = std::function<void()>;
 
     // 定义日志级别
     enum LogLevel {
@@ -31,23 +25,34 @@ public:
     };
 
 public:
-    void set_log_level(LogLevel level);
-    bool set_output(OutputFunc func);
-    bool set_async(const std::shared_ptr<AsyncLogging>& async);
+    Logger(LogLevel level);
+    ~Logger();
 
-    void write(LogLevel level, std::string&& fmt);
+    template <typename... Args>
+    void format(std::format_string<Args...> fmt, Args... args) {
+        _impl._format.format(fmt, std::forward<Args>(args)...);
+    }
 
-    const LogLevel log_level() const noexcept { return _level; };
-    const bool initialized() const noexcept { return _initialized; }
+    static LogLevel log_level();
+    static void set_log_level(LogLevel level);
+    static void set_output(OutputFunc func);
+    static void set_flush(FlushFunc func);
 
 private:
-    std::atomic<bool> _initialized { false };
 
-    // 日志等级
-    LogLevel _level = INFO;
+    class Impl {
+    public:
+        Impl(LogLevel level);
 
-    // 日志输出函数
-    OutputFunc _output_func;
+        void format_time();
+        void finish();
+
+        Timestamp _ts;
+        LogFormat _format;
+        LogLevel _level;
+    };
+
+    Impl _impl;
 };
 
 } // namespace mymuduo
@@ -58,8 +63,8 @@ private:
 #define LOG_BASE(level, fmt, ...)                                                       \
     do {                                                                                \
         using namespace mymuduo;                                                        \
-        if(Logger::instance().initialized())                                            \
-            Logger::instance().write(mymuduo::level, std::format(fmt, ##__VA_ARGS__));  \
+        if (Logger::log_level() <= level)                                               \
+            Logger(level).format(fmt, ##__VA_ARGS__);                                   \
     } while(0)
 
 
@@ -71,10 +76,7 @@ private:
 
 #define LOG_INFO(fmt, ...)  LOG_BASE(Logger::INFO, fmt, ##__VA_ARGS__)
 #define LOG_WARN(fmt, ...)  LOG_BASE(Logger::WARN, fmt, ##__VA_ARGS__)
-#define LOG_ERROR(fmt, ...) \
-            do { \
-                LOG_BASE(Logger::ERROR, fmt, ##__VA_ARGS__); exit(-1); \
-            } while(0)
+#define LOG_ERROR(fmt, ...) LOG_BASE(Logger::ERROR, fmt, ##__VA_ARGS__)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
